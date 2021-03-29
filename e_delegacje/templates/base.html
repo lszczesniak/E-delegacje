@@ -1,11 +1,12 @@
 {% load static %}
+
 <html {% if LANGUAGE_CODE %}lang="{{ LANGUAGE_CODE }}"{% endif %}>
 
 
 <head>
   <meta charset="utf-8">
-    <link rel="stylesheet" type="text/css" href="{% static 'cwiczenia/css/bootstrap.css' %}"/>
-    <link rel="stylesheet" type="text/css" href="{% static 'cwiczenia/css/main.css' %}"/>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/bootstrap.min.css' %}"/>
+
 <!--	<link rel="stylesheet" href="main.css">-->
 	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
@@ -113,7 +114,7 @@
 
     <div class="container ">
       <div class="jumbotron text-dark">
-        <h1>Welcome to HollyMovies!</h1>
+        <h1>Welcome to e-delegacje</h1>
 
         {% block content %}    {% endblock %}
       </div>

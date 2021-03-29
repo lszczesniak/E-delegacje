@@ -5,6 +5,11 @@ class BtTripCategory(Enum):
     kr = 'krajowa'
     zg = 'zagraniczna'
 
+    @classmethod
+    def choices(cls):
+        print(tuple((i.name, i.value) for i in cls))
+        return tuple((i.name, i.value) for i in cls)
+
 
 class BtApplicationStatus(Enum):
     saved = 'Zapisany'
@@ -13,6 +18,11 @@ class BtApplicationStatus(Enum):
     settled = 'Rozliczony'
     canceled = 'Anulowany'
 
+    @classmethod
+    def choices(cls):
+        print(tuple((i.name, i.value) for i in cls))
+        return tuple((i.name, i.value) for i in cls)
+
 
 class BtTransportType(Enum):
     train = "pociąg"
@@ -20,6 +30,11 @@ class BtTransportType(Enum):
     company_car = 'samochód służbowy'
     own_car = 'własny samochód'
     other = 'inny'
+
+    @classmethod
+    def choices(cls):
+        print(tuple((i.name, i.value) for i in cls))
+        return tuple((i.name, i.value) for i in cls)
 
 
 class BtEmployeeLevel(Enum):
@@ -31,12 +46,22 @@ class BtEmployeeLevel(Enum):
     lvl6 = 'członek zarządu'
     lvl7 = 'prezes zarządu'
 
+    @classmethod
+    def choices(cls):
+        print(tuple((i.name, i.value) for i in cls))
+        return tuple((i.name, i.value) for i in cls)
+
 
 class BtCostCategory(Enum):
     accommodation = 'nocleg'
     transport = 'dojazd'
     luggage = 'bagaż'
     other = 'inne'
+
+    @classmethod
+    def choices(cls):
+        print(tuple((i.name, i.value) for i in cls))
+        return tuple((i.name, i.value) for i in cls)
 
 
 class BtVatRates(Enum):
@@ -45,6 +70,11 @@ class BtVatRates(Enum):
     WN = 'nie dotyczy'
     W0 = 'zwolniony'
 
+    @classmethod
+    def choices(cls):
+        print(tuple((i.name, i.value) for i in cls))
+        return tuple((i.name, i.value) for i in cls)
+
 
 class BtMileageVehicleTypes(Enum):
     car_under_900cm3 = 'auto o pojemności do 900cm3'
@@ -52,5 +82,9 @@ class BtMileageVehicleTypes(Enum):
     motorbike = 'motocykl'
     moped = 'motorowe'
 
+    @classmethod
+    def choices(cls):
+        print(tuple((i.name, i.value) for i in cls))
+        return tuple((i.name, i.value) for i in cls)
 
 
