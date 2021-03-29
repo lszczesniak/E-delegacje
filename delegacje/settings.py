@@ -123,8 +123,8 @@ STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
 
 # Email sending settings
 EMAIL_HOST = "smtp.gmail.com."
-EMAIL_HOST_USER = 'lszczesniak77@gmail.com'
-EMAIL_HOST_PASSWORD = 'Poleczka+1'
+EMAIL_HOST_USER = 'to_be_created@gmail.com'
+EMAIL_HOST_PASSWORD = 'password'
 # EMAIL_PORT = 465
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
