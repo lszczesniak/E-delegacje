@@ -1,0 +1,124 @@
+{% load static %}
+<html {% if LANGUAGE_CODE %}lang="{{ LANGUAGE_CODE }}"{% endif %}>
+
+
+<head>
+  <meta charset="utf-8">
+    <link rel="stylesheet" type="text/css" href="{% static 'cwiczenia/css/bootstrap.css' %}"/>
+    <link rel="stylesheet" type="text/css" href="{% static 'cwiczenia/css/main.css' %}"/>
+<!--	<link rel="stylesheet" href="main.css">-->
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+
+
+	<title>E-Delegacje</title>
+	<meta name="description" content="Aplikacja do zarządzania podróżami służbowymi w firmie">
+	<meta name="keywords" content="podróże służbowe, delegacje, wyniki">
+	<meta name="author" content="Łukasz Szcześniak, Gerard Borowski">
+	<meta http-equiv="X-Ua-Compatible" content="IE=edge">
+	<link href="https://fonts.googleapis.com/css?family=Open+Sans:400,700&amp;subset=latin-ext" rel="stylesheet">
+
+  </head>
+
+<body class="bg-light bg-gradient">
+
+	<header>
+		<nav class="navbar navbar-expand-lg navbar-light bg-secondary">
+ 			 <div class="container-fluid mx-0">
+
+	   			 <a class="navbar-brand bg-light" href="https://www.metro-properties.pl/">
+      				<img src="{% static 'img/logo_metro_qtj_2.ico' %}" alt="" width="40" height="40">
+					 </a>
+
+
+    			<a class="navbar-brand text-light" href="#">E-delegacje</a>
+				<button class="navbar-toggler"
+						type="button" data-bs-toggle="collapse"
+						data-bs-target="#navbarSupportedContent"
+						aria-controls="navbarSupportedContent"
+						aria-expanded="false"
+						aria-label="Toggle navigation">
+				  <span class="navbar-toggler-icon"></span>
+				</button>
+
+    				<div class="collapse navbar-collapse" id="navbarSupportedContent">
+      					<ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        					<li class="nav-item">
+								<a class="nav-item nav-link text-warning active"
+								   href="/">HollyMovies
+								</a>
+							</li>
+							<li class="nav-item">
+								<a class="nav-item nav-link text-warning " href="/">Movies</a>
+							</li>
+								<li class="nav-item">
+								<a class="nav-item nav-link text-warning " href="/">Actors</a>
+							</li>
+							  <li class="nav-item">
+							  <a class="nav-item nav-link text-warning " href="/">Oscars</a>
+							</li>
+							<li class="nav-item">
+							  <a class="nav-item nav-link text-warning " href="/">Countries</a>
+							</li>
+							<li class="nav-item">
+							  <a class="nav-item nav-link text-warning " href="/">Forms</a>
+
+							</li>
+							<li class="nav-item dropdown">
+							  <a class="nav-link dropdown-toggle text-light"
+								 href="#"
+								 id="navbarDropdownMenuLink"
+								 role="button"
+								 data-bs-toggle="dropdown"
+								 aria-expanded="false">
+								Dropdown
+							  </a>
+
+							  <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+								  <li><a class="nav-item nav-link text-warning " href="/">Movies</a></li>
+								  <li><a class="nav-item nav-link text-warning " href="/">Actors</a></li>
+								  <li><a class="nav-item nav-link text-warning " href="/">Oscars</a></li>
+								  <li><a class="nav-item nav-link text-warning " href="/">
+									  Countries</a></li>
+								  <li><a class="nav-item nav-link text-warning " href="/">Forms</a></li>
+								  <li><hr class="dropdown-divider"></li>
+								  <li><a class="nav-item nav-link text-warning " href="/">
+									  Questions</a></li>
+								  <li>  <a class="nav-item nav-link text-warning " href="/">
+									  Answers</a></li>
+								  <li>  <a class="nav-item nav-link text-warning " href="/">
+									  Choices</a></li>
+								  <li>  <a class="nav-item nav-link text-warning " href="/">
+									  My-polls</a></li>
+								  <li>  <a class="nav-item nav-link text-warning " href="/">
+									  Forms</a></li>
+								  <li>  <a class="nav-item nav-link text-warning " href="/admin/">Admin</a></li>
+
+
+          					</ul>
+        				</li>
+      				</ul>
+
+				  <form class="d-inline-flex mt-auto mb-auto">
+					<input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+					<button class="btn btn-light btn-outline-warning text-secondary" type="submit">Search</button>
+				  </form>
+    		</div>
+			 </div>
+		</nav>
+
+
+	</header>
+
+
+    <div class="container ">
+      <div class="jumbotron text-dark">
+        <h1>Welcome to HollyMovies!</h1>
+
+        {% block content %}    {% endblock %}
+      </div>
+    </div>
+  </body>
+
+</body>
+</html>
