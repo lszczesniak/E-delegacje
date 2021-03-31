@@ -1,7 +1,7 @@
 from enum import Enum
 
 
-class BtTripCategoryChoice(Enum):
+class BtTripCategory(Enum):
     kr = 'krajowa'
     zg = 'zagraniczna'
 
@@ -30,3 +30,27 @@ class BtEmployeeLevel(Enum):
     lvl5 = 'dyrektor dywizji'
     lvl6 = 'członek zarządu'
     lvl7 = 'prezes zarządu'
+
+
+class BtCostCategory(Enum):
+    accommodation = 'nocleg'
+    transport = 'dojazd'
+    luggage = 'bagaż'
+    other = 'inne'
+
+
+class BtVatRates(Enum):
+    W1 = '23 %'
+    W7 = '7 %'
+    WN = 'nie dotyczy'
+    W0 = 'zwolniony'
+
+
+class BtMileageVehicleTypes(Enum):
+    car_under_900cm3 = 'auto o pojemności do 900cm3'
+    car_above_900cm3 = 'auto o pojemności powyżej 900cm3'
+    motorbike = 'motocykl'
+    moped = 'motorowe'
+
+
+
