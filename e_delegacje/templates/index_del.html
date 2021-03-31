@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+<div class="row">
+        <div class="col-3 ">
+            <ul>
+                <li><a href="/">Movies</a></li>
+                <li><a href="/">Actors</a></li>
+                <li><a href="/">Oscars</a></li>
+                <li><a href="/">Countries</a></li>
+            </ul>
+        </div>
+        <div class="col-1" >
+            <img src="{% static 'img/bt_image.jpg' %}" alt="" width="700" height="400" >
+
+          </div>
+
+</div>
+  {% endblock %}
