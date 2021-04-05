@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block content %}
+
+    <h2>Wnioski o delegację</h2>
+
+
+    {% for item in objects_list %}
+        <ul>
+        <li>
+<!--            <a href="{% url 'polls_app:my-choices-detail-detailview_link' pk=c.pk %}">-->
+            Choice {{ item.id }}: {{ item. }}
+<!--            </a>-->
+        </li>
+            </ul>
+
+    {% endfor %}
+    <h2>Details</h2>
+
+    <p>{{ object.choice_text }} {{ object.votes }} </p>
+<!--    <p>{{ choice.choice_text }} {{ choice.votes }} </p>-->
+{% endblock %}
+
