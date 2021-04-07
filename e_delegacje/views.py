@@ -1,7 +1,7 @@
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
-from django.views.generic import ListView
+from django.views.generic import ListView, DetailView
 from django.views import View
 
 from e_delegacje.enums import BtApplicationStatus
@@ -22,22 +22,22 @@ class BtApplicationCreateView(View):
     def post(self, request):
         form = BtApplicationForm(request.POST)
         if form.is_valid():
-            result = super().clean()
-            trip_category = result['trip_category']
-            target_user = result['target_user']
-            application_author = result['application_author']
+
+            trip_category = form.cleaned_data['trip_category']
+            target_user = form.cleaned_data['target_user']
+            application_author = form.cleaned_data['application_author']
             application_status = BtApplicationStatus.saved.value
-            trip_purpose_text = result['trip_purpose_text']
-            CostCenter = result['CostCenter']
-            transport_type = result['transport_type']
-            travel_route = result['travel_route']
-            planned_start_date = result['planned_start_date']
-            planned_end_date = result['planned_end_date']
-            advance_payment = result['advance_payment']
+            trip_purpose_text = form.cleaned_data['trip_purpose_text']
+            CostCenter = form.cleaned_data['CostCenter']
+            transport_type = form.cleaned_data['transport_type']
+            travel_route = form.cleaned_data['travel_route']
+            planned_start_date = form.cleaned_data['planned_start_date']
+            planned_end_date = form.cleaned_data['planned_end_date']
+            advance_payment = form.cleaned_data['advance_payment']
             employee_level = BtUser.objects.get(id=target_user.id)
 
             BtApplication.objects.create(
-                trip_category= trip_category,
+                trip_category=trip_category,
                 target_user=target_user,
                 application_author=application_author,
                 application_status=application_status,
@@ -50,11 +50,16 @@ class BtApplicationCreateView(View):
                 advance_payment=advance_payment,
                 employee_level=employee_level,
             )
-            form.send_mail(user_mail=request.user.email)
+            # form.send_mail(user_mail=request.user.email)
             return HttpResponseRedirect(reverse("e_delegacje:applications-list"))
 
 
 class BtApplicationListView(ListView):
     model = BtApplication
     template_name = "bt_applications_list.html"
+
+
+class BtApplicationDetailView(DetailView):
+    model = BtApplication
+    template_name = "bt_application_details.html"
 

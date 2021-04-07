@@ -4,19 +4,35 @@
     <h2>Wnioski o delegację</h2>
 
 
-    {% for item in objects_list %}
-        <ul>
-        <li>
-<!--            <a href="{% url 'polls_app:my-choices-detail-detailview_link' pk=c.pk %}">-->
-            Choice {{ item.id }}: {{ item. }}
-<!--            </a>-->
-        </li>
-            </ul>
+    {% for item in object_list %}
+<div class="container">
+    <div class="row">
+        <div class="col-3">
+            Numer wniosku
+        </div>
+        <div class="col-3">
+            Opis
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-3">
+            {{ item.id }}
+        </div>
+        <div class="col-3">
+            {{ item.trip_purpose_text }}
+        </div>
+        <div class="col-3">
+            <a href="{% url 'e_delegacje:application-details' pk=item.pk %}"> Details </a>
+        </div>
+    </div>
+
+</div>
+
+
 
     {% endfor %}
-    <h2>Details</h2>
+    <p>Details</p>
 
-    <p>{{ object.choice_text }} {{ object.votes }} </p>
-<!--    <p>{{ choice.choice_text }} {{ choice.votes }} </p>-->
+
 {% endblock %}
 
