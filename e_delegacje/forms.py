@@ -1,6 +1,7 @@
 from django.contrib.auth.models import User
+from django.contrib.admin.widgets import AdminDateWidget
 
-from .models import BtUser, BtCostCenter
+from .models import BtUser, BtCostCenter, BtApplication
 from django.db import models
 from django.core.mail import EmailMultiAlternatives
 from django import forms
@@ -19,17 +20,32 @@ from e_delegacje.enums import (
 )
 
 
+class DateInputWidget(forms.DateInput):
+    input_type = 'date'
+
+
 class BtApplicationForm(forms.Form):
-    trip_category = forms.TypedChoiceField(choices=BtTripCategory.choices())
-    target_user = forms.ModelChoiceField(queryset=BtUser.objects.all())
+    trip_category = forms.TypedChoiceField(choices=BtTripCategory.choices(), label="Rodzaj delegacji")
+    target_user = forms.ModelChoiceField(queryset=BtUser.objects.all(), label="Delegowany")
     application_author = forms.ModelChoiceField(queryset=BtUser.objects.all())
-    trip_purpose_text = forms.CharField(max_length=250, widget=forms.Textarea)
-    CostCenter = forms.ModelChoiceField(queryset=BtCostCenter.objects.all())
-    transport_type = forms.TypedChoiceField(choices=BtTransportType.choices())
-    travel_route = forms.CharField(max_length=120)
-    planned_start_date = forms.DateField(input_formats=['%d.%m.%Y', '%d-%m-%Y', '%d/%m/%Y'])
-    planned_end_date = forms.DateField(input_formats=['%d.%m.%Y', '%d-%m-%Y', '%d/%m/%Y'])
-    advance_payment = forms.DecimalField(decimal_places=2, max_digits=6)
+    trip_purpose_text = forms.CharField(
+        max_length=250,
+        widget=forms.Textarea,
+        label="Cel podrózy")
+    CostCenter = forms.ModelChoiceField(queryset=BtCostCenter.objects.all(), label="Cost Center")
+    transport_type = forms.TypedChoiceField(choices=BtTransportType.choices(), label="Rodzaj transportu")
+    travel_route = forms.CharField(max_length=120, label="Trasa podróży")
+    planned_start_date = forms.DateField(
+        input_formats=['%d.%m.%Y', '%d-%m-%Y', '%d/%m/%Y'],
+        label="Data wyjazdu",
+        widget=DateInputWidget
+    )
+    planned_end_date = forms.DateField(
+        input_formats=['%d.%m.%Y', '%d-%m-%Y', '%d/%m/%Y'],
+        label="Data powrotu",
+        widget=DateInputWidget
+    )
+    advance_payment = forms.DecimalField(decimal_places=2, max_digits=6, label="Zaliczka")
 
     def send_mail(self, user_mail):
 
@@ -81,4 +97,11 @@ class BtApplicationForm(forms.Form):
         email.send()
         return result
 
+
+class BtApplicationSettlementForm(forms.Form):
+    bt_application_id = forms.ModelChoiceField(
+        queryset=BtApplication.objects.all(),
+        label="",
+        empty_label="wybierz wniosek do rozliczenia"
+    )
 

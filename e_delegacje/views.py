@@ -1,12 +1,12 @@
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
-from django.urls import reverse
-from django.views.generic import ListView, DetailView
+from django.urls import reverse, reverse_lazy
+from django.views.generic import ListView, DetailView, DeleteView, CreateView
 from django.views import View
 
 from e_delegacje.enums import BtApplicationStatus
 from e_delegacje.forms import BtApplicationForm
-from e_delegacje.models import BtUser, BtApplication
+from e_delegacje.models import BtUser, BtApplication, BtApplicationSettlement
 
 
 def index(request):
@@ -22,7 +22,6 @@ class BtApplicationCreateView(View):
     def post(self, request):
         form = BtApplicationForm(request.POST)
         if form.is_valid():
-
             trip_category = form.cleaned_data['trip_category']
             target_user = form.cleaned_data['target_user']
             application_author = form.cleaned_data['application_author']
@@ -62,4 +61,16 @@ class BtApplicationListView(ListView):
 class BtApplicationDetailView(DetailView):
     model = BtApplication
     template_name = "bt_application_details.html"
+
+
+class BtApplicationDeleteView(DeleteView):
+    model = BtApplication
+    template_name = "bt_application_delete.html"
+
+
+class BtApplicationSettlementCreateView(CreateView):
+    template_name = "settlement_form_template.html"
+    model = BtApplicationSettlement
+    fields = "__all__"
+    success_url = reverse_lazy("movies_app:actors_link")
 
