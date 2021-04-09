@@ -1,12 +1,30 @@
 {% extends "base.html" %}
 {% block content %}
 
-<form class="form-control" method="post">
-    {% csrf_token %}
-<table>
-     {{ form.as_table }}
-    </table>
-    <input type="submit" value="Submit">
-</form>
+  <h2>Szczegóły wniosku o delegację {{ object.id }}</h2>
+<div class="row">
+  <div class="col-4">
+      <br>
+      <p>Rodzaj delegacji: {{ object.trip_category }}</p>
+      <p>Pracownik: {{ object.target_user }}</p>
+      <p>Status Wniosku: {{ object.application_status }}</p>
+      <p>Data wniosku: {{ object.application_date }}</p>
+      <p>Cel podróży: {{ object.trip_purpose_text }}</p>
+      <p>Cost center: {{ object.CostCenter }}</p>
+      <p>Rodzaj transportu: {{ object.transport_type }}</p>
+      <p>Trasa podrózy: {{ object.travel_route }}</p>
+      <p>Planowana data wyjazdu: {{ object.planned_start_date }}</p>
+      <p>Planowana data powrotu: {{ object.planned_end_date }}</p>
+      <p>Zaliczka: {{ object.advance_payment }} zł.</p>
+    </div>
+  </div>
+
+<div class="row">
+  <div class="col-4">
+    <a class="btn-outline-danger" href="{% url 'e_delegacje:application-delete' pk=object.pk %}"> Usuń wniosek </a>
+
+  </div>
+</div>
+
   {% endblock %}
 

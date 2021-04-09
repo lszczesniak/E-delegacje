@@ -1,0 +1,98 @@
+{% extends "base.html" %}
+{% block content %}
+
+  <h2>Szczegóły Rozliczenia wniosku o delegację </h2>
+<div class="container-fluid">
+        <div class="row">
+          <div class="col-11">
+              <table class="table table-secondary table-striped">
+                  <tr class="table table-primary table-striped text-uppercase">
+                      <td class="fw-bold">Numer Wniosku</td>
+                      <td colspan="2">{{ object.bt_application_id.id }}</td>
+                      <td class="fw-bold">Data wniosku</td>
+                      <td>{{ object.bt_application_id.application_date }}</td>
+                  </tr>
+                    <tr class="fw-bold">
+
+                        <td>Rodzaj delegacji</td>
+                        <td>Cel podróży</td>
+                        <td>Pracownik</td>
+                        <td>Cost center</td>
+                        <td>Status Wniosku</td>
+
+                    </tr>
+                  <tr>
+
+                      {% if object.bt_application_id.trip_category == 'kr' %}
+                      <td>krajowa</td>
+                      {% elif object.bt_application_id.trip_category == 'zg' %}
+                      <td>zagraniczna</td>
+                      {% endif %}
+                      <td class="text-wrap">{{ object.bt_application_id.trip_purpose_text }}</td>
+                      <td>{{ object.bt_application_id.target_user }}</td>
+                      <td>{{ object.bt_application_id.CostCenter }}</td>
+                      <td>{{ object.bt_application_id.application_status }}</td>
+
+
+                  </tr>
+
+
+
+                  </tr>
+                        <tr class="fw-bold">
+                            <td>Rodzaj transportu</td>
+                            <td>Trasa podrózy</td>
+                            <td>Planowana data wyjazdu</td>
+                            <td>Planowana data wyjazdu</td>
+                            <td>Zaliczka</td>
+                  </tr>
+                            </tr>
+                        <tr>
+                            <td>{{ object.bt_application_id.transport_type }}</td>
+                            <td>{{ object.bt_application_id.travel_route }}</td>
+                            <td>{{ object.bt_application_id.planned_start_date }}</td>
+                            <td>{{ object.bt_application_id.planned_end_date }}</td>
+                            <td>{{ object.bt_application_id.advance_payment }} zł.</td>
+                  </tr>
+
+                </table>
+            </div>
+
+
+              </table>
+
+            </div>
+
+
+<!--        <div class="row">-->
+<!--            <div class="col-2">-->
+<!--                <button class="btn-danger" type="submit">-->
+<!--                      <a class="btn-danger bg-transparent"-->
+<!--                         href="{% url 'e_delegacje:application-delete' pk=object.pk %}">-->
+<!--                          Usuń rozliczenie - choć finalnie będzie tu edycja-->
+<!--                      </a>-->
+<!--                </button>-->
+<!--            </div>-->
+<!--        </div>-->
+
+        <div class="row">
+            <div class="col-2">
+
+
+            </div>
+
+            <div class="col-2">
+                <button class="btn-warning" type="submit">
+                      <a class="btn-warning bg-transparent"
+                         href="{% url 'e_delegacje:application-delete' pk=object.pk %}">
+                          Usuń rozliczenie - choć finalnie będzie tu edycja
+                      </a>
+                </button>
+            </div>
+        </div>
+
+
+</div>
+
+
+{% endblock %}

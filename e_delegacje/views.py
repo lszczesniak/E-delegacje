@@ -3,10 +3,17 @@ from django.shortcuts import render
 from django.urls import reverse, reverse_lazy
 from django.views.generic import ListView, DetailView, DeleteView, CreateView
 from django.views import View
-
 from e_delegacje.enums import BtApplicationStatus
-from e_delegacje.forms import BtApplicationForm
-from e_delegacje.models import BtUser, BtApplication, BtApplicationSettlement
+from e_delegacje.forms import BtApplicationForm, BtApplicationSettlementInfoForm
+from e_delegacje.models import (
+    BtUser,
+    BtApplication,
+    BtApplicationSettlement,
+    BtApplicationSettlementInfo,
+    BtApplicationSettlementCost,
+    BtApplicationSettlementMileage,
+    BtApplicationSettlementFeeding,
+    )
 
 
 def index(request):
@@ -51,6 +58,8 @@ class BtApplicationCreateView(View):
             )
             # form.send_mail(user_mail=request.user.email)
             return HttpResponseRedirect(reverse("e_delegacje:applications-list"))
+        else:
+            return HttpResponseRedirect(reverse("e_delegacje:index"))
 
 
 class BtApplicationListView(ListView):
@@ -68,9 +77,56 @@ class BtApplicationDeleteView(DeleteView):
     template_name = "bt_application_delete.html"
 
 
-class BtApplicationSettlementCreateView(CreateView):
+class BtApplicationSettlementView(DetailView):
     template_name = "settlement_form_template.html"
     model = BtApplicationSettlement
     fields = "__all__"
-    success_url = reverse_lazy("movies_app:actors_link")
+    success_url = reverse_lazy("e_delegacje:applications-list")
 
+
+class BtApplicationSettlementCreateView(View):
+    def get(self, request, pk):
+        # if BtApplicationSettlement.object.get(bt_application_id=pk).exists():
+        #     raise Exception("Rozliczenie już istnieje")
+        # else:
+        settlement = BtApplicationSettlement.objects.create(bt_application_id=BtApplication.objects.get(id=pk))
+        settlement.save()
+        settlement_id = BtApplicationSettlement.objects.last()
+
+        return HttpResponseRedirect(reverse("e_delegacje:settlement-add-forms", args=[settlement_id.id]))
+
+
+class BtApplicationSettlementsListView(ListView):
+    model = BtApplicationSettlement
+    template_name = "bt_applications_list.html"
+
+
+class BtApplicationSettlementDetailView(DetailView):
+
+    model = BtApplicationSettlement
+    template_name = "bt_settlement_details.html"
+    extra_context = {'info_form': BtApplicationSettlementInfoForm}
+
+
+class BtApplicationSettlementInfoCreateView(CreateView):
+    template_name = "settlement_subform.html"
+    model = BtApplicationSettlementInfo
+    fields = "__all__"
+
+
+class BtApplicationSettlementCostCreateView(CreateView):
+    template_name = "settlement_subform.html"
+    model = BtApplicationSettlementCost
+    fields = "__all__"
+
+
+class BtApplicationSettlementMileageCreateView(CreateView):
+    template_name = "settlement_subform.html"
+    model = BtApplicationSettlementMileage
+    fields = "__all__"
+
+
+class BtApplicationSettlementFeedingCreateView(CreateView):
+    template_name = "settlement_subform.html"
+    model = BtApplicationSettlementFeeding
+    fields = "__all__"

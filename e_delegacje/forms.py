@@ -38,12 +38,14 @@ class BtApplicationForm(forms.Form):
     planned_start_date = forms.DateField(
         input_formats=['%d.%m.%Y', '%d-%m-%Y', '%d/%m/%Y'],
         label="Data wyjazdu",
-        widget=DateInputWidget
+        # widget=forms.SelectDateWidget
+        # widget=DateInputWidget
     )
     planned_end_date = forms.DateField(
         input_formats=['%d.%m.%Y', '%d-%m-%Y', '%d/%m/%Y'],
         label="Data powrotu",
-        widget=DateInputWidget
+        # widget=forms.SelectDateWidget
+        # widget=DateInputWidget
     )
     advance_payment = forms.DecimalField(decimal_places=2, max_digits=6, label="Zaliczka")
 
@@ -104,4 +106,13 @@ class BtApplicationSettlementForm(forms.Form):
         label="",
         empty_label="wybierz wniosek do rozliczenia"
     )
+
+
+class BtApplicationSettlementInfoForm(forms.Form):
+    bt_completed = forms.BooleanField(label="Czy delegacha się odbyła?")
+    bt_start_date = forms.DateField(label="Data wyjazdu")
+    bt_start_time = forms.TimeField(label="Godzina wyjazdu")
+    bt_end_date = forms.DateField(label="Data powrotu")
+    bt_end_time = forms.TimeField(label="Godzina powrotu")
+
 

@@ -20,7 +20,7 @@ class BtRegion(models.Model):
     name = models.CharField(max_length=100)
 
     def __str__(self):
-        return self.name
+        return f'{self.name}'
 
 
 class BtDivision(models.Model):
@@ -28,7 +28,7 @@ class BtDivision(models.Model):
     manager = models.ForeignKey(User, on_delete=models.PROTECT, related_name='Bt_Divisions')
 
     def __str__(self):
-        return self.name
+        return f'{self.name}'
 
 
 class BtLocation(models.Model):
@@ -65,7 +65,7 @@ class BtSubmissionStatus(models.Model):
     submission_text = models.CharField(max_length=20)
 
     def __str__(self):
-        return self.submission_text
+        return f'{self.submission_text}'
 
 
 class BtDepartment(models.Model):
@@ -75,7 +75,7 @@ class BtDepartment(models.Model):
     cost_center = models.ForeignKey(BtCostCenter, on_delete=models.PROTECT, related_name="Bt_Departments")
 
     def __str__(self):
-        return self.name
+        return f'{self.name}'
 
 
 class BtUser(models.Model):
@@ -105,7 +105,7 @@ class BtApplication(models.Model):
     advance_payment = models.DecimalField(decimal_places=2, max_digits=8, null=True, blank=True)
 
     def __str__(self):
-        return self.trip_purpose_text
+        return f'{self.trip_purpose_text}'
 
 
 class BtApplicationSettlement(models.Model):
@@ -116,7 +116,7 @@ class BtApplicationSettlement(models.Model):
     )
 
     def __str__(self):
-        return self.bt_application_id
+        return f'{self.bt_application_id}'
 
 
 class BtApplicationSettlementInfo(models.Model):
@@ -130,9 +130,9 @@ class BtApplicationSettlementInfo(models.Model):
     bt_start_time = models.TimeField()
     bt_end_date = models.DateField()
     bt_end_time = models.TimeField()
-    # gdzie referowac do którego modelu?
+    # gdzie referowac do którego modelu? czy w ogóle poninienem to wstawiac ponownie do drugiego modelu
     advance_payment = models.OneToOneField(
-        BtApplicationSettlement,
+        BtApplication,
         on_delete=models.CASCADE,
         related_name='bt_application_settlement_info'
     )
@@ -156,6 +156,9 @@ class BtApplicationSettlementCost(models.Model):
     )
     bt_cost_document_date = models.DateField()
     bt_cost_VAT_rate = models.CharField(max_length=10, choices=BtVatRates.choices())
+
+    def __str__(self):
+        return f'{self.bt_application_id}'
 
 
 class BtApplicationSettlementMileage(models.Model):
