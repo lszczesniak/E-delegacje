@@ -11,6 +11,7 @@ from e_delegacje.enums import (
 
 )
 
+
 class BtUser(AbstractUser):
     department = models.ForeignKey("BtDepartment", on_delete=models.PROTECT, related_name="bt_Users", null=True)
 #    division = models.ForeignKey("BtDivision", on_delete=models.PROTECT, related_name="bt_Users")
@@ -19,7 +20,6 @@ class BtUser(AbstractUser):
 
     def __str__(self):
         return f'{self.username}'
-
 
 
 class BtRegion(models.Model):
