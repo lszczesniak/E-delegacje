@@ -8,9 +8,12 @@
               <table class="table table-secondary table-striped">
                   <tr class="table table-primary table-striped text-uppercase">
                       <td class="fw-bold">Numer Wniosku</td>
-                      <td colspan="2">{{ object.bt_application_id.id }}</td>
-                      <td class="fw-bold">Data wniosku</td>
-                      <td>{{ object.bt_application_id.application_date }}</td>
+                      <td colspan="4">{{ object.bt_application_id.id }}</td>
+
+                  </tr>
+                  <tr class="table table-primary table-striped text-uppercase">
+                    <td class="fw-bold">Data wniosku</td>
+                    <td colspan="4">{{ object.bt_application_id.application_date }}</td>
                   </tr>
                     <tr class="fw-bold">
 
@@ -64,35 +67,11 @@
             </div>
 
 
-<!--        <div class="row">-->
-<!--            <div class="col-2">-->
-<!--                <button class="btn-danger" type="submit">-->
-<!--                      <a class="btn-danger bg-transparent"-->
-<!--                         href="{% url 'e_delegacje:application-delete' pk=object.pk %}">-->
-<!--                          Usuń rozliczenie - choć finalnie będzie tu edycja-->
-<!--                      </a>-->
-<!--                </button>-->
-<!--            </div>-->
-<!--        </div>-->
 
-        <div class="row">
-            <div class="col-2">
-
-
-            </div>
-
-            <div class="col-2">
-                <button class="btn-warning" type="submit">
-                      <a class="btn-warning bg-transparent"
-                         href="{% url 'e_delegacje:application-delete' pk=object.pk %}">
-                          Usuń rozliczenie - choć finalnie będzie tu edycja
-                      </a>
-                </button>
-            </div>
         </div>
 
 
-</div>
+
 
 
 {% endblock %}

@@ -13,6 +13,7 @@ from e_delegacje.views import (
     BtApplicationSettlementMileageCreateView,
     BtApplicationSettlementCostCreateView,
     BtApplicationSettlementFeedingCreateView,
+    BtApplicationSettlementInfoCreateFormView,
 )
 
 app_name = 'e_delegacje'
@@ -30,10 +31,11 @@ urlpatterns = [
     path('settlement-add-forms/<pk>', BtApplicationSettlementView.as_view(), name='settlement-add-forms'),
     path('settlements-list', BtApplicationSettlementsListView.as_view(), name='settlements-list'),
     path('settlement-details/<pk>', BtApplicationSettlementDetailView.as_view(), name='settlement-details'),
+
     # podformularze do rozliczenia wniosku
     path(
         'settlement-info-create/<pk>',
-         BtApplicationSettlementInfoCreateView.as_view(),
+        BtApplicationSettlementInfoCreateFormView.as_view(),
         name='settlement-info-create'
     ),
     path(
@@ -43,13 +45,13 @@ urlpatterns = [
     ),
     path(
         'settlement-info-create/<pk>',
-         BtApplicationSettlementMileageCreateView.as_view(),
+        BtApplicationSettlementMileageCreateView.as_view(),
         name='settlement-info-create'
     ),
     path(
         'settlement-info-create/<pk>',
-         BtApplicationSettlementFeedingCreateView.as_view(),
+        BtApplicationSettlementFeedingCreateView.as_view(),
         name='settlement-info-create'
     ),
 
-    ]
+]

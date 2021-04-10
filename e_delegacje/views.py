@@ -1,7 +1,7 @@
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse, reverse_lazy
-from django.views.generic import ListView, DetailView, DeleteView, CreateView
+from django.views.generic import ListView, DetailView, DeleteView, CreateView, FormView
 from django.views import View
 from e_delegacje.enums import BtApplicationStatus
 from e_delegacje.forms import BtApplicationForm, BtApplicationSettlementInfoForm
@@ -93,7 +93,7 @@ class BtApplicationSettlementCreateView(View):
         settlement.save()
         settlement_id = BtApplicationSettlement.objects.last()
 
-        return HttpResponseRedirect(reverse("e_delegacje:settlement-add-forms", args=[settlement_id.id]))
+        return HttpResponseRedirect(reverse("e_delegacje:settlement-details", args=[settlement_id.id]))
 
 
 class BtApplicationSettlementsListView(ListView):
@@ -108,8 +108,35 @@ class BtApplicationSettlementDetailView(DetailView):
     extra_context = {'info_form': BtApplicationSettlementInfoForm}
 
 
+class BtApplicationSettlementInfoCreateFormView(FormView):
+
+    template_name = "settlement_subform_info.html"
+    form_class = BtApplicationSettlementInfoForm
+    settlement_id = BtApplicationSettlement.objects.last()
+    success_url = reverse_lazy("e_delegacje:settlement-details", args=[settlement_id.id])
+
+    def form_valid(self, form):
+        result = super().form_valid(form)
+        bt_application_settlement = self.settlement_id
+        bt_completed = form.cleaned_data["bt_completed"]
+        bt_start_date = form.cleaned_data["bt_start_date"]
+        bt_start_time = form.cleaned_data["bt_start_time"]
+        bt_end_date = form.cleaned_data["bt_end_date"]
+        bt_end_time = form.cleaned_data["bt_end_time"]
+
+        BtApplicationSettlementInfo.objects.create(
+            bt_application_settlement=bt_application_settlement,
+            bt_completed=bt_completed,
+            bt_start_date=bt_start_date,
+            bt_start_time=bt_start_time,
+            bt_end_date=bt_end_date,
+            bt_end_time=bt_end_time,
+        )
+        return result
+
+
 class BtApplicationSettlementInfoCreateView(CreateView):
-    template_name = "settlement_subform.html"
+    template_name = "settlement_subform_info.html"
     model = BtApplicationSettlementInfo
     fields = "__all__"
 

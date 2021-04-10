@@ -109,6 +109,11 @@ class BtApplication(models.Model):
 
 
 class BtApplicationSettlement(models.Model):
+    # bt_application_id = models.OneToOneField(
+    #     BtApplication,
+    #     on_delete=models.CASCADE,
+    #     related_name='bt_applications_settlements'
+    # )
     bt_application_id = models.ForeignKey(
         BtApplication,
         on_delete=models.CASCADE,
@@ -120,17 +125,18 @@ class BtApplicationSettlement(models.Model):
 
 
 class BtApplicationSettlementInfo(models.Model):
+
     bt_application_settlement = models.OneToOneField(
         BtApplicationSettlement,
         on_delete=models.CASCADE,
         related_name='bt_application'
     )
-    bt_completed = models.BooleanField()
+    bt_completed = models.CharField(max_length=25, choices=[('tak', 'tak'), ('nie', 'nie')])
     bt_start_date = models.DateField()
     bt_start_time = models.TimeField()
     bt_end_date = models.DateField()
     bt_end_time = models.TimeField()
-    # gdzie referowac do którego modelu? czy w ogóle poninienem to wstawiac ponownie do drugiego modelu
+    # gdzie referowac do którego modelu? czy w ogóle powinienem to wstawiac ponownie do drugiego modelu
     advance_payment = models.OneToOneField(
         BtApplication,
         on_delete=models.CASCADE,

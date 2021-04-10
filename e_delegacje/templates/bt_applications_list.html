@@ -4,22 +4,7 @@
     <h2>Wnioski o delegację</h2>
 
 <table class="table table-secondary table-striped table-hover">
-<!--    <thead>-->
-<!--    <tr>-->
-<!--        <th scope="col">-->
-<!--            Numer wniosku-->
-<!--        </th>-->
-<!--                <th scope="col">-->
-<!--            Opis wniosku-->
-<!--        </th>-->
-<!--                <th scope="col">-->
-<!--            Szczegóły-->
-<!--        </th>-->
-<!--                <th scope="col">-->
-<!--            Rozlicz wniosek-->
-<!--        </th>-->
-<!--    </tr>-->
-<!--    </thead>-->
+
 <tbody>
     {% for item in object_list %}
     <tr>
@@ -46,47 +31,18 @@
         </button>
             </td>
             <td>
-        {% if item.bt_applications_settlements.exists %}
+            {% if item.bt_applications_settlements.exists %}
 
-            <button class="btn-outline-secondary" type="submit">
-              <a class="btn-warning bg-transparent"
-                 href="{% url 'e_delegacje:settlement-details' pk=item.id %}">
-                Zobacz rozliczenie wniosku nr
-            </a>
-            </button>
-        {% endif %}
+                <button class="btn-outline-secondary" type="submit">
+                  <a class="btn-warning bg-transparent"
+                     href="{% url 'e_delegacje:settlement-details'
+                     pk=item.bt_applications_settlements.get(bt_application_id=item.id).id %}">
+                    Zobacz rozliczenie wniosku nr
+                </a>
+                </button>
+            {% endif %}
                 </td>
         </tr>
-
-
-<!--    <div class="container-fluid">-->
-<!--    <div class="row">-->
-<!--        <div class="col-2">-->
-<!--&lt;!&ndash;            Numer wniosku: {{ item.id }}&ndash;&gt;-->
-<!--        </div>-->
-<!--        <div class="col-2">-->
-<!--          Opis:  {{ item.trip_purpose_text }}-->
-<!--        </div>-->
-<!--        <div class="col-2">-->
-<!--            <button class="btn-outline-secondary" type="submit">-->
-<!--            <a class="btn-warning bg-transparent" href="{% url 'e_delegacje:application-details' pk=item.pk %}">-->
-<!--                Szczegóły-->
-<!--            </a>-->
-<!--            </button>-->
-<!--        </div>-->
-<!--        <div class="col-2">-->
-<!--            <button class="btn-outline-secondary" type="submit">-->
-<!--              <a class="btn-warning bg-transparent" href="{% url 'e_delegacje:settlement-create' pk=item.pk %}">-->
-<!--                Rozlicz wniosek-->
-<!--            </a>-->
-<!--        </button>-->
-<!--        </div>-->
-<!--    </div>-->
-<!--    </div>-->
-
-<!--</div>-->
-
-
 
     {% endfor %}
 </tbody>
