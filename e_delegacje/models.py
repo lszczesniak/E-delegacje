@@ -1,4 +1,3 @@
-from django.contrib.auth.models import User
 from django.db import models
 from django.contrib.auth.models import User
 from e_delegacje.enums import (
@@ -16,21 +15,31 @@ from e_delegacje.enums import (
 class BtRegion(models.Model):
     name = models.CharField(max_length=100)
 
+    def __str__(self):
+        return f'{self.name}'
 
 class BtDivision(models.Model):
     name = models.CharField(max_length=100)
-    manager = models.CharField(max_length=100)
+    manager = models.ForeignKey(User,on_delete=models.PROTECT, related_name="Bt_Divisions")
+
+    def __str__(self):
+        return f'{self.name}'
 
 
 class BtLocation(models.Model):
     name = models.CharField(max_length=100)
     profit_center = models.CharField(max_length=10)
 
+    def __str__(self):
+        return f'{self.name} = {self.profit_center}'
+
 
 class BtCostCenter(models.Model):
     text = models.CharField(max_length=20)
     profit_center_id = models.ForeignKey(BtLocation, on_delete=models.PROTECT, related_name="Bt_CostCenters")
 
+    def __str__(self):
+        return f'{self.text} '
 
 class BtRatesTax(models.Model):
     diet_rates = models.IntegerField()
@@ -48,17 +57,23 @@ class BtSubmissionStatus(models.Model):
 
 class BtDepartment(models.Model):
     name = models.CharField(max_length=100)
-    manager_id = models.CharField(max_length=10)
+    manager_id = models.ForeignKey(User, on_delete=models.PROTECT, related_name="Bt_Departments")
     profit_center = models.ForeignKey(BtLocation, on_delete=models.PROTECT, related_name="Bt_Departments")
     cost_center = models.ForeignKey(BtCostCenter, on_delete=models.PROTECT, related_name="Bt_Departments")
 
+    def __str__(self):
+        return f'{self.name}'
 
-class BtUser(User):
-    # user = models.OneToOneField(User, on_delete=models.CASCADE)
+
+class BtUser(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
     department = models.ForeignKey(BtDepartment, on_delete=models.PROTECT, related_name="bt_Users")
     division = models.ForeignKey(BtDivision, on_delete=models.PROTECT, related_name="bt_Users")
-    employee_level = models.CharField(max_length=100)
+    employee_level = models.CharField(max_length=15, choices=BtEmployeeLevel.choices())
     manager = models.ForeignKey(BtLocation, on_delete=models.PROTECT, related_name="bt_Users")
+
+    def __str__(self):
+        return f'{self.user} = {self.department}'
 
 
 class BtApplication(models.Model):
