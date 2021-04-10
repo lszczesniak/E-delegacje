@@ -1,5 +1,5 @@
 from django.db import models
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, AbstractUser
 from e_delegacje.enums import (
     BtTripCategory,
     BtApplicationStatus,
@@ -11,6 +11,16 @@ from e_delegacje.enums import (
 
 )
 
+class BtUser(AbstractUser):
+    department = models.ForeignKey("BtDepartment", on_delete=models.PROTECT, related_name="bt_Users", null=True)
+#    division = models.ForeignKey("BtDivision", on_delete=models.PROTECT, related_name="bt_Users")
+    employee_level = models.CharField(max_length=15, choices=BtEmployeeLevel.choices(), default=BtEmployeeLevel.lvl7)
+#    manager = models.ForeignKey("BtLocation", on_delete=models.PROTECT, related_name="bt_Users")
+
+    def __str__(self):
+        return f'{self.username}'
+
+
 
 class BtRegion(models.Model):
     name = models.CharField(max_length=100)
@@ -21,7 +31,7 @@ class BtRegion(models.Model):
 
 class BtDivision(models.Model):
     name = models.CharField(max_length=100)
-    manager = models.ForeignKey(User,on_delete=models.PROTECT, related_name="Bt_Divisions")
+    manager = models.ForeignKey(BtUser, on_delete=models.PROTECT, related_name="Bt_Divisions")
 
     def __str__(self):
         return f'{self.name}'
@@ -66,7 +76,7 @@ class BtSubmissionStatus(models.Model):
 
 class BtDepartment(models.Model):
     name = models.CharField(max_length=100)
-    manager_id = models.ForeignKey(User, on_delete=models.PROTECT, related_name="Bt_Departments")
+    manager_id = models.ForeignKey("BtUser", on_delete=models.PROTECT, related_name="Bt_Departments")
     profit_center = models.ForeignKey(BtLocation, on_delete=models.PROTECT, related_name="Bt_Departments")
     cost_center = models.ForeignKey(BtCostCenter, on_delete=models.PROTECT, related_name="Bt_Departments")
 
@@ -74,15 +84,6 @@ class BtDepartment(models.Model):
         return f'{self.name}'
 
 
-class BtUser(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
-    department = models.ForeignKey(BtDepartment, on_delete=models.PROTECT, related_name="bt_Users")
-    division = models.ForeignKey(BtDivision, on_delete=models.PROTECT, related_name="bt_Users")
-    employee_level = models.CharField(max_length=15, choices=BtEmployeeLevel.choices())
-    manager = models.ForeignKey(BtLocation, on_delete=models.PROTECT, related_name="bt_Users")
-
-    def __str__(self):
-        return f'{self.bt_user_id.first_name}'
 
 
 class BtApplication(models.Model):
