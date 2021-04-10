@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% block content %}
+
+    <h2>Wnioski o delegację</h2>
+
+<table class="table table-secondary table-striped table-hover">
+
+<tbody>
+    {% for item in object_list %}
+    <tr>
+        <td>
+        nr.: {{ item.id }}
+            </td>
+                <td>
+       Opis wniosku: {{ item.trip_purpose_text }}
+            </td>
+                <td>
+                   <button class="btn-outline-secondary" type="submit">
+            <a class="btn-warning bg-transparent" href="{% url 'e_delegacje:application-details' pk=item.id %}">
+                Szczegóły
+            </a>
+            </button>
+            </td>
+
+                <td>
+                    <button class="btn-outline-secondary" type="submit">
+              <a class="btn-warning bg-transparent"
+                 href="{% url 'e_delegacje:settlement-create' pk=item.id %}">
+                Rozlicz wniosek
+            </a>
+        </button>
+            </td>
+            <td>
+            {% if item.bt_applications_settlements.exists %}
+
+                <button class="btn-outline-secondary" type="submit">
+                  <a class="btn-warning bg-transparent"
+                     href="{% url 'e_delegacje:settlement-details'
+                     pk=item.bt_applications_settlements.get(bt_application_id=item.id).id %}">
+                    Zobacz rozliczenie wniosku nr
+                </a>
+                </button>
+            {% endif %}
+                </td>
+        </tr>
+
+    {% endfor %}
+</tbody>
+</table>
+
+{% endblock %}
+

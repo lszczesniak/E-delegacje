@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+{% block content %}
+
+  <h2>Szczegóły wniosku o delegację</h2>
+<div class="row">
+  <div class="col-8">
+      <br>
+      <table class="table table-secondary table-striped">
+                <tr>
+              <td>Numer Wniosku</td>
+              <td>{{ object.id }}</td>
+          </tr>
+                <tr>
+              <td>Rodzaj delegacji</td>
+              <td>{{ object.trip_category }}</td>
+          </tr>
+                <tr>
+              <td>Pracownik</td>
+              <td>{{ object.target_user }}</td>
+          </tr>
+                <tr>
+              <td>Status Wniosku</td>
+              <td>{{ object.application_status }}</td>
+          </tr>
+                 <tr>
+              <td>Data wniosku</td>
+              <td>{{ object.application_date }}</td>
+          </tr>
+               <tr>
+              <td>Cel podróży</td>
+              <td>{{ object.trip_purpose_text }}</td>
+          </tr>
+                <tr>
+              <td>Cost center</td>
+              <td>{{ object.CostCenter }}</td>
+          </tr>
+          </tr>
+                <tr>
+              <td>Rodzaj transportu</td>
+              <td>{{ object.transport_type }}</td>
+          </tr>
+                    </tr>
+                <tr>
+              <td>Trasa podrózy</td>
+              <td>{{ object.travel_route }}</td>
+          </tr>
+                    </tr>
+                <tr>
+              <td>Planowana data wyjazdu</td>
+              <td>{{ object.planned_start_date }}</td>
+          </tr>
+                 <tr>
+              <td>Planowana data powrotu</td>
+              <td>{{ object.planned_end_date }}</td>
+          </tr>
+                <tr>
+              <td>Zaliczka</td>
+              <td>{{ object.advance_payment }} zł.</td>
+          </tr>
+
+        </table>
+    </div>
+  </div>
+
+<div class="row">
+    <div class="col-2">
+        <button class="btn-danger" type="submit">
+              <a class="btn-danger bg-transparent"
+                 href="{% url 'e_delegacje:application-delete' pk=object.pk %}">
+                  Usuń wniosek
+              </a>
+        </button>
+    </div>
+</div>
+
+{% endblock %}

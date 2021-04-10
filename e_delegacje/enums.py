@@ -7,11 +7,14 @@ class BtTripCategory(Enum):
 
     @classmethod
     def choices(cls):
-        print(tuple((i.name, i.value) for i in cls))
         return tuple((i.name, i.value) for i in cls)
 
 
 class BtApplicationStatus(Enum):
+
+    def __str__(self):
+        return str(self.value)
+
     saved = 'Zapisany'
     in_progress = 'W akceptacji'
     approved = 'Zaakcdptowany'
@@ -20,7 +23,7 @@ class BtApplicationStatus(Enum):
 
     @classmethod
     def choices(cls):
-        print(tuple((i.name, i.value) for i in cls))
+        # print(tuple((i.name, i.value) for i in cls))
         return tuple((i.name, i.value) for i in cls)
 
 
@@ -33,7 +36,7 @@ class BtTransportType(Enum):
 
     @classmethod
     def choices(cls):
-        print(tuple((i.name, i.value) for i in cls))
+        # print(tuple((i.name, i.value) for i in cls))
         return tuple((i.name, i.value) for i in cls)
 
 
@@ -48,7 +51,7 @@ class BtEmployeeLevel(Enum):
 
     @classmethod
     def choices(cls):
-        print(tuple((i.name, i.value) for i in cls))
+        # print(tuple((i.name, i.value) for i in cls))
         return tuple((i.name, i.value) for i in cls)
 
 
@@ -60,7 +63,7 @@ class BtCostCategory(Enum):
 
     @classmethod
     def choices(cls):
-        print(tuple((i.name, i.value) for i in cls))
+        # print(tuple((i.name, i.value) for i in cls))
         return tuple((i.name, i.value) for i in cls)
 
 
@@ -72,7 +75,7 @@ class BtVatRates(Enum):
 
     @classmethod
     def choices(cls):
-        print(tuple((i.name, i.value) for i in cls))
+        # print(tuple((i.name, i.value) for i in cls))
         return tuple((i.name, i.value) for i in cls)
 
 
@@ -84,7 +87,7 @@ class BtMileageVehicleTypes(Enum):
 
     @classmethod
     def choices(cls):
-        print(tuple((i.name, i.value) for i in cls))
+        # print(tuple((i.name, i.value) for i in cls))
         return tuple((i.name, i.value) for i in cls)
 
 

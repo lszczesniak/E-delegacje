@@ -18,6 +18,7 @@ venv/
 .idea/Delegacje.iml
 .idea/misc.xml
 
+
 *.log
 *.pot
 *.pyc

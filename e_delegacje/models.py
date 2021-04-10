@@ -18,6 +18,7 @@ class BtRegion(models.Model):
     def __str__(self):
         return f'{self.name}'
 
+
 class BtDivision(models.Model):
     name = models.CharField(max_length=100)
     manager = models.ForeignKey(User,on_delete=models.PROTECT, related_name="Bt_Divisions")
@@ -31,15 +32,17 @@ class BtLocation(models.Model):
     profit_center = models.CharField(max_length=10)
 
     def __str__(self):
-        return f'{self.name} = {self.profit_center}'
+        return f'{self.name} - {self.profit_center}'
 
 
 class BtCostCenter(models.Model):
     text = models.CharField(max_length=20)
+    cost_center_number = models.CharField(max_length=10)
     profit_center_id = models.ForeignKey(BtLocation, on_delete=models.PROTECT, related_name="Bt_CostCenters")
 
     def __str__(self):
-        return f'{self.text} '
+        return f'{self.text} - {self.cost_center_number}'
+
 
 class BtRatesTax(models.Model):
     diet_rates = models.IntegerField()
@@ -50,9 +53,15 @@ class BtMileageRates(models.Model):
     vehicle_type = models.CharField(max_length=20, choices=BtMileageVehicleTypes.choices())
     rate = models.DecimalField(decimal_places=4, max_digits=6)
 
+    def __str__(self):
+        return f'{self.vehicle_type} - rate: {self.rate}'
+
 
 class BtSubmissionStatus(models.Model):
     submission_text = models.CharField(max_length=20)
+
+    def __str__(self):
+        return f'{self.submission_text}'
 
 
 class BtDepartment(models.Model):
@@ -73,7 +82,7 @@ class BtUser(models.Model):
     manager = models.ForeignKey(BtLocation, on_delete=models.PROTECT, related_name="bt_Users")
 
     def __str__(self):
-        return f'{self.user} = {self.department}'
+        return f'{self.bt_user_id.first_name}'
 
 
 class BtApplication(models.Model):
@@ -91,13 +100,24 @@ class BtApplication(models.Model):
     planned_end_date = models.DateField()
     advance_payment = models.DecimalField(decimal_places=2, max_digits=8, null=True, blank=True)
 
+    def __str__(self):
+        return f'{self.trip_purpose_text}'
+
 
 class BtApplicationSettlement(models.Model):
+    # bt_application_id = models.OneToOneField(
+    #     BtApplication,
+    #     on_delete=models.CASCADE,
+    #     related_name='bt_applications_settlements'
+    # )
     bt_application_id = models.ForeignKey(
         BtApplication,
         on_delete=models.CASCADE,
         related_name='bt_applications_settlements'
     )
+
+    def __str__(self):
+        return f'{self.bt_application_id}'
 
 
 class BtApplicationSettlementInfo(models.Model):
@@ -106,17 +126,20 @@ class BtApplicationSettlementInfo(models.Model):
         on_delete=models.CASCADE,
         related_name='bt_application'
     )
-    bt_completed = models.BooleanField()
+    bt_completed = models.CharField(max_length=25, choices=[('tak', 'tak'), ('nie', 'nie')])
     bt_start_date = models.DateField()
     bt_start_time = models.TimeField()
     bt_end_date = models.DateField()
     bt_end_time = models.TimeField()
-    # gdzie referowac do którego modelu?
+    # gdzie referowac do którego modelu? czy w ogóle powinienem to wstawiac ponownie do drugiego modelu
     advance_payment = models.OneToOneField(
-        BtApplicationSettlement,
+        BtApplication,
         on_delete=models.CASCADE,
         related_name='bt_application_settlement_info'
     )
+
+    def __str__(self):
+        return f'Informacje do rozliczenia wniosku {self.bt_application_settlement}'
 
 
 class BtApplicationSettlementCost(models.Model):
@@ -134,6 +157,9 @@ class BtApplicationSettlementCost(models.Model):
     )
     bt_cost_document_date = models.DateField()
     bt_cost_VAT_rate = models.CharField(max_length=10, choices=BtVatRates.choices())
+
+    def __str__(self):
+        return f'{self.bt_application_id}'
 
 
 class BtApplicationSettlementMileage(models.Model):
