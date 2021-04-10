@@ -1,9 +1,5 @@
-from django.contrib.auth.models import User
 from django.db import models
 from django.contrib.auth.models import User
-from django.db.models.signals import post_save
-from django.dispatch import receiver
-
 from e_delegacje.enums import (
     BtTripCategory,
     BtApplicationStatus,
@@ -23,12 +19,14 @@ class BtRegion(models.Model):
         return f'{self.name}'
 
 
+
 class BtDivision(models.Model):
     name = models.CharField(max_length=100)
-    manager = models.ForeignKey(User, on_delete=models.PROTECT, related_name='Bt_Divisions')
+    manager = models.ForeignKey(User,on_delete=models.PROTECT, related_name="Bt_Divisions")
 
     def __str__(self):
         return f'{self.name}'
+
 
 
 class BtLocation(models.Model):
@@ -70,7 +68,7 @@ class BtSubmissionStatus(models.Model):
 
 class BtDepartment(models.Model):
     name = models.CharField(max_length=100)
-    manager_id = models.ForeignKey(User, on_delete=models.PROTECT, related_name='Bt_Departments')
+    manager_id = models.ForeignKey(User, on_delete=models.PROTECT, related_name="Bt_Departments")
     profit_center = models.ForeignKey(BtLocation, on_delete=models.PROTECT, related_name="Bt_Departments")
     cost_center = models.ForeignKey(BtCostCenter, on_delete=models.PROTECT, related_name="Bt_Departments")
 
@@ -79,11 +77,11 @@ class BtDepartment(models.Model):
 
 
 class BtUser(models.Model):
-    bt_user_id = models.OneToOneField(User, on_delete=models.CASCADE)
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
     department = models.ForeignKey(BtDepartment, on_delete=models.PROTECT, related_name="bt_Users")
     division = models.ForeignKey(BtDivision, on_delete=models.PROTECT, related_name="bt_Users")
     employee_level = models.CharField(max_length=15, choices=BtEmployeeLevel.choices())
-    manager = models.ForeignKey(User, on_delete=models.PROTECT, related_name="bt_Users")
+    manager = models.ForeignKey(BtLocation, on_delete=models.PROTECT, related_name="bt_Users")
 
     def __str__(self):
         return f'{self.bt_user_id.first_name}'
@@ -94,7 +92,7 @@ class BtApplication(models.Model):
     target_user = models.ForeignKey(BtUser, on_delete=models.PROTECT, related_name='bt_applications')
     application_author = models.ForeignKey(BtUser, on_delete=models.PROTECT, related_name='bt_applications_author')
     application_status = models.CharField(max_length=30, choices=BtApplicationStatus.choices())
-    employee_level = models.ForeignKey(BtUser, on_delete=models.PROTECT, related_name='bt_applications_emp_lvl')
+    employee_level = models.CharField(max_length=30, choices=BtEmployeeLevel.choices())
     application_date = models.DateField(auto_now_add=True)
     trip_purpose_text = models.CharField(max_length=250)
     CostCenter = models.ForeignKey(BtCostCenter, on_delete=models.PROTECT, related_name='bt_applications')
@@ -125,7 +123,6 @@ class BtApplicationSettlement(models.Model):
 
 
 class BtApplicationSettlementInfo(models.Model):
-
     bt_application_settlement = models.OneToOneField(
         BtApplicationSettlement,
         on_delete=models.CASCADE,

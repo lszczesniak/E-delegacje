@@ -16,7 +16,6 @@ from e_delegacje.models import (
     BtSubmissionStatus,
     BtRatesTax
 )
-
 admin.site.register(BtUser)
 admin.site.register(BtRegion)
 admin.site.register(BtLocation)
