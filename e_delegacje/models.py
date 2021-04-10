@@ -19,14 +19,12 @@ class BtRegion(models.Model):
         return f'{self.name}'
 
 
-
 class BtDivision(models.Model):
     name = models.CharField(max_length=100)
     manager = models.ForeignKey(User,on_delete=models.PROTECT, related_name="Bt_Divisions")
 
     def __str__(self):
         return f'{self.name}'
-
 
 
 class BtLocation(models.Model):

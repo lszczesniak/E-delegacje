@@ -113,7 +113,7 @@ class BtApplicationSettlementInfoCreateFormView(FormView):
     template_name = "settlement_subform_info.html"
     form_class = BtApplicationSettlementInfoForm
     settlement_id = BtApplicationSettlement.objects.last()
-    success_url = reverse_lazy("e_delegacje:settlement-details", args=[settlement_id.id])
+    # success_url = reverse_lazy("e_delegacje:settlement-details", args=[settlement_id.id])
 
     def form_valid(self, form):
         result = super().form_valid(form)
