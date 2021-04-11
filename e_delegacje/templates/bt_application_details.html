@@ -12,7 +12,7 @@
           </tr>
                 <tr>
               <td>Rodzaj delegacji</td>
-              <td>{{ object.trip_category }}</td>
+              <td>{{ object.get_trip_category_display }}</td>
           </tr>
                 <tr>
               <td>Pracownik</td>
@@ -20,7 +20,7 @@
           </tr>
                 <tr>
               <td>Status Wniosku</td>
-              <td>{{ object.application_status }}</td>
+              <td>{{ object.get_application_status_display }}</td>
           </tr>
                  <tr>
               <td>Data wniosku</td>
@@ -37,7 +37,7 @@
           </tr>
                 <tr>
               <td>Rodzaj transportu</td>
-              <td>{{ object.transport_type }}</td>
+              <td>{{ object.get_transport_type_display }}</td>
           </tr>
                     </tr>
                 <tr>
