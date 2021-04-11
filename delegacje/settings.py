@@ -38,6 +38,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'e_delegacje',
+    'setup',
+
 ]
 
 MIDDLEWARE = [
@@ -133,4 +135,4 @@ EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 
-AUTH_USER_MODEL="e_delegacje.BtUser"
+AUTH_USER_MODEL="setup.BtUser"
