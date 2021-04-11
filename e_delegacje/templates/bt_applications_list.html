@@ -31,12 +31,11 @@
         </button>
             </td>
             <td>
-            {% if item.bt_applications_settlements.exists %}
+            {% if item.bt_applications_settlements %}
 
                 <button class="btn-outline-secondary" type="submit">
                   <a class="btn-warning bg-transparent"
-                     href="{% url 'e_delegacje:settlement-details'
-                     pk=item.bt_applications_settlements.get(bt_application_id=item.id).id %}">
+                     href="{% url 'e_delegacje:settlement-details' pk=item.bt_applications_settlements.pk %}">
                     Zobacz rozliczenie wniosku nr
                 </a>
                 </button>

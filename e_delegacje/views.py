@@ -57,8 +57,10 @@ class BtApplicationCreateView(View):
                 employee_level=employee_level,
             )
             # form.send_mail(user_mail=request.user.email)
+
             return HttpResponseRedirect(reverse("e_delegacje:applications-list"))
         else:
+            print(form.errors)
             return HttpResponseRedirect(reverse("e_delegacje:index"))
 
 

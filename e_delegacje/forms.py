@@ -25,7 +25,7 @@ class DateInputWidget(forms.DateInput):
 
 
 class BtApplicationForm(forms.Form):
-    trip_category = forms.TypedChoiceField(choices=BtTripCategory.choices(), label="Rodzaj delegacji")
+    trip_category = forms.TypedChoiceField(choices=BtTripCategory.choices, label="Rodzaj delegacji")
     target_user = forms.ModelChoiceField(queryset=BtUser.objects.all(), label="Delegowany")
     application_author = forms.ModelChoiceField(queryset=BtUser.objects.all())
     trip_purpose_text = forms.CharField(
@@ -33,19 +33,15 @@ class BtApplicationForm(forms.Form):
         widget=forms.Textarea,
         label="Cel podrózy")
     CostCenter = forms.ModelChoiceField(queryset=BtCostCenter.objects.all(), label="Cost Center")
-    transport_type = forms.TypedChoiceField(choices=BtTransportType.choices(), label="Rodzaj transportu")
+    transport_type = forms.TypedChoiceField(choices=BtTransportType.choices, label="Rodzaj transportu")
     travel_route = forms.CharField(max_length=120, label="Trasa podróży")
     planned_start_date = forms.DateField(
-        input_formats=['%d.%m.%Y', '%d-%m-%Y', '%d/%m/%Y'],
         label="Data wyjazdu",
-        # widget=forms.SelectDateWidget
-        # widget=DateInputWidget
+        widget=DateInputWidget
     )
     planned_end_date = forms.DateField(
-        input_formats=['%d.%m.%Y', '%d-%m-%Y', '%d/%m/%Y'],
         label="Data powrotu",
-        # widget=forms.SelectDateWidget
-        # widget=DateInputWidget
+        widget=DateInputWidget
     )
     advance_payment = forms.DecimalField(decimal_places=2, max_digits=6, label="Zaliczka")
 
@@ -109,7 +105,7 @@ class BtApplicationSettlementForm(forms.Form):
 
 
 class BtApplicationSettlementInfoForm(forms.Form):
-    bt_completed = forms.BooleanField(label="Czy delegacha się odbyła?")
+    bt_completed = forms.TypedChoiceField(label="Czy delegacha się odbyła?", choices=[('tak', 'tak'), ('nie', 'nie')])
     bt_start_date = forms.DateField(label="Data wyjazdu")
     bt_start_time = forms.TimeField(label="Godzina wyjazdu")
     bt_end_date = forms.DateField(label="Data powrotu")
