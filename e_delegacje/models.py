@@ -16,7 +16,7 @@ class BtUser(AbstractUser):
     department = models.ForeignKey("BtDepartment", on_delete=models.PROTECT, related_name="bt_Users", null=True)
 #    division = models.ForeignKey("BtDivision", on_delete=models.PROTECT, related_name="bt_Users")
     employee_level = models.CharField(max_length=15, choices=BtEmployeeLevel.choices, default=BtEmployeeLevel.lvl7)
-    manager = models.ForeignKey("BtUser", on_delete=models.PROTECT, related_name="bt_Users")
+    manager = models.ForeignKey("BtUser", on_delete=models.PROTECT, related_name="bt_Users", null=True)
 
     def __str__(self):
         return f'{self.username}'
