@@ -9,7 +9,6 @@ from e_delegacje.views import (
     BtApplicationSettlementCreateView,
     BtApplicationSettlementsListView,
     BtApplicationSettlementDetailView,
-    BtApplicationSettlementInfoCreateView,
     BtApplicationSettlementMileageCreateView,
     BtApplicationSettlementCostCreateView,
     BtApplicationSettlementFeedingCreateView,

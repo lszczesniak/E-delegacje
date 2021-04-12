@@ -24,6 +24,10 @@ class DateInputWidget(forms.DateInput):
     input_type = 'date'
 
 
+class TimeInputWidget(forms.TimeInput):
+    input_type = 'time'
+
+
 class BtApplicationForm(forms.Form):
     trip_category = forms.TypedChoiceField(choices=BtTripCategory.choices, label="Rodzaj delegacji")
     target_user = forms.ModelChoiceField(queryset=BtUser.objects.all(), label="Delegowany")
@@ -105,10 +109,14 @@ class BtApplicationSettlementForm(forms.Form):
 
 
 class BtApplicationSettlementInfoForm(forms.Form):
-    bt_completed = forms.TypedChoiceField(label="Czy delegacha się odbyła?", choices=[('tak', 'tak'), ('nie', 'nie')])
-    bt_start_date = forms.DateField(label="Data wyjazdu")
-    bt_start_time = forms.TimeField(label="Godzina wyjazdu")
-    bt_end_date = forms.DateField(label="Data powrotu")
-    bt_end_time = forms.TimeField(label="Godzina powrotu")
+    bt_completed = forms.TypedChoiceField(
+        label="Czy delegacja się odbyła?",
+        choices=[("", ""), ('tak', 'tak'), ('nie', 'nie')],
+        )
+    bt_start_date = forms.DateField(label="Data wyjazdu",widget=DateInputWidget)
+    bt_start_time = forms.TimeField(label="Godzina wyjazdu", widget=TimeInputWidget)
+    bt_end_date = forms.DateField(label="Data powrotu", widget=DateInputWidget)
+    bt_end_time = forms.TimeField(label="Godzina powrotu", widget=TimeInputWidget)
+
 
 

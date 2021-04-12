@@ -7,7 +7,7 @@
           <div class="col-11">
               <table class="table table-secondary table-striped">
                   <tr class="table table-primary table-striped text-uppercase">
-                      <td class="fw-bold">Numer Wniosku</td>
+                      <td class="fw-bold">Numer Wniosku o delegację</td>
                       <td colspan="4">{{ object.bt_application_id.id }}</td>
 
                   </tr>
@@ -64,8 +64,33 @@
 
               </table>
 
-            </div>
+{#tu będzie jakiś if który musi sprawdzić czy obiekt settlement info istnieje i jak tak to go pokaże#}
 
+
+            </div>
+    <div class="row">
+    {% if settlement_info %}
+        {% for info in settlement_info %}
+        <p>{{ info.bt_application_settlement }}</p>
+            <p>{{ info.bt_completed }}</p>
+            <p>{{ info.bt_start_date }}</p>
+            <p>{{ info.bt_start_time }}</p>
+            <p>{{ info.bt_end_date }}</p>
+            <p>{{ info.bt_end_time }}</p>
+            <p>{{ info.advance_payment }}</p>
+
+        {% endfor %}
+    {% else %}
+        <div class="col-2">
+            <button class="btn-warning" type="submit">
+                  <a class="btn-danger bg-transparent"
+                     href="{% url 'e_delegacje:settlement-info-create' pk=object.id %}">
+                      dodaj info
+                  </a>
+            </button>
+        </div>
+    {% endif %}
+</div>
 
 
         </div>

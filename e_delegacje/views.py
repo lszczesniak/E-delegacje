@@ -88,14 +88,10 @@ class BtApplicationSettlementView(DetailView):
 
 class BtApplicationSettlementCreateView(View):
     def get(self, request, pk):
-        # if BtApplicationSettlement.object.get(bt_application_id=pk).exists():
-        #     raise Exception("Rozliczenie już istnieje")
-        # else:
         settlement = BtApplicationSettlement.objects.create(bt_application_id=BtApplication.objects.get(id=pk))
         settlement.save()
-        settlement_id = BtApplicationSettlement.objects.last()
 
-        return HttpResponseRedirect(reverse("e_delegacje:settlement-details", args=[settlement_id.id]))
+        return HttpResponseRedirect(reverse("e_delegacje:settlement-details", args=[settlement.id]))
 
 
 class BtApplicationSettlementsListView(ListView):
@@ -107,40 +103,47 @@ class BtApplicationSettlementDetailView(DetailView):
 
     model = BtApplicationSettlement
     template_name = "bt_settlement_details.html"
-    extra_context = {'info_form': BtApplicationSettlementInfoForm}
+    extra_context = {'settlement_info': BtApplicationSettlementInfo.objects.all()}
 
 
-class BtApplicationSettlementInfoCreateFormView(FormView):
+class BtApplicationSettlementInfoCreateFormView(View):
 
-    template_name = "settlement_subform_info.html"
-    form_class = BtApplicationSettlementInfoForm
-    settlement_id = BtApplicationSettlement.objects.last()
-    # success_url = reverse_lazy("e_delegacje:settlement-details", args=[settlement_id.id])
+    def get(self, request, pk):
+        print(pk)
+        form = BtApplicationSettlementInfoForm()
+        return render(
+            request,
+            template_name="settlement_subform_info.html",
+            context={"form": form})
 
-    def form_valid(self, form):
-        result = super().form_valid(form)
-        bt_application_settlement = self.settlement_id
-        bt_completed = form.cleaned_data["bt_completed"]
-        bt_start_date = form.cleaned_data["bt_start_date"]
-        bt_start_time = form.cleaned_data["bt_start_time"]
-        bt_end_date = form.cleaned_data["bt_end_date"]
-        bt_end_time = form.cleaned_data["bt_end_time"]
+    def post(self, request, pk, *args, **kwargs):
+        form = BtApplicationSettlementInfoForm(request.POST)
+        print(pk)
+        if form.is_valid():
+            bt_application_settlement = BtApplicationSettlement.objects.get(id=pk)
+            bt_completed = form.cleaned_data["bt_completed"]
+            bt_start_date = form.cleaned_data["bt_start_date"]
+            bt_start_time = form.cleaned_data["bt_start_time"]
+            bt_end_date = form.cleaned_data["bt_end_date"]
+            bt_end_time = form.cleaned_data["bt_end_time"]
+            advance_payment = BtApplication.objects.get(
+                id=BtApplicationSettlement.objects.get(id=pk).bt_application_id.id
+            )
+            BtApplicationSettlementInfo.objects.create(
+                bt_application_settlement=bt_application_settlement,
+                bt_completed=bt_completed,
+                bt_start_date=bt_start_date,
+                bt_start_time=bt_start_time,
+                bt_end_date=bt_end_date,
+                bt_end_time=bt_end_time,
+                advance_payment=advance_payment
+            )
 
-        BtApplicationSettlementInfo.objects.create(
-            bt_application_settlement=bt_application_settlement,
-            bt_completed=bt_completed,
-            bt_start_date=bt_start_date,
-            bt_start_time=bt_start_time,
-            bt_end_date=bt_end_date,
-            bt_end_time=bt_end_time,
-        )
-        return result
+            return HttpResponseRedirect(reverse("e_delegacje:settlement-details", args=[pk]))
 
-
-class BtApplicationSettlementInfoCreateView(CreateView):
-    template_name = "settlement_subform_info.html"
-    model = BtApplicationSettlementInfo
-    fields = "__all__"
+        else:
+            print(form.errors)
+            return HttpResponseRedirect(reverse("e_delegacje:index"))
 
 
 class BtApplicationSettlementCostCreateView(CreateView):

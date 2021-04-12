@@ -109,21 +109,16 @@ class BtApplicationSettlement(models.Model):
         on_delete=models.CASCADE,
         related_name='bt_applications_settlements'
     )
-    # bt_application_id = models.ForeignKey(
-    #     BtApplication,
-    #     on_delete=models.CASCADE,
-    #     related_name='bt_applications_settlements'
-    # )
 
     def __str__(self):
-        return f'{self.bt_application_id}'
+        return f'Settlement {self.id} to application {self.bt_application_id.id}'
 
 
 class BtApplicationSettlementInfo(models.Model):
     bt_application_settlement = models.OneToOneField(
         BtApplicationSettlement,
         on_delete=models.CASCADE,
-        related_name='bt_application'
+        related_name='bt_application_info'
     )
     bt_completed = models.CharField(max_length=25, choices=[('tak', 'tak'), ('nie', 'nie')])
     bt_start_date = models.DateField()
