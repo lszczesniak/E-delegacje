@@ -76,6 +76,14 @@ class BtCurrency(models.Model):
         return f'{self.code}'
 
 
+class BtCurrency(models.Model):
+    code = models.CharField(max_length=3)
+    text = models.CharField(max_length=10)
+
+    def __str__(self):
+        return f'{self.code}'
+
+
 class BtSubmissionStatus(models.Model):
     submission_text = models.CharField(max_length=20)
 

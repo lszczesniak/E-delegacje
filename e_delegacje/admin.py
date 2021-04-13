@@ -9,7 +9,9 @@ from e_delegacje.models import (
     BtApplicationSettlementMileage,
     BtSubmissionStatus,
     BtRatesTax,
-    BtCurrency
+    BtCurrency,
+    BtMileageRates,
+
 
 )
 
