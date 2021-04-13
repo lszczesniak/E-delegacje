@@ -1,5 +1,5 @@
 from django.db import models
-from setup.models import BtUser, BtCostCenter, BtRatesTax,BtMileageRates
+from setup.models import BtUser, BtCostCenter, BtRatesTax, BtMileageRates, BtCurrency
 from django.contrib.auth.models import User, AbstractUser
 from e_delegacje.enums import (
     BtTripCategory,
@@ -67,13 +67,6 @@ from e_delegacje.enums import (
 #     def __str__(self):
 #         return f'{self.vehicle_type} - rate: {self.rate}'
 
-
-class BtCurrency(models.Model):
-    code = models.CharField(max_length=3)
-    text = models.CharField(max_length=10)
-
-    def __str__(self):
-        return f'{self.code}'
 
 
 class BtCurrency(models.Model):
