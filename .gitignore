@@ -18,7 +18,7 @@ venv/
 .idea/Delegacje.iml
 .idea/misc.xml
 
-
+db
 *.log
 *.pot
 *.pyc

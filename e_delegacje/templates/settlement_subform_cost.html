@@ -1,0 +1,115 @@
+{% extends "base.html" %}
+{% block content %}
+
+  <h2>Rozliczenie wniosku o delegację - koszty</h2>
+
+<div class="container-fluid pt-3">
+    <div class="row align-content-between">
+        <div class="col-5 align-items-start">
+            <form class="form-control bg-light pt-3 pb-3" method="post">
+            {% csrf_token %}
+            <div class="mb-3">
+                    <div class="col-auto">
+                        <input class="form-control"
+                               name="bt_cost_description"
+                               maxlength="120"
+                               id="id_bt_cost_description"
+                               placeholder={{ form.bt_cost_description.label }}
+                        >
+                    </div>
+            </div>
+
+                    <div class="mb-3 align-content-stretch">
+
+                       <select name="bt_cost_category" id="bt_cost_category" class="form-select">
+                           <option selected>{{ form.bt_cost_category.label }}</option>
+                           {% for cost_category in form.bt_cost_category %}
+                           <option value={{ cost_category  }}></option>
+                           {% endfor %}
+                       </select>
+                    </div>
+
+
+                    <div class="row mb-3">
+                        <div class=" col-7">
+                            <label >
+                                 {{ form.bt_cost_document_date.label }}
+                            </label></div>
+                        <div class="col-auto">
+
+                        {{ form.bt_cost_document_date }}</div>
+
+                        </div>
+
+                    <div class="mb-3">
+                        <div class="input-group mb-3">
+                            <div class="form-control">{{ form.bt_cost_VAT_rate.label }}</div>
+{#                            <div class="form-control">{{ form.bt_cost_VAT_rate }}</div>#}
+{#                        </div>#}
+                        <select name="bt_cost_VAT_rate" id="bt_cost_VAT_rate" class="form-select">
+                            <option selected>Wybierz</option>
+
+                            {% for VAT_rate in form.bt_cost_VAT_rate %}
+                            <option value={{ VAT_rate  }}></option>
+                           {% endfor %}
+                        </select>
+
+                    </div>
+
+                    <div class="input-group mb-3 ">
+                        <input type="number"
+                               class="form-control"
+                               name="bt_cost_amount"
+                               step="0.01"
+                               required
+                               id="id_bt_cost_amount"
+                        >
+                    <select name="bt_cost_currency" id="bt_cost_currency" class="form-select">
+                            <option selected>Wybierz</option>
+                    {% for currency in form.bt_cost_currency %}
+                    <option value={{ currency  }}></option>
+                    {% endfor %}
+                    </select>
+
+
+
+
+                    </div>
+            <div class="col-3 offset-md-10">
+                <input type="submit" value="Zapisz">
+            </div>
+
+
+        </form>
+    </div>
+<div class="col-2"></div>
+            <div class="col-5 align-items-start">
+                <table class="table table-secondary table-striped">
+                {% for cost in cost_list %}
+                    <tr>
+                    <td>{{ cost.bt_cost_category }}</td>
+                    </tr>
+
+                {% endfor %}
+                </table>
+        </div>
+    </div>
+</div>
+
+    {% if form.errors %}
+    {% for field in form %}
+        {% for error in field.errors %}
+            <div class="alert alert-danger">
+                <strong>{{ error|escape }}</strong>
+            </div>
+        {% endfor %}
+    {% endfor %}
+    {% for error in form.non_field_errors %}
+        <div class="alert alert-danger">
+            <strong>{{ error|escape }}</strong>
+        </div>
+    {% endfor %}
+{% endif %}
+
+  {% endblock %}
+
