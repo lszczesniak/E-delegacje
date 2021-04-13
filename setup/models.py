@@ -70,3 +70,12 @@ class BtDepartment(models.Model):
     def __str__(self):
         return f'{self.name}'
 
+
+class BtCurrency(models.Model):
+    code = models.CharField(max_length=3)
+    text = models.CharField(max_length=10)
+
+    def __str__(self):
+        return f'{self.code}'
+
+
