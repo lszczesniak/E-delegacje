@@ -1,7 +1,7 @@
 from django.contrib.auth.models import User
 from django.contrib.admin.widgets import AdminDateWidget
 
-from .models import BtUser, BtCostCenter, BtApplication
+from .models import BtUser, BtCostCenter, BtApplication, BtRatesTax, BtCurrency
 from django.db import models
 from django.core.mail import EmailMultiAlternatives
 from django import forms
@@ -22,6 +22,10 @@ from e_delegacje.enums import (
 
 class DateInputWidget(forms.DateInput):
     input_type = 'date'
+
+
+class TimeInputWidget(forms.TimeInput):
+    input_type = 'time'
 
 
 class BtApplicationForm(forms.Form):
@@ -105,10 +109,21 @@ class BtApplicationSettlementForm(forms.Form):
 
 
 class BtApplicationSettlementInfoForm(forms.Form):
-    bt_completed = forms.TypedChoiceField(label="Czy delegacha się odbyła?", choices=[('tak', 'tak'), ('nie', 'nie')])
-    bt_start_date = forms.DateField(label="Data wyjazdu")
-    bt_start_time = forms.TimeField(label="Godzina wyjazdu")
-    bt_end_date = forms.DateField(label="Data powrotu")
-    bt_end_time = forms.TimeField(label="Godzina powrotu")
+    bt_completed = forms.TypedChoiceField(
+        label="Czy delegacja się odbyła?",
+        choices=[("", ""), ('tak', 'tak'), ('nie', 'nie')],
+        )
+    bt_start_date = forms.DateField(label="Data wyjazdu",widget=DateInputWidget)
+    bt_start_time = forms.TimeField(label="Godzina wyjazdu", widget=TimeInputWidget)
+    bt_end_date = forms.DateField(label="Data powrotu", widget=DateInputWidget)
+    bt_end_time = forms.TimeField(label="Godzina powrotu", widget=TimeInputWidget)
 
+
+class BtApplicationSettlementCostForm(forms.Form):
+    bt_cost_category = forms.TypedChoiceField(choices=BtCostCategory.choices, label="Kategoria kosztu", initial="")
+    bt_cost_description = forms.CharField(max_length=120, label="Opis")
+    bt_cost_amount = forms.DecimalField(decimal_places=2, max_digits=8, label="Kwota" )
+    bt_cost_currency = forms.ModelChoiceField(queryset=BtCurrency .objects.all(), label="Waluta", initial='')
+    bt_cost_document_date = forms.DateField(label="Data dokumentu", widget=DateInputWidget)
+    bt_cost_VAT_rate = forms.TypedChoiceField(choices=BtVatRates.choices, label="Stawka vat")
 

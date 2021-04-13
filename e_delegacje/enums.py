@@ -34,10 +34,10 @@ class BtEmployeeLevel(models.TextChoices):
 
 
 class BtCostCategory(models.TextChoices):
-    accommodation = 'accommodation', 'nocleg'
-    transport = 'transport', 'dojazd'
-    luggage = 'luggage', 'bagaż'
-    other = 'other', 'inne'
+    accommodation = 'nocleg', 'nocleg'
+    transport = 'dojazd', 'dojazd'
+    luggage = 'bagaż', 'bagaż'
+    other = 'inne', 'inne'
 
 
 class BtVatRates(models.TextChoices):

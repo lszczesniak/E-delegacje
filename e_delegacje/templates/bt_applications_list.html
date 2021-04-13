@@ -23,20 +23,24 @@
             </td>
 
                 <td>
+                    {% if not item.bt_applications_settlements %}
                     <button class="btn-outline-secondary" type="submit">
               <a class="btn-warning bg-transparent"
                  href="{% url 'e_delegacje:settlement-create' pk=item.id %}">
+
                 Rozlicz wniosek
             </a>
         </button>
+                    {% endif %}
             </td>
+
             <td>
             {% if item.bt_applications_settlements %}
 
                 <button class="btn-outline-secondary" type="submit">
                   <a class="btn-warning bg-transparent"
                      href="{% url 'e_delegacje:settlement-details' pk=item.bt_applications_settlements.pk %}">
-                    Zobacz rozliczenie wniosku nr
+                    Zobacz rozliczenie wniosku
                 </a>
                 </button>
             {% endif %}

@@ -7,7 +7,7 @@
           <div class="col-11">
               <table class="table table-secondary table-striped">
                   <tr class="table table-primary table-striped text-uppercase">
-                      <td class="fw-bold">Numer Wniosku</td>
+                      <td class="fw-bold">Numer Wniosku o delegację</td>
                       <td colspan="4">{{ object.bt_application_id.id }}</td>
 
                   </tr>
@@ -56,6 +56,7 @@
                             <td>{{ object.bt_application_id.planned_start_date }}</td>
                             <td>{{ object.bt_application_id.planned_end_date }}</td>
                             <td>{{ object.bt_application_id.advance_payment }} zł.</td>
+{#                            <td>{{ object.bt_application_info.bt_end_time }} zł.</td>#}
                   </tr>
 
                 </table>
@@ -65,13 +66,85 @@
               </table>
 
             </div>
+    <div class="row">
 
-
-
+        <div class="col-3">
+        {% if object.bt_application_info %}
+            <div>
+              <table class="table table-secondary table-striped">
+                  <tr>
+                      <td>Delegacja zrealizowana?</td>
+                      <td>{{ object.bt_application_info.bt_completed }}</td>
+                  </tr>
+                  <tr>
+                      <td>Data wyjazdu</td>
+                      <td>{{ object.bt_application_info.bt_start_date }}</td>
+                  </tr>
+                  <tr>
+                      <td>Godzina wyjazdu</td>
+                      <td>{{ object.bt_application_info.bt_start_time }}</td>
+                  </tr>
+                  <tr>
+                      <td>Data powrotu</td>
+                      <td>{{ object.bt_application_info.bt_end_date }}</td>
+                  </tr>
+                  <tr>
+                      <td>Godzina powrotu</td>
+                      <td>{{ object.bt_application_info.bt_end_time }}</td>
+                  </tr>
+              </table>
+        </div>
+          {% else %}
+            <div>
+                <button class="btn-warning" type="submit">
+                      <a class="btn-danger bg-transparent"
+                         href="{% url 'e_delegacje:settlement-info-create' pk=object.id %}">
+                          dodaj informacje dodatkowe
+                      </a>
+                </button>
+            </div>
+        {% endif %}
         </div>
 
+        <div class="col-3">
+        {% if object.bt_application_settlement_costs.exists %}
+            <div >
+              <table class="table table-secondary table-striped">
+                  <tr>
+                      <td>Delegacja zrealizowana?</td>
+                      <td>{{ object.bt_application_info.bt_completed }}</td>
+                  </tr>
+                  <tr>
+                      <td>Data wyjazdu</td>
+                      <td>{{ object.bt_application_info.bt_start_date }}</td>
+                  </tr>
+                  <tr>
+                      <td>Godzina wyjazdu</td>
+                      <td>{{ object.bt_application_info.bt_start_time }}</td>
+                  </tr>
+                  <tr>
+                      <td>Data powrotu</td>
+                      <td>{{ object.bt_application_info.bt_end_date }}</td>
+                  </tr>
+                  <tr>
+                      <td>Godzina powrotu</td>
+                      <td>{{ object.bt_application_info.bt_end_time }}</td>
+                  </tr>
+              </table>
+        </div>
+          {% else %}
+            <div>
+                <button class="btn-warning" type="submit">
+                      <a class="btn-danger bg-transparent"
+                         href="{% url 'e_delegacje:settlement-cost-create' pk=object.id %}">
+                          dodaj koszty
+                      </a>
+                </button>
+            </div>
+        {% endif %}
+        </div>
+    </div>
 
 
-
-
+</div>
 {% endblock %}
