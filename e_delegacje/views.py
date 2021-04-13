@@ -4,7 +4,7 @@ from django.urls import reverse, reverse_lazy
 from django.views.generic import ListView, DetailView, DeleteView, CreateView, FormView
 from django.views import View
 from e_delegacje.enums import BtApplicationStatus
-from e_delegacje.forms import BtApplicationForm, BtApplicationSettlementInfoForm
+from e_delegacje.forms import BtApplicationForm, BtApplicationSettlementInfoForm, BtApplicationSettlementCostForm
 from e_delegacje.models import (
     BtUser,
     BtApplication,
@@ -103,13 +103,11 @@ class BtApplicationSettlementDetailView(DetailView):
 
     model = BtApplicationSettlement
     template_name = "bt_settlement_details.html"
-    extra_context = {'settlement_info': BtApplicationSettlementInfo.objects.all()}
 
 
 class BtApplicationSettlementInfoCreateFormView(View):
 
     def get(self, request, pk):
-        print(pk)
         form = BtApplicationSettlementInfoForm()
         return render(
             request,
@@ -118,7 +116,6 @@ class BtApplicationSettlementInfoCreateFormView(View):
 
     def post(self, request, pk, *args, **kwargs):
         form = BtApplicationSettlementInfoForm(request.POST)
-        print(pk)
         if form.is_valid():
             bt_application_settlement = BtApplicationSettlement.objects.get(id=pk)
             bt_completed = form.cleaned_data["bt_completed"]
@@ -138,18 +135,45 @@ class BtApplicationSettlementInfoCreateFormView(View):
                 bt_end_time=bt_end_time,
                 advance_payment=advance_payment
             )
-
             return HttpResponseRedirect(reverse("e_delegacje:settlement-details", args=[pk]))
-
         else:
-            print(form.errors)
             return HttpResponseRedirect(reverse("e_delegacje:index"))
 
 
-class BtApplicationSettlementCostCreateView(CreateView):
-    template_name = "settlement_subform.html"
-    model = BtApplicationSettlementCost
-    fields = "__all__"
+class BtApplicationSettlementCostCreateView(View):
+
+    def get(self, request, pk):
+        form = BtApplicationSettlementCostForm()
+        cost_list = BtApplicationSettlementCost.objects.filter(
+            bt_application_settlement=BtApplicationSettlement.objects.get(id=pk))
+        return render(
+            request,
+            template_name="settlement_subform_cost.html",
+            context={"form": form, 'cost_list': cost_list})
+
+    def post(self, request, pk, *args, **kwargs):
+        form = BtApplicationSettlementCostForm(request.POST)
+        cost_list = BtApplicationSettlementCost.objects.filter(
+            bt_application_settlement=BtApplicationSettlement.objects.get(id=pk))
+        if form.is_valid():
+            bt_application_settlement = BtApplicationSettlement.objects.get(id=pk)
+            bt_cost_category = form.cleaned_data["bt_cost_category"]
+            bt_cost_amount = form.cleaned_data["bt_cost_amount"]
+            bt_cost_currency = form.cleaned_data["bt_cost_currency"]
+            bt_cost_document_date = form.cleaned_data["bt_cost_document_date"]
+            bt_cost_VAT_rate = form.cleaned_data["bt_cost_VAT_rate"]
+            BtApplicationSettlementCost.objects.create(
+                bt_application_settlement=bt_application_settlement,
+                bt_cost_category=bt_cost_category,
+                bt_cost_amount=bt_cost_amount,
+                bt_cost_currency=bt_cost_currency,
+                bt_cost_document_date=bt_cost_document_date,
+                bt_cost_VAT_rate=bt_cost_VAT_rate
+            )
+            return HttpResponseRedirect(reverse("e_delegacje:settlement-cost-create", args=[pk]))
+        # else:
+        #     return HttpResponseRedirect(reverse("e_delegacje:index"))
+        return render(request, "settlement_subform_cost.html", {"form": form, 'cost_list': cost_list})
 
 
 class BtApplicationSettlementMileageCreateView(CreateView):

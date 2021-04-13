@@ -56,6 +56,7 @@
                             <td>{{ object.bt_application_id.planned_start_date }}</td>
                             <td>{{ object.bt_application_id.planned_end_date }}</td>
                             <td>{{ object.bt_application_id.advance_payment }} zł.</td>
+{#                            <td>{{ object.bt_application_info.bt_end_time }} zł.</td>#}
                   </tr>
 
                 </table>
@@ -64,39 +65,86 @@
 
               </table>
 
-{#tu będzie jakiś if który musi sprawdzić czy obiekt settlement info istnieje i jak tak to go pokaże#}
-
-
             </div>
     <div class="row">
-    {% if settlement_info %}
-        {% for info in settlement_info %}
-        <p>{{ info.bt_application_settlement }}</p>
-            <p>{{ info.bt_completed }}</p>
-            <p>{{ info.bt_start_date }}</p>
-            <p>{{ info.bt_start_time }}</p>
-            <p>{{ info.bt_end_date }}</p>
-            <p>{{ info.bt_end_time }}</p>
-            <p>{{ info.advance_payment }}</p>
 
-        {% endfor %}
-    {% else %}
-        <div class="col-2">
-            <button class="btn-warning" type="submit">
-                  <a class="btn-danger bg-transparent"
-                     href="{% url 'e_delegacje:settlement-info-create' pk=object.id %}">
-                      dodaj info
-                  </a>
-            </button>
+        <div class="col-3">
+        {% if object.bt_application_info %}
+            <div>
+              <table class="table table-secondary table-striped">
+                  <tr>
+                      <td>Delegacja zrealizowana?</td>
+                      <td>{{ object.bt_application_info.bt_completed }}</td>
+                  </tr>
+                  <tr>
+                      <td>Data wyjazdu</td>
+                      <td>{{ object.bt_application_info.bt_start_date }}</td>
+                  </tr>
+                  <tr>
+                      <td>Godzina wyjazdu</td>
+                      <td>{{ object.bt_application_info.bt_start_time }}</td>
+                  </tr>
+                  <tr>
+                      <td>Data powrotu</td>
+                      <td>{{ object.bt_application_info.bt_end_date }}</td>
+                  </tr>
+                  <tr>
+                      <td>Godzina powrotu</td>
+                      <td>{{ object.bt_application_info.bt_end_time }}</td>
+                  </tr>
+              </table>
         </div>
-    {% endif %}
+          {% else %}
+            <div>
+                <button class="btn-warning" type="submit">
+                      <a class="btn-danger bg-transparent"
+                         href="{% url 'e_delegacje:settlement-info-create' pk=object.id %}">
+                          dodaj informacje dodatkowe
+                      </a>
+                </button>
+            </div>
+        {% endif %}
+        </div>
+
+        <div class="col-3">
+        {% if object.bt_application_settlement_costs.exists %}
+            <div >
+              <table class="table table-secondary table-striped">
+                  <tr>
+                      <td>Delegacja zrealizowana?</td>
+                      <td>{{ object.bt_application_info.bt_completed }}</td>
+                  </tr>
+                  <tr>
+                      <td>Data wyjazdu</td>
+                      <td>{{ object.bt_application_info.bt_start_date }}</td>
+                  </tr>
+                  <tr>
+                      <td>Godzina wyjazdu</td>
+                      <td>{{ object.bt_application_info.bt_start_time }}</td>
+                  </tr>
+                  <tr>
+                      <td>Data powrotu</td>
+                      <td>{{ object.bt_application_info.bt_end_date }}</td>
+                  </tr>
+                  <tr>
+                      <td>Godzina powrotu</td>
+                      <td>{{ object.bt_application_info.bt_end_time }}</td>
+                  </tr>
+              </table>
+        </div>
+          {% else %}
+            <div>
+                <button class="btn-warning" type="submit">
+                      <a class="btn-danger bg-transparent"
+                         href="{% url 'e_delegacje:settlement-cost-create' pk=object.id %}">
+                          dodaj koszty
+                      </a>
+                </button>
+            </div>
+        {% endif %}
+        </div>
+    </div>
+
+
 </div>
-
-
-        </div>
-
-
-
-
-
 {% endblock %}

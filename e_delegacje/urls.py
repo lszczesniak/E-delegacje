@@ -38,19 +38,19 @@ urlpatterns = [
         name='settlement-info-create'
     ),
     path(
-        'settlement-info-create/<pk>',
+        'settlement-cost-create/<pk>',
         BtApplicationSettlementCostCreateView.as_view(),
-        name='settlement-info-create'
+        name='settlement-cost-create'
     ),
     path(
-        'settlement-info-create/<pk>',
+        'settlement-mileage-create/<pk>',
         BtApplicationSettlementMileageCreateView.as_view(),
-        name='settlement-info-create'
+        name='settlement-mileage-create'
     ),
     path(
-        'settlement-info-create/<pk>',
+        'settlement-feeding-create/<pk>',
         BtApplicationSettlementFeedingCreateView.as_view(),
-        name='settlement-info-create'
+        name='settlement-feeding-create'
     ),
 
 ]

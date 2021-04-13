@@ -14,7 +14,8 @@ from e_delegacje.models import (
     BtDepartment,
     BtMileageRates,
     BtSubmissionStatus,
-    BtRatesTax
+    BtRatesTax,
+    BtCurrency
 )
 admin.site.register(BtUser)
 admin.site.register(BtRegion)
@@ -28,3 +29,7 @@ admin.site.register(BtApplicationSettlementInfo)
 admin.site.register(BtApplicationSettlementCost)
 admin.site.register(BtApplicationSettlementMileage)
 admin.site.register(BtApplicationSettlementFeeding)
+admin.site.register(BtMileageRates)
+admin.site.register(BtSubmissionStatus)
+admin.site.register(BtRatesTax)
+admin.site.register(BtCurrency)

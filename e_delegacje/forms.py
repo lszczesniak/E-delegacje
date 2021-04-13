@@ -1,7 +1,7 @@
 from django.contrib.auth.models import User
 from django.contrib.admin.widgets import AdminDateWidget
 
-from .models import BtUser, BtCostCenter, BtApplication
+from .models import BtUser, BtCostCenter, BtApplication, BtRatesTax, BtCurrency
 from django.db import models
 from django.core.mail import EmailMultiAlternatives
 from django import forms
@@ -119,4 +119,11 @@ class BtApplicationSettlementInfoForm(forms.Form):
     bt_end_time = forms.TimeField(label="Godzina powrotu", widget=TimeInputWidget)
 
 
+class BtApplicationSettlementCostForm(forms.Form):
+    bt_cost_category = forms.TypedChoiceField(choices=BtCostCategory.choices, label="Kategoria kosztu", initial="")
+    bt_cost_description = forms.CharField(max_length=120, label="Opis")
+    bt_cost_amount = forms.DecimalField(decimal_places=2, max_digits=8, label="Kwota" )
+    bt_cost_currency = forms.ModelChoiceField(queryset=BtCurrency .objects.all(), label="Waluta", initial='')
+    bt_cost_document_date = forms.DateField(label="Data dokumentu", widget=DateInputWidget)
+    bt_cost_VAT_rate = forms.TypedChoiceField(choices=BtVatRates.choices, label="Stawka vat")
 
