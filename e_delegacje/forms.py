@@ -1,8 +1,4 @@
-from django.contrib.auth.models import User
-from django.contrib.admin.widgets import AdminDateWidget
-
-from .models import BtUser, BtCostCenter, BtApplication, BtRatesTax, BtCurrency
-from django.db import models
+from .models import BtUser, BtCostCenter, BtApplication, BtCurrency
 from django.core.mail import EmailMultiAlternatives
 from django import forms
 from django.template.loader import render_to_string
@@ -12,11 +8,8 @@ from e_delegacje.enums import (
     BtTripCategory,
     BtApplicationStatus,
     BtTransportType,
-    BtEmployeeLevel,
     BtCostCategory,
     BtVatRates,
-    BtMileageVehicleTypes
-
 )
 
 
@@ -29,7 +22,7 @@ class TimeInputWidget(forms.TimeInput):
 
 
 class BtApplicationForm(forms.Form):
-    trip_category = forms.TypedChoiceField(choices=BtTripCategory.choices, label="Rodzaj delegacji")
+    trip_category = forms.TypedChoiceField(choices=BtTripCategory.choices, label="Rodzaj delegacji", initial='')
     target_user = forms.ModelChoiceField(queryset=BtUser.objects.all(), label="Delegowany")
     application_author = forms.ModelChoiceField(queryset=BtUser.objects.all())
     trip_purpose_text = forms.CharField(

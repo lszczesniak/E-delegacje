@@ -24,7 +24,7 @@
                        <select name="bt_cost_category" id="bt_cost_category" class="form-select">
                            <option selected>{{ form.bt_cost_category.label }}</option>
                            {% for cost_category in form.bt_cost_category %}
-                           <option value={{ cost_category  }}></option>
+                               {{ cost_category }}
                            {% endfor %}
                        </select>
                     </div>
@@ -44,16 +44,15 @@
                     <div class="mb-3">
                         <div class="input-group mb-3">
                             <div class="form-control">{{ form.bt_cost_VAT_rate.label }}</div>
-{#                            <div class="form-control">{{ form.bt_cost_VAT_rate }}</div>#}
-{#                        </div>#}
+
                         <select name="bt_cost_VAT_rate" id="bt_cost_VAT_rate" class="form-select">
                             <option selected>Wybierz</option>
 
                             {% for VAT_rate in form.bt_cost_VAT_rate %}
-                            <option value={{ VAT_rate  }}></option>
+                                {{ VAT_rate  }}
                            {% endfor %}
                         </select>
-
+                        </div>
                     </div>
 
                     <div class="input-group mb-3 ">
@@ -67,7 +66,7 @@
                     <select name="bt_cost_currency" id="bt_cost_currency" class="form-select">
                             <option selected>Wybierz</option>
                     {% for currency in form.bt_cost_currency %}
-                    <option value={{ currency  }}></option>
+                        {{ currency  }}
                     {% endfor %}
                     </select>
 
@@ -80,8 +79,9 @@
             </div>
 
 
-        </form>
+{#        </form>#}
     </div>
+
 <div class="col-2"></div>
             <div class="col-5 align-items-start">
                 <table class="table table-secondary table-striped">

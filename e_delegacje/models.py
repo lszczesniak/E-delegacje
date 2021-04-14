@@ -8,8 +8,6 @@ from e_delegacje.enums import (
     BtEmployeeLevel,
     BtCostCategory,
     BtVatRates,
-    BtMileageVehicleTypes
-
 )
 
 
@@ -86,7 +84,7 @@ class BtApplicationSettlementCost(models.Model):
         related_name='bt_application_settlement_costs'
     )
     bt_cost_document_date = models.DateField()
-    bt_cost_VAT_rate = models.CharField(max_length=10, choices=BtVatRates.choices)
+    bt_cost_VAT_rate = models.CharField(max_length=20, choices=BtVatRates.choices)
     attachment = models.FileField(null=True, blank=True)
 
     def __str__(self):

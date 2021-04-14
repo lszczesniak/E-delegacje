@@ -10,7 +10,7 @@ class BtTripCategory(models.TextChoices):
 class BtApplicationStatus(models.TextChoices):
     saved = 'saved', 'Zapisany'
     in_progress = 'in_progress', 'W akceptacji'
-    approved = 'approoved', 'Zaakcdptowany'
+    approved = 'approved', 'Zaakcdptowany'
     settled = 'settled', 'Rozliczony'
     canceled = 'canceled', 'Anulowany'
 
@@ -34,10 +34,10 @@ class BtEmployeeLevel(models.TextChoices):
 
 
 class BtCostCategory(models.TextChoices):
-    accommodation = 'nocleg', 'nocleg'
-    transport = 'dojazd', 'dojazd'
-    luggage = 'bagaż', 'bagaż'
-    other = 'inne', 'inne'
+    accommodation = 'accommodation', 'nocleg'
+    transport = 'transport', 'dojazd'
+    luggage = 'luggage', 'bagaż'
+    other = 'other', 'inne'
 
 
 class BtVatRates(models.TextChoices):
