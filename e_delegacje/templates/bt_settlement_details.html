@@ -8,20 +8,23 @@
               <table class="table table-secondary table-striped">
                   <tr class="table table-primary table-striped text-uppercase">
                       <td class="fw-bold">Numer Wniosku o delegację</td>
-                      <td colspan="4">{{ object.bt_application_id.id }}</td>
+                      <td colspan="2">{{ object.bt_application_id.id }}</td>
+                      <td class="fw-bold" >Cel podróży/Opis:</td>
+                      <td class="text-wrap fw-bold" >{{ object.bt_application_id.trip_purpose_text }}</td>
 
                   </tr>
                   <tr class="table table-primary table-striped text-uppercase">
-                    <td class="fw-bold">Data wniosku</td>
+                    <td class="fw-bold">Data wniosku:</td>
                     <td colspan="4">{{ object.bt_application_id.application_date }}</td>
+
                   </tr>
                     <tr class="fw-bold">
 
                         <td>Rodzaj delegacji</td>
-                        <td>Cel podróży</td>
+
                         <td>Pracownik</td>
                         <td>Cost center</td>
-                        <td>Status Wniosku</td>
+                        <td colspan="2">Status Wniosku</td>
 
                     </tr>
                   <tr>
@@ -31,10 +34,10 @@
                       {% elif object.bt_application_id.trip_category == 'zg' %}
                       <td>zagraniczna</td>
                       {% endif %}
-                      <td class="text-wrap">{{ object.bt_application_id.trip_purpose_text }}</td>
+
                       <td>{{ object.bt_application_id.target_user }}</td>
                       <td>{{ object.bt_application_id.CostCenter }}</td>
-                      <td>{{ object.bt_application_id.application_status }}</td>
+                      <td colspan="2">{{ object.bt_application_id.get_application_status_display }}</td>
 
 
                   </tr>

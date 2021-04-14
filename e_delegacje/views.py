@@ -4,7 +4,11 @@ from django.urls import reverse, reverse_lazy
 from django.views.generic import ListView, DetailView, DeleteView, CreateView, FormView
 from django.views import View
 from e_delegacje.enums import BtApplicationStatus
-from e_delegacje.forms import BtApplicationForm, BtApplicationSettlementInfoForm, BtApplicationSettlementCostForm
+from e_delegacje.forms import (
+    BtApplicationForm,
+    BtApplicationSettlementInfoForm,
+    BtApplicationSettlementCostForm
+)
 from e_delegacje.models import (
     BtUser,
     BtApplication,
@@ -14,6 +18,7 @@ from e_delegacje.models import (
     BtApplicationSettlementMileage,
     BtApplicationSettlementFeeding,
     )
+from setup.models import BtCurrency
 
 
 def index(request):
@@ -154,25 +159,26 @@ class BtApplicationSettlementCostCreateView(View):
     def post(self, request, pk, *args, **kwargs):
         form = BtApplicationSettlementCostForm(request.POST)
         cost_list = BtApplicationSettlementCost.objects.filter(
-            bt_application_settlement=BtApplicationSettlement.objects.get(id=pk))
+            bt_application_settlement=BtApplicationSettlement.objects.get(pk=pk))
         if form.is_valid():
-            bt_application_settlement = BtApplicationSettlement.objects.get(id=pk)
+            bt_application_settlement = BtApplicationSettlement.objects.get(pk=pk)
             bt_cost_category = form.cleaned_data["bt_cost_category"]
+            bt_cost_description = form.cleaned_data["bt_cost_description"]
             bt_cost_amount = form.cleaned_data["bt_cost_amount"]
-            bt_cost_currency = form.cleaned_data["bt_cost_currency"]
+            bt_cost_currency = BtCurrency.objects.get(pk=form.cleaned_data["bt_cost_currency"])
             bt_cost_document_date = form.cleaned_data["bt_cost_document_date"]
             bt_cost_VAT_rate = form.cleaned_data["bt_cost_VAT_rate"]
             BtApplicationSettlementCost.objects.create(
                 bt_application_settlement=bt_application_settlement,
                 bt_cost_category=bt_cost_category,
+                bt_cost_description=bt_cost_description,
                 bt_cost_amount=bt_cost_amount,
                 bt_cost_currency=bt_cost_currency,
                 bt_cost_document_date=bt_cost_document_date,
                 bt_cost_VAT_rate=bt_cost_VAT_rate
             )
             return HttpResponseRedirect(reverse("e_delegacje:settlement-cost-create", args=[pk]))
-        # else:
-        #     return HttpResponseRedirect(reverse("e_delegacje:index"))
+
         return render(request, "settlement_subform_cost.html", {"form": form, 'cost_list': cost_list})
 
 
