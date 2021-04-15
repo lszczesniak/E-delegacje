@@ -7,7 +7,9 @@ from e_delegacje.enums import BtApplicationStatus
 from e_delegacje.forms import (
     BtApplicationForm,
     BtApplicationSettlementInfoForm,
-    BtApplicationSettlementCostForm, BtApplicationSettlementMileageForm
+    BtApplicationSettlementCostForm,
+    BtApplicationSettlementMileageForm,
+    BtApplicationSettlementFeedingForm
 )
 from e_delegacje.models import (
     BtUser,
@@ -188,13 +190,11 @@ class BtApplicationSettlementMileageCreateView(View):
 
     def get(self, request, pk):
         settlement = BtApplicationSettlement.objects.get(id=pk)
-        trip_list = BtApplicationSettlementMileage.objects.filter(
-            bt_application_settlement=BtApplicationSettlement.objects.get(id=pk))
         form = BtApplicationSettlementMileageForm()
         return render(
             request,
             template_name="settlement_subform_mileage.html",
-            context={"form": form, 'trip_list': trip_list, 'settlement': settlement})
+            context={"form": form, 'settlement': settlement})
 
     def post(self, request, pk, *args, **kwargs):
         form = BtApplicationSettlementMileageForm(request.POST)
@@ -223,7 +223,28 @@ class BtApplicationSettlementMileageCreateView(View):
         return render(request, "settlement_subform_mileage.html", {"form": form, 'trip_list': trip_list})
 
 
-class BtApplicationSettlementFeedingCreateView(CreateView):
-    template_name = "settlement_subform.html"
-    model = BtApplicationSettlementFeeding
-    fields = "__all__"
+class BtApplicationSettlementFeedingCreateView(View):
+
+    def get(self, request, pk):
+        settlement = BtApplicationSettlement.objects.get(id=pk)
+        form = BtApplicationSettlementFeedingForm()
+        return render(
+            request,
+            template_name="settlement_subform_feeding.html",
+            context={"form": form, 'settlement': settlement})
+
+    def post(self, request, pk, *args, **kwargs):
+        form = BtApplicationSettlementFeedingForm(request.POST)
+        if form.is_valid():
+            bt_application_settlement = BtApplicationSettlement.objects.get(id=pk)
+            breakfast_quantity = form.cleaned_data["breakfast_quantity"]
+            dinner_quantity = form.cleaned_data["dinner_quantity"]
+            supper_quantity = form.cleaned_data["supper_quantity"]
+            BtApplicationSettlementFeeding.objects.create(
+                bt_application_settlement=bt_application_settlement,
+                breakfast_quantity=breakfast_quantity,
+                dinner_quantity=dinner_quantity,
+                supper_quantity=supper_quantity
+            )
+            return HttpResponseRedirect(reverse("e_delegacje:settlement-feeding-create", args=[pk]))
+        return render(request, "settlement_subform_feeding.html", {"form": form})

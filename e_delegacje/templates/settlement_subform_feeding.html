@@ -33,35 +33,6 @@
 
     </div>
 
-        <div class="col-2">
-
-    </div>
-
-        <div class="col-5 align-items-start">
-
-                <table class="table table-sm">
-                    <thead>
-                        <tr class="table table-primary table-striped text-uppercase fw-bold text-center">
-                            <td>Trasa przejazdu</td>
-                            <td>Data przejazdu</td>
-                            <td class="text-end ms-5 text-center">Cel przejazdu</td>
-                            <td class="text-center">Liczba kilometrów</td>
-                        </tr>
-                    </thead>
-                    <body>
-                    {% for trip in trip_list %}
-                        <tr>
-                            <td>{{ trip.trip_description }}</td>
-                            <td>{{ trip.trip_date }}</td>
-                            <td class="text-center">{{ trip.trip_purpose }}</td>
-                            <td class="text-center">{{ trip.mileage }}</td>
-                        </tr>
-
-                    {% endfor %}
-                    </body>
-                </table>
-        </div>
-
     </div>
 
 </div>
