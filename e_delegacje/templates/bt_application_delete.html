@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% block content %}
 
-<form method="POST">
+<form method="POST" style="font-size: 12px">
     {% csrf_token %}
      <p>
       Czy na pewno chcesz usunąć wniosek o delegację numer: {{ object.id }},
