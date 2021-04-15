@@ -1,3 +1,4 @@
+from setup.models import BtMileageRates
 from .models import BtUser, BtCostCenter, BtApplication, BtCurrency
 from django.core.mail import EmailMultiAlternatives
 from django import forms
@@ -116,7 +117,16 @@ class BtApplicationSettlementCostForm(forms.Form):
     bt_cost_category = forms.TypedChoiceField(choices=BtCostCategory.choices, label="Kategoria kosztu", initial="")
     bt_cost_description = forms.CharField(max_length=120, label="Opis")
     bt_cost_amount = forms.DecimalField(decimal_places=2, max_digits=8, label="Kwota" )
-    bt_cost_currency = forms.ModelChoiceField(queryset=BtCurrency .objects.all(), label="Waluta", initial='')
+    bt_cost_currency = forms.ModelChoiceField(queryset=BtCurrency.objects.all(), label="Waluta", initial='')
     bt_cost_document_date = forms.DateField(label="Data dokumentu", widget=DateInputWidget)
     bt_cost_VAT_rate = forms.TypedChoiceField(choices=BtVatRates.choices, label="Stawka vat")
 
+
+class BtApplicationSettlementMileageForm(forms.Form):
+    bt_car_reg_number = forms.CharField(max_length=8, label='Numer rejestracyjny')
+    bt_mileage_rate = forms.ModelChoiceField(queryset=BtMileageRates.objects.all(), label='Stawka')
+    trip_start_place = forms.CharField(max_length=50, label='Miejsce wyjazdu')
+    trip_date = forms.DateField(widget=DateInputWidget, label='Data przejazdu')
+    trip_description = forms.CharField(max_length=120, label='Trasa przejazdu')
+    trip_purpose = forms.CharField(max_length=240, label='Cel przejazdu')
+    mileage = forms.DecimalField(decimal_places=2, max_digits=8, label='Liczba kilometrów')

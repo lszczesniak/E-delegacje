@@ -2,12 +2,14 @@
 {% block content %}
 
   <h2>Rozliczenie wniosku o delegację - koszty</h2>
+    <h5>Wniosek o delegację nr: {{ settlement.id }}</h5>
 
 <div class="container-fluid pt-3">
     <div class="row align-content-between">
         <div class="col-5 align-items-start">
             <form class="form-control bg-light pt-3 pb-3" method="post">
             {% csrf_token %}
+
             <div class="mb-3">
                     <div class="col-auto">
                         <input class="form-control"
@@ -74,26 +76,57 @@
 
 
                     </div>
-            <div class="col-3 offset-md-10">
-                <input type="submit" value="Zapisz">
+
+
+        <div class="row">
+            <div class="col-3">
+                <input class="btn btn-outline-secondary" type="submit" value="Dodaj koszt">
             </div>
+            <div class="col-1">
+                <a type="button"
+                   class="btn btn-outline-secondary"
+                   href="{% url 'e_delegacje:settlement-details' pk=settlement.pk %}"
+                >
+                    Powrót
+                </a>
+        </div>
+        </div>
+        </form>
 
-
-{#        </form>#}
     </div>
 
-<div class="col-2"></div>
-            <div class="col-5 align-items-start">
-                <table class="table table-secondary table-striped">
-                {% for cost in cost_list %}
-                    <tr>
-                    <td>{{ cost.bt_cost_category }}</td>
-                    </tr>
+    <div class="col-2">
 
-                {% endfor %}
+    </div>
+            <div class="col-5 align-items-start">
+            {% if cost_list %}
+                <table class="table table-sm">
+                    <thead>
+                        <tr class="table table-primary table-striped text-uppercase fw-bold">
+                            <td>opis kosztu</td>
+                            <td>kategoria</td>
+                            <td class="text-end ms-5">kwota</td>
+                            <td class="text-center">waluta</td>
+                        </tr>
+                    </thead>
+                    <body>
+                    {% for cost in cost_list %}
+                        <tr>
+                            <td>{{ cost.bt_cost_description }}</td>
+                            <td>{{ cost.get_bt_cost_category_display }}</td>
+                            <td class="text-end ms-5">{{ cost.bt_cost_amount }}</td>
+                            <td class="text-center">{{ cost.bt_cost_currency }}</td>
+                        </tr>
+
+                    {% endfor %}
+                    </body>
                 </table>
+            {% endif %}
         </div>
     </div>
+
+
+
 </div>
 
     {% if form.errors %}

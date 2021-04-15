@@ -98,7 +98,7 @@ class BtApplicationSettlementMileage(models.Model):
         related_name='bt_application_settlement_mileages'
     )
     bt_car_reg_number = models.CharField(max_length=8)
-    bt_milage_rate = models.ForeignKey(
+    bt_mileage_rate = models.ForeignKey(
         BtMileageRates,
         on_delete=models.PROTECT,
         related_name='bt_application_settlement_mileages'
