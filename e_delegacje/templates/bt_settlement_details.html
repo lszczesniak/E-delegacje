@@ -1,56 +1,76 @@
 {% extends "base.html" %}
 {% block content %}
 
-  <h2>Szczegóły Rozliczenia wniosku o delegację </h2>
+  <h2>Rozliczenie wniosku o delegację </h2>
+<main>
 <div class="container-fluid" >
+ <hr>
         <div class="row">
-          <div class="col-12">
-              <table class="table table-light table-striped" style="font-size: 12px">
+          <div class="col-4">
+              <table class="table table-light " style="font-size: 12px">
                   <tr class="table table-primary table-striped text-uppercase">
                       <td class="fw-bold">Numer Wniosku o delegację</td>
-                      <td colspan="2">{{ object.bt_application_id.id }}</td>
-                      <td class="fw-bold" >Cel podróży/Opis:</td>
-                      <td class="text-wrap fw-bold" >{{ object.bt_application_id.trip_purpose_text }}</td>
-
+                      <td >{{ object.bt_application_id.id }}</td>
                   </tr>
-                  <tr class="table table-primary table-striped text-uppercase">
+
+                  <tr class="table table-primary text-uppercase">
                     <td class="fw-bold">Data wniosku:</td>
-                    <td colspan="4">{{ object.bt_application_id.application_date }}</td>
+                    <td>{{ object.bt_application_id.application_date }}</td>
 
                   </tr>
+              </table>
+          </div>
+            <div class="col-4">
+                <table class="table table-primary text-center table-striped text-uppercase" style="font-size: 12px">
+                    <tbody>
+                        <tr>
+                            <td class="fw-bold" >Cel podróży/Opis:</td>
+
+                        </tr>
+                        <tr>
+                            <td class="text-wrap fw-bold" >{{ object.bt_application_id.trip_purpose_text }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="col-4">
+                <table class="table table-primary table-striped text-uppercase text-end" style="font-size: 12px">
+                    <tbody>
+                        <tr>
+                            <td class="fw-bold">Status Wniosku</td>
+                        </tr>
+                        <tr>
+                            <td colspan="2">{{ object.bt_application_id.get_application_status_display }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+            </div>
+
+        </div>
+        <div class="row">
+          <div class="col-9">
+                <table class="table table-light offset-2" style="font-size: 13px">
                     <tr class="fw-bold">
 
                         <td>Rodzaj delegacji</td>
-
                         <td>Pracownik</td>
-                        <td>Cost center</td>
-                        <td colspan="2">Status Wniosku</td>
+                        <td colspan="2">Cost center</td>
 
                     </tr>
                   <tr>
-
-                      {% if object.bt_application_id.trip_category == 'kr' %}
-                      <td>krajowa</td>
-                      {% elif object.bt_application_id.trip_category == 'zg' %}
-                      <td>zagraniczna</td>
-                      {% endif %}
-
+                      <td colspan="2">{{ object.bt_application_id.get_trip_category_display }}</td>
                       <td>{{ object.bt_application_id.target_user }}</td>
                       <td>{{ object.bt_application_id.CostCenter }}</td>
-                      <td colspan="2">{{ object.bt_application_id.get_application_status_display }}</td>
-
 
                   </tr>
-
-
 
                   </tr>
                         <tr class="fw-bold">
                             <td>Rodzaj transportu</td>
                             <td>Trasa podrózy</td>
                             <td>Planowana data wyjazdu</td>
-                            <td>Planowana data wyjazdu</td>
-                            <td>Zaliczka</td>
+                            <td>Planowana data powrotu</td>
                   </tr>
                             </tr>
                         <tr>
@@ -58,127 +78,151 @@
                             <td>{{ object.bt_application_id.travel_route }}</td>
                             <td>{{ object.bt_application_id.planned_start_date }}</td>
                             <td>{{ object.bt_application_id.planned_end_date }}</td>
-                            <td>{{ object.bt_application_id.advance_payment }} zł.</td>
 
                   </tr>
 
                 </table>
             </div>
 
+            </div>
+<hr>
+        <div class="row align-content-between">
 
+            <div class="col-3">
+                {% if object.bt_application_info %}
 
+                  <table class="table table-light table-striped" style="font-size: 12px">
+                          <tr>
+                              <td class="fw-bold">Delegacja zrealizowana?</td>
+                              <td>{{ object.bt_application_info.bt_completed }}</td>
+                          </tr>
+                          <tr>
+                              <td class="fw-bold">Data wyjazdu</td>
+                              <td>{{ object.bt_application_info.bt_start_date }}</td>
+                          </tr>
+                          <tr>
+                              <td class="fw-bold">Godzina wyjazdu</td>
+                              <td>{{ object.bt_application_info.bt_start_time }}</td>
+                          </tr>
+                          <tr>
+                              <td class="fw-bold">Data powrotu</td>
+                              <td>{{ object.bt_application_info.bt_end_date }}</td>
+                          </tr>
+                          <tr>
+                              <td class="fw-bold">Godzina powrotu</td>
+                              <td>{{ object.bt_application_info.bt_end_time }}</td>
+                          </tr>
+                      </table>
+                  <a class="btn btn-warning d-grid"
+                     href="{% url 'e_delegacje:settlement-info-create' pk=object.id %}"
+                     style="font-size: 12px"
+                  >
+                      Edytuj informacje dodatkowe
+                  </a>
+                {% else %}
 
+                  <a class="btn btn-warning d-grid"
+                     href="{% url 'e_delegacje:settlement-info-create' pk=object.id %}"
+                     style="font-size: 12px"
+                  >
+                      Dodaj informacje dodatkowe
+                  </a>
+
+                {% endif %}
             </div>
 
-    <div class="row align-content-between">
-
         <div class="col-3">
-            {% if object.bt_application_info %}
 
-              <table class="table table-light table-striped" style="font-size: 12px">
-                      <tr>
-                          <td>Delegacja zrealizowana?</td>
-                          <td>{{ object.bt_application_info.bt_completed }}</td>
-                      </tr>
-                      <tr>
-                          <td>Data wyjazdu</td>
-                          <td>{{ object.bt_application_info.bt_start_date }}</td>
-                      </tr>
-                      <tr>
-                          <td>Godzina wyjazdu</td>
-                          <td>{{ object.bt_application_info.bt_start_time }}</td>
-                      </tr>
-                      <tr>
-                          <td>Data powrotu</td>
-                          <td>{{ object.bt_application_info.bt_end_date }}</td>
-                      </tr>
-                      <tr>
-                          <td>Godzina powrotu</td>
-                          <td>{{ object.bt_application_info.bt_end_time }}</td>
-                      </tr>
-                  </table>
+
+            {% if object.bt_application_settlement_costs.exists %}
+                <table class="table table-secondary table-striped" style="font-size: 12px">
+
+
+                        <thead>
+                            <tr class="fw-bold">
+                                <td>Opis kosztu</td>
+                                <td>Kategoria</td>
+                                <td>Kwota</td>
+                                <td>Waluta</td>
+                            </tr>
+                        </thead>
+                        <body>
+
+
+
+                        {% for cost in object.bt_application_settlement_costs.all %}
+                            <tr>
+                                <td>{{ cost.bt_cost_description }}</td>
+                                <td>{{ cost.get_bt_cost_category_display }}</td>
+                                <td>{{ cost.bt_cost_amount }}</td>
+                                <td>{{ cost.bt_cost_currency }}</td>
+                            </tr>
+
+                        {% endfor %}
+
+                        </body>
+                    </table>
+                <a class="btn btn-warning d-grid align-content-end"
+                 type="button"
+                 href="{% url 'e_delegacje:settlement-cost-create' pk=object.id %}"
+                style="font-size: 12px"
+                >
+                  Edytuj koszty
+                </a>
 
             {% else %}
-
-              <a class="btn btn-warning d-grid"
-                 href="{% url 'e_delegacje:settlement-info-create' pk=object.id %}"
-                 style="font-size: 12px"
-              >
-                  dodaj informacje dodatkowe
-              </a>
-
+                <a class="btn btn-warning d-grid"
+                 type="button"
+                 href="{% url 'e_delegacje:settlement-cost-create' pk=object.id %}"
+                style="font-size: 12px"
+                >
+                  Dodaj koszty
+                </a>
             {% endif %}
-        </div>
 
-        <div class="col-3">
-
-
-        {% if object.bt_application_settlement_costs.exists %}
-            <table class="table table-secondary table-striped" style="font-size: 12px">
-
-
-                    <thead>
-                        <tr class="fw-bold">
-                            <td>Opis kosztu</td>
-                            <td>Kategoria</td>
-                            <td>Kwota</td>
-                            <td>Waluta</td>
-                        </tr>
-                    </thead>
-                    <body>
-
-
-
-                    {% for cost in object.bt_application_settlement_costs.all %}
-                        <tr>
-                            <td>{{ cost.bt_cost_description }}</td>
-                            <td>{{ cost.get_bt_cost_category_display }}</td>
-                            <td>{{ cost.bt_cost_amount }}</td>
-                            <td>{{ cost.bt_cost_currency }}</td>
-                        </tr>
-
-                    {% endfor %}
-
-                    </body>
-                </table>
-        {% endif %}
-            <a class="btn btn-warning d-grid"
-             type="button"
-             href="{% url 'e_delegacje:settlement-cost-create' pk=object.id %}"
-            style="font-size: 12px"
-            >
-              dodaj koszty
-            </a>
-
-
-
-        </div>
+            </div>
 {#        <div class="col-1"></div>#}
         <div class="col-3 align-content-end">
 
             {% if object.bt_application_settlement_mileages.exists %}
                 <table class="table table-secondary table-striped" style="font-size: 12px">
-                   <thead></thead>
+                   <thead>
+                        <tr class="fw-bold">
+                            <td>Trasa przejazdu</td>
+                            <td>Data przejazdu</td>
+                            <td class="text-end ms-5 text-center">Cel przejazdu</td>
+                            <td class="text-center">Liczba kilometrów</td>
+                        </tr>
+                   </thead>
                    <tbody>
-                    <tr><td>
-
-                    </td></tr>
+                    {% for trip in object.bt_application_settlement_mileages.all %}
+                        <tr>
+                            <td>{{ trip.trip_description }}</td>
+                            <td>{{ trip.trip_date }}</td>
+                            <td class="text-center">{{ trip.trip_purpose }}</td>
+                            <td class="text-center">{{ trip.mileage }}</td>
+                        </tr>
+                   {% endfor %}
                    </tbody>
 
                </table>
 
-
-
-            {% else %}
-                <a class="btn btn-warning d-grid"
+                <a class="btn btn-warning d-grid align-self-end"
                  href="{% url 'e_delegacje:settlement-mileage-create' pk=object.id %}"
                 style="font-size: 12px"
                 >
-                  dodaj Kilometrówkę
+                  Edytuj Kilometrówkę
+                </a>
+                    {% else %}
+                <a class="btn btn-warning d-grid align-self-end"
+                 href="{% url 'e_delegacje:settlement-mileage-create' pk=object.id %}"
+                style="font-size: 12px"
+                >
+                  Dodaj Kilometrówkę
                 </a>
 
+                    {% endif %}
 
-            {% endif %}
 
 
 
@@ -186,36 +230,54 @@
 
         <div class="col-3 align-content-end">
 
-            {% if object.bt_application_settlement_mileages.exists %}
+            {% if object.bt_application_settlement_feeding.exists %}
                 <table class="table table-secondary table-striped" style="font-size: 12px">
-                   <thead></thead>
-                   <tbody>
-                    <tr><td>
 
-                    </td></tr>
+                   <tbody>
+                    <tr>
+                        <td>{{ object.bt_application_settlement_feeding.breakfast_quantity.label }}</td>
+                    </tr>
+                    <tr>
+                        <td>{{ object.bt_application_settlement_feeding.get }}</td>
+                    </tr>
+                    <tr>
+                        <td>{{ object.bt_application_settlement_feeding.breakfast_quantity.label }}</td>
+                    </tr>
                    </tbody>
 
                </table>
 
-
-
-            {% else %}
-                <a class="btn btn-warning d-gridpy mana"
-                 href="{% url 'e_delegacje:settlement-mileage-create' pk=object.id %}"
+                <a class="btn btn-warning d-grid"
+                 href="{% url 'e_delegacje:settlement-feeding-create' pk=object.id %}"
                 style="font-size: 12px"
                 >
-                  dodaj wyzywienie
+                  Edytuj wyżywienie
                 </a>
 
+            {% else %}
+                <a class="btn btn-warning d-grid"
+                 href="{% url 'e_delegacje:settlement-feeding-create' pk=object.id %}"
+                style="font-size: 12px"
+                >
+                  Dodaj wyżywienie
+                </a>
 
             {% endif %}
-
-
 
         </div>
 
     </div>
+<hr>
+        <div class="row">
+            <div class="col-6 text-end">
+                <h3>Zaliczka: {{ object.bt_application_id.advance_payment }}</h3>
+            </div>
+            <div class="col-6 text-end">
+                <h3>Suma kosztów: {{ object.bt_application_id.advance_payment }}</h3>
+            </div>
 
+        </div>
 
 </div>
+</main>
 {% endblock %}

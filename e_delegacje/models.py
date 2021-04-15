@@ -114,7 +114,7 @@ class BtApplicationSettlementMileage(models.Model):
 
 
 class BtApplicationSettlementFeeding(models.Model):
-    bt_application_settlement = models.ForeignKey(
+    bt_application_settlement = models.OneToOneField(
         BtApplicationSettlement,
         on_delete=models.CASCADE,
         related_name='bt_application_settlement_feeding'
