@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block content %}
+    {% for d in object_list %}
+    <table class="table table-secondary table-striped table-hover">
+
+          <td><a href="{% url 'setup:ratetax-details-view' pk=d.pk %}">Stawka podaktu -{{d.diet_rates}}
+              Info dodatkowe -{{d.etc}}
+          </a>
+            <td>
+
+        </table>
+    {% endfor %}
+{% endblock %}

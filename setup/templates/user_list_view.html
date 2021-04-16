@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block content %}
+    {% for a in object_list %}
+    <table class="table table-secondary table-striped table-hover">
+    <tr>
+          <td><a href="{% url 'setup:user-details-view' pk=a.pk %}">Imię i Nazwisko użytkownika{{ a.first_name }}
+              {{ a.last_name }}</td>
+        <td><a>    Dział - {{ a.department }}</a></td>
+        <td></a>    Menager -{{a.manager}}</a></td>
+
+
+        </table>
+    {% endfor %}
+{% endblock %}

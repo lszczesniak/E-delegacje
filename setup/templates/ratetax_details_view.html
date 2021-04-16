@@ -1,0 +1,8 @@
+{% extends "base.html" %}
+{% block content %}
+    <p>DETAIL VIEW</p>
+    <p> Stawka podatku: {{ object.diet_rates }}</p>
+    <p> etc: {{ object.etc }}</p>
+    <a class="btn btn-outline-secondary" href="{% url 'setup:ratetax-list-view'%}" role="button">Cofnij</a>
+
+{% endblock %}

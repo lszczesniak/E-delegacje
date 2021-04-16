@@ -1,0 +1,8 @@
+{% extends "base.html" %}
+{% block content %}
+    <p>DETAIL VIEW</p>
+    <p>Nazwa: {{ object.name }}</p>
+    <p>Menager: {{ object.manager }}</p>
+
+    <a class="btn btn-outline-secondary" href="{% url 'setup:division-list-view'%}" role="button">Cofnij</a>
+{% endblock %}
