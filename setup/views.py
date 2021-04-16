@@ -7,7 +7,7 @@ from setup.models import (
     BtLocation,
     BtCostCenter,
     BtMileageRates,
-    BtRatesTax,
+    BtDelegationRate,
     BtDepartment,
 
 )
@@ -101,28 +101,28 @@ class BtMileageRatesCreateView(CreateView):
     success_url = reverse_lazy("setup:mileagerate-create")
 
 
-class BtRatesTaxListView(ListView):
-    model = BtRatesTax
-    template_name = "ratetax_list_view.html"
+class BtDelegationRateListView(ListView):
+    model = BtDelegationRate
+    template_name = "delegationrate_list_view.html"
 
 
-class BtRatesTaxDetailView(DetailView):
-    model = BtRatesTax
-    template_name = "ratetax_details_view.html"
+class BtDelegationRateDetailView(DetailView):
+    model = BtDelegationRate
+    template_name = "delegationrate_details_view.html"
 
 
-class BtRatesTaxCreateView(CreateView):
-    model = BtRatesTax
+class BtDelegationRateCreateView(CreateView):
+    model = BtDelegationRate
     template_name = "my_name.html"
     fields = "__all__"
-    success_url = reverse_lazy("setup:ratetax-create")
+    success_url = reverse_lazy("setup:delegationrate-create")
 
 
-class BtRatesTaxUpdateView(UpdateView):
-    model = BtRatesTax
-    fields = ("diet_rates","etc", )
+class BtDelegationRateUpdateView(UpdateView):
+    model = BtDelegationRate
+    fields = ("delagation_rate","alpha_code", )
     template_name = "my_name.html"
-    success_url = reverse_lazy("setup:ratetax-list-view")
+    success_url = reverse_lazy("setup:delegationrate-list-view")
 
 
 class BtDepartmentListView(ListView):
