@@ -19,7 +19,7 @@ class BtSubmissionStatus(models.Model):
 
 
 class BtApplication(models.Model):
-    trip_category = models.CharField(max_length=15, choices=BtTripCategory.choices)
+    bt_country = models.ForeignKey(BtCountry, on_delete=models.PROTECT, related_name='bt_applications')
     target_user = models.ForeignKey(BtUser, on_delete=models.PROTECT, related_name='bt_applications')
     application_author = models.ForeignKey(BtUser, on_delete=models.PROTECT, related_name='bt_applications_author')
     application_status = models.CharField(max_length=30, choices=BtApplicationStatus.choices)
@@ -32,6 +32,7 @@ class BtApplication(models.Model):
     planned_start_date = models.DateField()
     planned_end_date = models.DateField()
     advance_payment = models.DecimalField(decimal_places=2, max_digits=8, null=True, blank=True)
+    application_log = models.CharField(max_length=2400)
 
     def __str__(self):
         return f'{self.trip_purpose_text}'
@@ -64,6 +65,7 @@ class BtApplicationSettlementInfo(models.Model):
         on_delete=models.CASCADE,
         related_name='bt_application_settlement_info'
     )
+    settlement_log = models.CharField(max_length=2400)
 
     def __str__(self):
         return f'Informacje do rozliczenia wniosku {self.bt_application_settlement}'

@@ -36,7 +36,7 @@ class BtApplicationCreateView(View):
     def post(self, request):
         form = BtApplicationForm(request.POST)
         if form.is_valid():
-            trip_category = form.cleaned_data['trip_category']
+            country = form.cleaned_data['country']
             target_user = form.cleaned_data['target_user']
             application_author = form.cleaned_data['application_author']
             application_status = BtApplicationStatus.saved.value
@@ -48,9 +48,10 @@ class BtApplicationCreateView(View):
             planned_end_date = form.cleaned_data['planned_end_date']
             advance_payment = form.cleaned_data['advance_payment']
             employee_level = BtUser.objects.get(id=target_user.id)
+            application_log = f'Wniosek o delegację utworzony przez: {application_author} ...data z systemu...\n'
 
             BtApplication.objects.create(
-                trip_category=trip_category,
+                country=country,
                 target_user=target_user,
                 application_author=application_author,
                 application_status=application_status,
@@ -62,6 +63,7 @@ class BtApplicationCreateView(View):
                 planned_end_date=planned_end_date,
                 advance_payment=advance_payment,
                 employee_level=employee_level,
+                application_log=application_log
             )
             # form.send_mail(user_mail=request.user.email)
 
@@ -84,6 +86,7 @@ class BtApplicationDetailView(DetailView):
 class BtApplicationDeleteView(DeleteView):
     model = BtApplication
     template_name = "bt_application_delete.html"
+    success_url = reverse_lazy("e_delegacje:index")
 
 
 class BtApplicationSettlementView(DetailView):
@@ -131,6 +134,7 @@ class BtApplicationSettlementInfoCreateFormView(View):
             bt_start_time = form.cleaned_data["bt_start_time"]
             bt_end_date = form.cleaned_data["bt_end_date"]
             bt_end_time = form.cleaned_data["bt_end_time"]
+            settlement_log = f'Rozliczenie wniosku {bt_application_settlement.bt_application_id} (tu data z systemu)\n'
             advance_payment = BtApplication.objects.get(
                 id=BtApplicationSettlement.objects.get(id=pk).bt_application_id.id
             )
@@ -141,7 +145,8 @@ class BtApplicationSettlementInfoCreateFormView(View):
                 bt_start_time=bt_start_time,
                 bt_end_date=bt_end_date,
                 bt_end_time=bt_end_time,
-                advance_payment=advance_payment
+                advance_payment=advance_payment,
+                settlement_log=settlement_log
             )
             return HttpResponseRedirect(reverse("e_delegacje:settlement-details", args=[pk]))
         else:
