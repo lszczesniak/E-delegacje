@@ -1,5 +1,5 @@
 from setup.models import BtMileageRates
-from .models import BtUser, BtCostCenter, BtApplication, BtCurrency
+from .models import BtUser, BtCostCenter, BtApplication, BtCurrency, BtCountry
 from django.core.mail import EmailMultiAlternatives
 from django import forms
 from django.template.loader import render_to_string
@@ -23,7 +23,7 @@ class TimeInputWidget(forms.TimeInput):
 
 
 class BtApplicationForm(forms.Form):
-    trip_category = forms.TypedChoiceField(choices=BtTripCategory.choices, label="Rodzaj delegacji", initial='')
+    country = forms.ModelChoiceField(queryset=BtCountry.objects.all(), label="Wybierz kraj")
     target_user = forms.ModelChoiceField(queryset=BtUser.objects.all(), label="Delegowany")
     application_author = forms.ModelChoiceField(queryset=BtUser.objects.all())
     trip_purpose_text = forms.CharField(
@@ -46,8 +46,8 @@ class BtApplicationForm(forms.Form):
     def send_mail(self, user_mail):
 
         result = super().clean()
-        nr_wniosku = result['id']
-        trip_category = result['trip_category']
+        application_number = result['id']
+        country = result['country']
         target_user = result['target_user']
         application_author = result['application_author']
         application_status = BtApplicationStatus.saved.value
@@ -63,8 +63,8 @@ class BtApplicationForm(forms.Form):
         html_content = render_to_string(
             'email_template.html',
             {
-                'nr_wniosku': nr_wniosku,
-                'trip_category': trip_category,
+                'application_number': application_number,
+                'country': country,
                 'target_user': target_user,
                 'application_author': application_author,
                 'application_status': application_status,
