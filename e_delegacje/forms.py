@@ -1,8 +1,5 @@
-from django.contrib.auth.models import User
-from django.contrib.admin.widgets import AdminDateWidget
-
-from .models import BtUser, BtCostCenter, BtApplication
-from django.db import models
+from setup.models import BtMileageRates
+from .models import BtUser, BtCostCenter, BtApplication, BtCurrency
 from django.core.mail import EmailMultiAlternatives
 from django import forms
 from django.template.loader import render_to_string
@@ -12,11 +9,8 @@ from e_delegacje.enums import (
     BtTripCategory,
     BtApplicationStatus,
     BtTransportType,
-    BtEmployeeLevel,
     BtCostCategory,
     BtVatRates,
-    BtMileageVehicleTypes
-
 )
 
 
@@ -24,8 +18,12 @@ class DateInputWidget(forms.DateInput):
     input_type = 'date'
 
 
+class TimeInputWidget(forms.TimeInput):
+    input_type = 'time'
+
+
 class BtApplicationForm(forms.Form):
-    trip_category = forms.TypedChoiceField(choices=BtTripCategory.choices, label="Rodzaj delegacji")
+    trip_category = forms.TypedChoiceField(choices=BtTripCategory.choices, label="Rodzaj delegacji", initial='')
     target_user = forms.ModelChoiceField(queryset=BtUser.objects.all(), label="Delegowany")
     application_author = forms.ModelChoiceField(queryset=BtUser.objects.all())
     trip_purpose_text = forms.CharField(
@@ -105,10 +103,36 @@ class BtApplicationSettlementForm(forms.Form):
 
 
 class BtApplicationSettlementInfoForm(forms.Form):
-    bt_completed = forms.TypedChoiceField(label="Czy delegacha się odbyła?", choices=[('tak', 'tak'), ('nie', 'nie')])
-    bt_start_date = forms.DateField(label="Data wyjazdu")
-    bt_start_time = forms.TimeField(label="Godzina wyjazdu")
-    bt_end_date = forms.DateField(label="Data powrotu")
-    bt_end_time = forms.TimeField(label="Godzina powrotu")
+    bt_completed = forms.TypedChoiceField(
+        label="Czy delegacja się odbyła?",
+        choices=[("", ""), ('tak', 'tak'), ('nie', 'nie')],
+        )
+    bt_start_date = forms.DateField(label="Data wyjazdu",widget=DateInputWidget)
+    bt_start_time = forms.TimeField(label="Godzina wyjazdu", widget=TimeInputWidget)
+    bt_end_date = forms.DateField(label="Data powrotu", widget=DateInputWidget)
+    bt_end_time = forms.TimeField(label="Godzina powrotu", widget=TimeInputWidget)
 
 
+class BtApplicationSettlementCostForm(forms.Form):
+    bt_cost_category = forms.TypedChoiceField(choices=BtCostCategory.choices, label="Kategoria kosztu", initial="")
+    bt_cost_description = forms.CharField(max_length=120, label="Opis")
+    bt_cost_amount = forms.DecimalField(decimal_places=2, max_digits=8, label="Kwota", min_value=0)
+    bt_cost_currency = forms.ModelChoiceField(queryset=BtCurrency.objects.all(), label="Waluta", initial='')
+    bt_cost_document_date = forms.DateField(label="Data dokumentu", widget=DateInputWidget)
+    bt_cost_VAT_rate = forms.TypedChoiceField(choices=BtVatRates.choices, label="Stawka vat")
+
+
+class BtApplicationSettlementMileageForm(forms.Form):
+    bt_car_reg_number = forms.CharField(max_length=8, label='Numer rejestracyjny')
+    bt_mileage_rate = forms.ModelChoiceField(queryset=BtMileageRates.objects.all(), label='Stawka')
+    trip_start_place = forms.CharField(max_length=50, label='Miejsce wyjazdu')
+    trip_date = forms.DateField(widget=DateInputWidget, label='Data przejazdu')
+    trip_description = forms.CharField(max_length=120, label='Trasa przejazdu')
+    trip_purpose = forms.CharField(max_length=240, label='Cel przejazdu')
+    mileage = forms.IntegerField(label='Liczba kilometrów', min_value=0)
+
+
+class BtApplicationSettlementFeedingForm(forms.Form):
+    breakfast_quantity = forms.IntegerField(label='Liczba zapewnionych śniadań')
+    dinner_quantity = forms.IntegerField(label='Liczba zapewnionych obiadów')
+    supper_quantity = forms.IntegerField(label='Liczba zapewnionych kolacji', min_value=0)

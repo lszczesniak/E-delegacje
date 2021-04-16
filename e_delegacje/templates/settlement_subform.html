@@ -1,11 +1,13 @@
 {% extends "base.html" %}
 {% block content %}
 
+
     <form class="form-control" method="post">
+
+    czy to jest w ogóle wykorzystywane?
     {% csrf_token %}
         <p>{{ form.as_p }}</p>
     <input type="submit" value="Zapisz i wyślij do akceptacji">
 </form>
-
   {% endblock %}
 

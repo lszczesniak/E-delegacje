@@ -10,7 +10,7 @@ class BtTripCategory(models.TextChoices):
 class BtApplicationStatus(models.TextChoices):
     saved = 'saved', 'Zapisany'
     in_progress = 'in_progress', 'W akceptacji'
-    approved = 'approoved', 'Zaakcdptowany'
+    approved = 'approved', 'Zaakcdptowany'
     settled = 'settled', 'Rozliczony'
     canceled = 'canceled', 'Anulowany'
 

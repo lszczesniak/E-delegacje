@@ -136,4 +136,4 @@ EMAIL_USE_TLS = True
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 
 #AUTH_USER_MODEL="e_delegacje.BtUser"
-AUTH_USER_MODEL="setup.BtUser"
+AUTH_USER_MODEL = "setup.BtUser"

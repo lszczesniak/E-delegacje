@@ -2,10 +2,10 @@
 {% block content %}
 
   <h2>Szczegóły wniosku o delegację</h2>
-<div class="row">
+<div class="row" style="font-size: 12px">
   <div class="col-8">
       <br>
-      <table class="table table-secondary table-striped">
+      <table class="table table-sm  table-hover">
                 <tr>
               <td>Numer Wniosku</td>
               <td>{{ object.id }}</td>
@@ -62,14 +62,14 @@
     </div>
   </div>
 
-<div class="row">
+<div class="row" style="font-size: 12px">
     <div class="col-2">
-        <button class="btn-danger" type="submit">
-              <a class="btn-danger bg-transparent"
+
+              <a class="btn btn-outline-danger"
                  href="{% url 'e_delegacje:application-delete' pk=object.pk %}">
                   Usuń wniosek
               </a>
-        </button>
+
     </div>
 </div>
 

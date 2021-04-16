@@ -3,7 +3,7 @@
 
     <h2>Wnioski o delegację</h2>
 
-<table class="table table-secondary table-striped table-hover">
+<table class="table table-sm  table-hover">
 
 <tbody>
     {% for item in object_list %}
@@ -15,30 +15,40 @@
        Opis wniosku: {{ item.trip_purpose_text }}
             </td>
                 <td>
-                   <button class="btn-outline-secondary" type="submit">
-            <a class="btn-warning bg-transparent" href="{% url 'e_delegacje:application-details' pk=item.id %}">
+            <a class="btn btn-outline-secondary"
+               href="{% url 'e_delegacje:application-details' pk=item.id %}"
+            style="font-size: 12px"
+            >
                 Szczegóły
             </a>
-            </button>
+
             </td>
 
                 <td>
-                    <button class="btn-outline-secondary" type="submit">
-              <a class="btn-warning bg-transparent"
-                 href="{% url 'e_delegacje:settlement-create' pk=item.id %}">
+                    {% if not item.bt_applications_settlements %}
+
+              <a class="btn btn-outline-secondary"
+                 href="{% url 'e_delegacje:settlement-create' pk=item.id %}"
+              style="font-size: 12px"
+              >
+
                 Rozlicz wniosek
             </a>
-        </button>
+
+                    {% endif %}
             </td>
+
             <td>
             {% if item.bt_applications_settlements %}
 
-                <button class="btn-outline-secondary" type="submit">
-                  <a class="btn-warning bg-transparent"
-                     href="{% url 'e_delegacje:settlement-details' pk=item.bt_applications_settlements.pk %}">
-                    Zobacz rozliczenie wniosku nr
-                </a>
-                </button>
+
+              <a class="btn btn-outline-secondary"
+                 href="{% url 'e_delegacje:settlement-details' pk=item.bt_applications_settlements.pk %}"
+              style="font-size: 12px"
+              >
+                Zobacz rozliczenie wniosku
+            </a>
+
             {% endif %}
                 </td>
         </tr>
