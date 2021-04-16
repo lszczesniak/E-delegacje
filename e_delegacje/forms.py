@@ -28,7 +28,7 @@ class BtApplicationForm(forms.Form):
     application_author = forms.ModelChoiceField(queryset=BtUser.objects.all())
     trip_purpose_text = forms.CharField(
         max_length=250,
-        widget=forms.Textarea,
+        widget=forms.Textarea(attrs={'rows':3}),
         label="Cel podrózy")
     CostCenter = forms.ModelChoiceField(queryset=BtCostCenter.objects.all(), label="Cost Center")
     transport_type = forms.TypedChoiceField(choices=BtTransportType.choices, label="Rodzaj transportu")
