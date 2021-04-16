@@ -7,7 +7,7 @@ from setup.models import (
     BtRegion,
     BtDepartment,
     BtMileageRates,
-    BtRatesTax,
+    BtDelegationRate,
     BtCurrency
 )
 admin.site.register(BtUser)
@@ -17,5 +17,5 @@ admin.site.register(BtCostCenter)
 admin.site.register(BtDepartment)
 admin.site.register(BtMileageRates)
 admin.site.register(BtDivision)
-admin.site.register(BtRatesTax)
+admin.site.register(BtDelegationRate)
 admin.site.register(BtCurrency)

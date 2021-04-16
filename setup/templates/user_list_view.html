@@ -1,14 +1,22 @@
 {% extends "base.html" %}
 {% block content %}
-    {% for a in object_list %}
-    <table class="table table-secondary table-striped table-hover">
-    <tr>
-          <td><a href="{% url 'setup:user-details-view' pk=a.pk %}">Imię i Nazwisko użytkownika{{ a.first_name }}
-              {{ a.last_name }}</td>
-        <td><a>    Dział - {{ a.department }}</a></td>
-        <td></a>    Menager -{{a.manager}}</a></td>
+<table class="table table-sm">
+    <thead>
+        <tr>
+            <td>Imię i Nazwisko użytkownika</td>
+            <td>Dział</td>
+            <td>Menager</td>
+        </tr>
+    </thead>
+        <body>
+        {% for a in object_list %}
+        <tr class="table table-primary table-striped text-uppercase fw-bold">
 
-
-        </table>
+            <td><a href="{% url 'setup:user-details-view' pk=a.pk %}">{{ a.first_name }}  {{ a.last_name }}</a></td>
+            <td><a>     {{ a.department }}</a></td>
+            <td><a>     {{ a.manager }}</a></td>
+        </tr>
     {% endfor %}
+    </body>
+    </table>
 {% endblock %}

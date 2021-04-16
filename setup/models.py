@@ -48,12 +48,20 @@ class BtCostCenter(models.Model):
         return f'{self.text} - {self.cost_center_number}'
 
 
-class BtRatesTax(models.Model):
-    diet_rates = models.IntegerField()
-    etc = models.CharField(max_length=10)
+class BtCountry(models.Model):
+    country_name = models.CharField(max_length=20)
+    alpha_code = models.CharField(max_length=3)
 
     def __str__(self):
-        return f'{self.diet_rates} - etc: {self.etc}'
+        return f'{self.country_name} - {self.country_alpha_code} '
+
+
+class BtDelegationRate(models.Model):
+    delagation_rate = models.IntegerField()
+    alpha_code = models.ForeignKey(BtCountry, on_delete=models.PROTECT, related_name="Bt_Delegation")
+
+    def __str__(self):
+        return f'{self.delagation_rate} - etc: {self.etc}'
 
 
 class BtMileageRates(models.Model):

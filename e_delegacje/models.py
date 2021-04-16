@@ -1,5 +1,5 @@
 from django.db import models
-from setup.models import BtUser, BtCostCenter, BtRatesTax, BtMileageRates, BtCurrency
+from setup.models import BtUser, BtCostCenter, BtDelegationRate, BtMileageRates, BtCurrency, BtCountry
 from django.contrib.auth.models import User, AbstractUser
 from e_delegacje.enums import (
     BtTripCategory,

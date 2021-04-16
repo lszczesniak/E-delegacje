@@ -1,5 +1,5 @@
 from django.contrib import admin
-from setup.models import BtMileageRates
+from setup.models import BtMileageRates, BtDelegationRate
 from e_delegacje.models import (
     BtApplication,
     BtApplicationSettlement,
@@ -8,8 +8,8 @@ from e_delegacje.models import (
     BtApplicationSettlementInfo,
     BtApplicationSettlementMileage,
     BtSubmissionStatus,
-    BtRatesTax,
-    BtMileageRates,
+#    BtRatesTax,
+#    BtMileageRates,
 
 
 )
