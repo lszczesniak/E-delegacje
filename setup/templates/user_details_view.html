@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block content %}
+    <p>DETAIL VIEW</p>
+    <p>Użytkownik: {{ object.user }}</p>
+    <p>Imie: {{ object.first_name }}</p>
+    <p>Nazwisko: {{ object.last_name }}</p>
+    <p>email: {{ object.email }}</p>
+    <p>Data pierwszego logowania: {{ object.date_joined}}</p>
+    <p>Data ostatniego logowania: {{ object.last_login}}</p>
+
+    <a class="btn btn-outline-secondary" href="{% url 'setup:user-list-view'%}" role="button">Cofnij</a>
+{% endblock %}

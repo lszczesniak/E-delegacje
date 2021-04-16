@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block content %}
+    <p>DETAIL VIEW</p>
+    <p> Nazwa działu: {{ object.name }}</p>
+    <p> Menager id: {{ object.menager_id }}</p>
+    <p> Profit center: {{ object.profit_center }}</p>
+    <p> Cost center: {{ object.cost_center }}</p>
+
+
+
+    <a class="btn btn-outline-secondary" href="{% url 'setup:department-list-view'%}" role="button">Cofnij</a>
+{% endblock %}

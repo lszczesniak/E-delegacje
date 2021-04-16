@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block content %}
+    {% for d in object_list %}
+    <table class="table table-secondary table-striped table-hover">
+    <tr>
+          <td><a href="{% url 'setup:location-details-view' pk=d.pk %}">Opis  - {{ d.name }}
+              Profit Center -{{d.profit_center}}
+          </a>
+            <td>
+              </tr>
+        </table>
+    {% endfor %}
+{% endblock %}

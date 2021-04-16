@@ -1,0 +1,8 @@
+{% extends "base.html" %}
+{% block content %}
+    <p>DETAIL VIEW</p>
+    <p>Opis: {{ object.name }}</p>
+    <p>Profit Center: {{ object.profit_center }}</p>
+
+    <a class="btn btn-outline-secondary" href="{% url 'setup:location-list-view'%}" role="button">Cofnij</a>
+{% endblock %}

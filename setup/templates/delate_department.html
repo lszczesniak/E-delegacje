@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block content %}
+     <form method="post">
+    {% csrf_token %}
+
+    <p>
+      Uwaga usuwasz  departament "{{ object.name }}" z bazy danych?
+    </p>
+    <input type="submit" value="Submit" class="btn btn-danger">
+  </form>
+{% endblock %}
