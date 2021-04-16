@@ -4,11 +4,15 @@
 <div class="col-8 align-items-start">
     <form class="form-control" method="post" >
         {% csrf_token %}
-            <table class="table table-sm table-hover table-light">
+            <table class="table table-sm table-light " style="font-size: 12px">
                  {{ form.as_table }}
                 </table>
 
-            <input class="btn-outline-light text-dark " type="submit" value="Zapisz i wyślij do akceptacji">
+            <input class="btn-outline-light text-dark "
+                   type="submit"
+                   value="Zapisz i wyślij do akceptacji"
+                   style="font-size: 13px"
+            >
 
     </form>
 </div>
