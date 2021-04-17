@@ -6,7 +6,6 @@ from django.template.loader import render_to_string
 from django.utils.html import strip_tags
 from delegacje import settings
 from e_delegacje.enums import (
-    BtTripCategory,
     BtApplicationStatus,
     BtTransportType,
     BtCostCategory,
@@ -23,7 +22,11 @@ class TimeInputWidget(forms.TimeInput):
 
 
 class BtApplicationForm(forms.Form):
-    country = forms.ModelChoiceField(queryset=BtCountry.objects.all(), label="Wybierz kraj")
+    bt_country = forms.ModelChoiceField(
+        queryset=BtCountry.objects.all(),
+        label="Wybierz kraj",
+        initial=BtCountry.objects.get(id=1)
+    )
     target_user = forms.ModelChoiceField(queryset=BtUser.objects.all(), label="Delegowany")
     application_author = forms.ModelChoiceField(queryset=BtUser.objects.all())
     trip_purpose_text = forms.CharField(
@@ -31,7 +34,7 @@ class BtApplicationForm(forms.Form):
         widget=forms.Textarea(attrs={'rows':3}),
         label="Cel podrózy")
     CostCenter = forms.ModelChoiceField(queryset=BtCostCenter.objects.all(), label="Cost Center")
-    transport_type = forms.TypedChoiceField(choices=BtTransportType.choices, label="Rodzaj transportu")
+    transport_type = forms.TypedChoiceField(choices=BtTransportType.choices, label="Rodzaj transportu",)
     travel_route = forms.CharField(max_length=120, label="Trasa podróży")
     planned_start_date = forms.DateField(
         label="Data wyjazdu",
@@ -41,7 +44,12 @@ class BtApplicationForm(forms.Form):
         label="Data powrotu",
         widget=DateInputWidget
     )
-    advance_payment = forms.DecimalField(decimal_places=2, max_digits=6, label="Zaliczka")
+    advance_payment_currency = forms.ModelChoiceField(
+        queryset=BtCurrency.objects.all(),
+        label="Waluta",
+        initial=BtCurrency.objects.get(code='PLN')
+    )
+    advance_payment = forms.DecimalField(decimal_places=2, max_digits=6, label="Zaliczka", initial=0)
 
     def send_mail(self, user_mail):
 

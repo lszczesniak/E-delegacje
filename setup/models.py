@@ -53,15 +53,15 @@ class BtCountry(models.Model):
     alpha_code = models.CharField(max_length=3)
 
     def __str__(self):
-        return f'{self.country_name} - {self.country_alpha_code} '
+        return f'{self.country_name}'
 
 
 class BtDelegationRate(models.Model):
     delagation_rate = models.IntegerField()
-    alpha_code = models.ForeignKey(BtCountry, on_delete=models.PROTECT, related_name="Bt_Delegation")
+    country = models.ForeignKey(BtCountry, on_delete=models.PROTECT, related_name="Bt_Delegation")
 
     def __str__(self):
-        return f'{self.delagation_rate} - etc: {self.etc}'
+        return f'{self.country.country_name} - {self.delagation_rate}'
 
 
 class BtMileageRates(models.Model):

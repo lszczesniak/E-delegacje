@@ -3,6 +3,7 @@ from django.shortcuts import render
 from django.urls import reverse, reverse_lazy
 from django.views.generic import ListView, DetailView, DeleteView, CreateView, FormView
 from django.views import View
+import datetime
 from e_delegacje.enums import BtApplicationStatus
 from e_delegacje.forms import (
     BtApplicationForm,
@@ -23,6 +24,43 @@ from e_delegacje.models import (
 from setup.models import BtCurrency
 
 
+# Calculations
+def trip_duration(settlement):
+    start_date = settlement.bt_application_info.bt_start_date
+    start_time = settlement.bt_application_info.bt_start_time
+    end_date = settlement.bt_application_info.bt_end_date
+    end_time = settlement.bt_application_info.bt_end_time
+    bt_start = datetime.datetime(start_date.year, start_date.month, start_date.day, start_time.hour, start_time.minute)
+    bt_end = datetime.datetime(end_date.year, end_date.month, end_date.day, end_time.hour, end_time.minute)
+    return bt_end - bt_start
+
+
+def get_diet_amount_poland(bt_duration):
+    if 0 < (bt_duration.seconds/3600) < 12:
+        text = f'{bt_duration.days}*100% + 50%'
+        print(f'{bt_duration.days}*100% + 50%')
+    elif(bt_duration.seconds/3600) >= 12:
+        text = f'{bt_duration.days + 1}*100%'
+        print(f'{bt_duration.days + 1}*100%')
+    elif bt_duration.days < 1 and (bt_duration.seconds/3600) < 12:
+        text = f'no diet is due'
+        print(f'no diet is due')
+    return text
+
+
+def get_diet_amount_abroad(bt_duration):
+    if 0 < (bt_duration.seconds/3600) < 8:
+        text = f'{bt_duration.days}*100% + 33%'
+        print(f'{bt_duration.days}*100% + 33%')
+    elif 8 < (bt_duration.seconds/3600) < 12:
+        text = f'{bt_duration.days}*100% + 50%'
+        print(f'{bt_duration.days}*100% + 50%')
+    elif(bt_duration.seconds/3600) >= 12:
+        text = f'{bt_duration.days + 1}*100%'
+        print(f'{bt_duration.days + 1}*100%')
+    return text
+
+
 def index(request):
     return render(request, template_name='index_del.html')
     # return render(request, template_name='example_navbars.html')
@@ -31,12 +69,16 @@ def index(request):
 class BtApplicationCreateView(View):
     def get(self, request):
         form = BtApplicationForm()
-        return render(request, template_name="form_template.html", context={"form": form})
+        current_datetime = ""
+        return render(request,
+                      template_name="form_template.html",
+                      context={"form": form, 'current_datetime': current_datetime}
+                      )
 
     def post(self, request):
         form = BtApplicationForm(request.POST)
         if form.is_valid():
-            country = form.cleaned_data['country']
+            bt_country = form.cleaned_data['bt_country']
             target_user = form.cleaned_data['target_user']
             application_author = form.cleaned_data['application_author']
             application_status = BtApplicationStatus.saved.value
@@ -47,11 +89,13 @@ class BtApplicationCreateView(View):
             planned_start_date = form.cleaned_data['planned_start_date']
             planned_end_date = form.cleaned_data['planned_end_date']
             advance_payment = form.cleaned_data['advance_payment']
+            advance_payment_currency = form.cleaned_data['advance_payment_currency']
             employee_level = BtUser.objects.get(id=target_user.id)
-            application_log = f'Wniosek o delegację utworzony przez: {application_author} ...data z systemu...\n'
+            current_datetime = datetime.datetime.now()
+            application_log = f'Wniosek o delegację utworzony przez: {application_author} - {current_datetime}\n'
 
             BtApplication.objects.create(
-                country=country,
+                bt_country=bt_country,
                 target_user=target_user,
                 application_author=application_author,
                 application_status=application_status,
@@ -62,10 +106,11 @@ class BtApplicationCreateView(View):
                 planned_start_date=planned_start_date,
                 planned_end_date=planned_end_date,
                 advance_payment=advance_payment,
+                advance_payment_currency=advance_payment_currency,
                 employee_level=employee_level,
                 application_log=application_log
             )
-            # form.send_mail(user_mail=request.user.email)
+            # form.send_mail(user_mail=request.user.manager.email)
 
             return HttpResponseRedirect(reverse("e_delegacje:applications-list"))
         else:
@@ -83,12 +128,7 @@ class BtApplicationDetailView(DetailView):
     template_name = "bt_application_details.html"
 
 
-class BtApplicationDeleteView(DeleteView):
-    model = BtApplication
-    template_name = "bt_application_delete.html"
-    success_url = reverse_lazy("e_delegacje:index")
-
-
+# Settlement Views
 class BtApplicationSettlementView(DetailView):
     template_name = "settlement_form_template.html"
     model = BtApplicationSettlement
@@ -97,10 +137,9 @@ class BtApplicationSettlementView(DetailView):
 
 
 class BtApplicationSettlementCreateView(View):
+
     def get(self, request, pk):
         settlement = BtApplicationSettlement.objects.create(bt_application_id=BtApplication.objects.get(id=pk))
-        settlement.save()
-
         return HttpResponseRedirect(reverse("e_delegacje:settlement-details", args=[settlement.id]))
 
 
@@ -113,6 +152,9 @@ class BtApplicationSettlementDetailView(DetailView):
 
     model = BtApplicationSettlement
     template_name = "bt_settlement_details.html"
+
+# Subform create Views
+# Create Views
 
 
 class BtApplicationSettlementInfoCreateFormView(View):
@@ -134,7 +176,9 @@ class BtApplicationSettlementInfoCreateFormView(View):
             bt_start_time = form.cleaned_data["bt_start_time"]
             bt_end_date = form.cleaned_data["bt_end_date"]
             bt_end_time = form.cleaned_data["bt_end_time"]
-            settlement_log = f'Rozliczenie wniosku {bt_application_settlement.bt_application_id} (tu data z systemu)\n'
+            current_datetime = datetime.datetime.now()
+            settlement_log = f'Nowe rozliczenie wniosku nr: {bt_application_settlement.bt_application_id.id} - ' \
+                             f'{current_datetime}\n'
             advance_payment = BtApplication.objects.get(
                 id=BtApplicationSettlement.objects.get(id=pk).bt_application_id.id
             )
@@ -196,10 +240,12 @@ class BtApplicationSettlementMileageCreateView(View):
     def get(self, request, pk):
         settlement = BtApplicationSettlement.objects.get(id=pk)
         form = BtApplicationSettlementMileageForm()
+        trip_list = BtApplicationSettlementMileage.objects.filter(
+            bt_application_settlement=BtApplicationSettlement.objects.get(id=pk))
         return render(
             request,
             template_name="settlement_subform_mileage.html",
-            context={"form": form, 'settlement': settlement})
+            context={"form": form, 'settlement': settlement, 'trip_list': trip_list})
 
     def post(self, request, pk, *args, **kwargs):
         form = BtApplicationSettlementMileageForm(request.POST)
@@ -233,10 +279,15 @@ class BtApplicationSettlementFeedingCreateView(View):
     def get(self, request, pk):
         settlement = BtApplicationSettlement.objects.get(id=pk)
         form = BtApplicationSettlementFeedingForm()
+        if settlement.bt_application_id.bt_country.country_name.lower() == 'polska':
+            diet = get_diet_amount_poland(trip_duration(settlement))
+        else:
+            diet = get_diet_amount_abroad(trip_duration(settlement))
+
         return render(
             request,
             template_name="settlement_subform_feeding.html",
-            context={"form": form, 'settlement': settlement})
+            context={"form": form, 'settlement': settlement, 'diet': diet})
 
     def post(self, request, pk, *args, **kwargs):
         form = BtApplicationSettlementFeedingForm(request.POST)
@@ -253,3 +304,29 @@ class BtApplicationSettlementFeedingCreateView(View):
             )
             return HttpResponseRedirect(reverse("e_delegacje:settlement-feeding-create", args=[pk]))
         return render(request, "settlement_subform_feeding.html", {"form": form})
+
+
+# Delete Views
+class BtApplicationDeleteView(DeleteView):
+    model = BtApplication
+    template_name = "bt_application_delete.html"
+    success_url = reverse_lazy("e_delegacje:index")
+
+
+class BtApplicationSettlementCostDeleteView(View):
+
+    def post(self, request, pk, *args, **kwargs):
+        item_to_be_deleted = BtApplicationSettlementCost.objects.get(id=pk)
+        settlement = BtApplicationSettlement.objects.get(id=item_to_be_deleted.bt_application_settlement.id)
+        item_to_be_deleted.delete()
+        return HttpResponseRedirect(reverse("e_delegacje:settlement-cost-create", args=[settlement.id]))
+
+
+class BtApplicationSettlementMileageDeleteView(View):
+
+    def post(self, request, pk, *args, **kwargs):
+        item_to_be_deleted = BtApplicationSettlementMileage.objects.get(id=pk)
+        settlement = BtApplicationSettlement.objects.get(id=item_to_be_deleted.bt_application_settlement.id)
+        item_to_be_deleted.delete()
+        return HttpResponseRedirect(reverse("e_delegacje:settlement-mileage-create", args=[settlement.id]))
+

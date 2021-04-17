@@ -2,11 +2,6 @@ from enum import Enum
 from django.db import models
 
 
-class BtTripCategory(models.TextChoices):
-    kr = 'kr', 'krajowa'
-    zg = 'zg', 'zagraniczna'
-
-
 class BtApplicationStatus(models.TextChoices):
     saved = 'saved', 'Zapisany'
     in_progress = 'in_progress', 'W akceptacji'
@@ -16,6 +11,7 @@ class BtApplicationStatus(models.TextChoices):
 
 
 class BtTransportType(models.TextChoices):
+    default = 'default', ''
     train = 'train', "pociąg"
     plane = 'plane', 'samolot'
     company_car = 'company_car', 'samochód służbowy'

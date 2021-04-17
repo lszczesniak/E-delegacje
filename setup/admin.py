@@ -8,7 +8,8 @@ from setup.models import (
     BtDepartment,
     BtMileageRates,
     BtDelegationRate,
-    BtCurrency
+    BtCurrency,
+    BtCountry
 )
 admin.site.register(BtUser)
 admin.site.register(BtRegion)
@@ -19,3 +20,4 @@ admin.site.register(BtMileageRates)
 admin.site.register(BtDivision)
 admin.site.register(BtDelegationRate)
 admin.site.register(BtCurrency)
+admin.site.register(BtCountry)

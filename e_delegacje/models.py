@@ -2,7 +2,6 @@ from django.db import models
 from setup.models import BtUser, BtCostCenter, BtDelegationRate, BtMileageRates, BtCurrency, BtCountry
 from django.contrib.auth.models import User, AbstractUser
 from e_delegacje.enums import (
-    BtTripCategory,
     BtApplicationStatus,
     BtTransportType,
     BtEmployeeLevel,
@@ -32,6 +31,7 @@ class BtApplication(models.Model):
     planned_start_date = models.DateField()
     planned_end_date = models.DateField()
     advance_payment = models.DecimalField(decimal_places=2, max_digits=8, null=True, blank=True)
+    advance_payment_currency = models.ForeignKey(BtCurrency, on_delete=models.PROTECT, related_name='bt_applications')
     application_log = models.CharField(max_length=2400)
 
     def __str__(self):
