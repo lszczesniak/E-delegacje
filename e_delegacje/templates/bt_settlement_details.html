@@ -53,13 +53,13 @@
                 <table class="table table-light offset-2" style="font-size: 13px">
                     <tr class="fw-bold">
 
-                        <td>Rodzaj delegacji</td>
+                        <td>Kraj</td>
                         <td>Pracownik</td>
                         <td colspan="2">Cost center</td>
 
                     </tr>
                   <tr>
-                      <td>{{ object.bt_application_id.get_trip_category_display }}</td>
+                      <td>{{ object.bt_application_id.bt_country }}</td>
                       <td>{{ object.bt_application_id.target_user }}</td>
                       <td colspan="2">{{ object.bt_application_id.CostCenter }}</td>
 
@@ -112,8 +112,12 @@
                               <td class="fw-bold">Godzina powrotu</td>
                               <td>{{ object.bt_application_info.bt_end_time }}</td>
                           </tr>
+                          <tr>
+                              <td class="fw-bold">Historia</td>
+                              <td>{{ object.bt_application_info.settlement_log }}</td>
+                          </tr>
                       </table>
-                  <a class="btn btn-outline-secondary d-grid"
+                  <a class="btn btn-outline-warning d-grid"
                      href="{% url 'e_delegacje:settlement-info-create' pk=object.id %}"
                      style="font-size: 12px"
                   >
@@ -121,7 +125,8 @@
                   </a>
                 {% else %}
 
-                  <a class="btn btn-outline-secondary d-grid"
+
+                  <a class="btn btn-outline-warning d-grid"
                      href="{% url 'e_delegacje:settlement-info-create' pk=object.id %}"
                      style="font-size: 12px"
                   >
@@ -162,7 +167,7 @@
 
                             </body>
                         </table>
-                    <a class="btn btn-outline-secondary d-grid align-content-end"
+                    <a class="btn btn-outline-warning d-grid align-content-end"
                      type="button"
                      href="{% url 'e_delegacje:settlement-cost-create' pk=object.id %}"
                     style="font-size: 12px"
@@ -171,7 +176,7 @@
                     </a>
 
                 {% else %}
-                    <a class="btn btn-outline-secondary d-grid"
+                    <a class="btn btn-outline-warning d-grid"
                      type="button"
                      href="{% url 'e_delegacje:settlement-cost-create' pk=object.id %}"
                     style="font-size: 12px"
@@ -207,14 +212,14 @@
 
                    </table>
 
-                    <a class="btn btn-outline-secondary d-grid align-self-end"
+                    <a class="btn btn-outline-warning d-grid align-self-end"
                      href="{% url 'e_delegacje:settlement-mileage-create' pk=object.id %}"
                     style="font-size: 12px"
                     >
                       Edytuj Kilometrówkę
                     </a>
                         {% else %}
-                    <a class="btn btn-outline-secondary d-grid align-self-end"
+                    <a class="btn btn-outline-warning d-grid align-self-end"
                      href="{% url 'e_delegacje:settlement-mileage-create' pk=object.id %}"
                     style="font-size: 12px"
                     >
@@ -247,7 +252,7 @@
 
                </table>
 
-                <a class="btn btn-outline-secondary d-grid"
+                <a class="btn btn-outline-warning d-grid"
                  href="{% url 'e_delegacje:settlement-feeding-create' pk=object.id %}"
                 style="font-size: 12px"
                 >
@@ -255,7 +260,7 @@
                 </a>
 
             {% else %}
-                <a class="btn btn-outline-secondary d-grid"
+                <a class="btn btn-outline-warning d-grid"
                  href="{% url 'e_delegacje:settlement-feeding-create' pk=object.id %}"
                 style="font-size: 12px"
                 >

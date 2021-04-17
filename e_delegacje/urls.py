@@ -12,7 +12,8 @@ from e_delegacje.views import (
     BtApplicationSettlementMileageCreateView,
     BtApplicationSettlementCostCreateView,
     BtApplicationSettlementFeedingCreateView,
-    BtApplicationSettlementInfoCreateFormView,
+    BtApplicationSettlementInfoCreateFormView, BtApplicationSettlementCostDeleteView,
+    BtApplicationSettlementMileageDeleteView,
 )
 
 app_name = 'e_delegacje'
@@ -32,6 +33,8 @@ urlpatterns = [
     path('settlement-details/<pk>', BtApplicationSettlementDetailView.as_view(), name='settlement-details'),
 
     # podformularze do rozliczenia wniosku
+
+    # create Views
     path(
         'settlement-info-create/<pk>',
         BtApplicationSettlementInfoCreateFormView.as_view(),
@@ -53,4 +56,15 @@ urlpatterns = [
         name='settlement-feeding-create'
     ),
 
+    # Delete Views
+    path(
+        'settlement-cost-delete/<pk>',
+        BtApplicationSettlementCostDeleteView.as_view(),
+        name='settlement-cost-delete'
+    ),
+    path(
+        'settlement-mileage-delete/<pk>',
+        BtApplicationSettlementMileageDeleteView.as_view(),
+        name='settlement-mileage-delete'
+    ),
 ]

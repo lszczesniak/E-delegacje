@@ -7,6 +7,7 @@
             <table class="table table-sm table-light " style="font-size: 12px">
                  {{ form.as_table }}
                 </table>
+            <input name="current_datetime" id="current_datetime" value="" hidden>
 
             <input class="btn-outline-light text-dark "
                    type="submit"
@@ -16,5 +17,17 @@
 
     </form>
 </div>
+
+<script>
+  var today = new Date();
+  var date = today.getFullYear()+'.'+(today.getMonth()+1)+'.'+today.getDate();
+  var hour = today.getHours()+":"+today.getMinutes()+":"+today.getSeconds();
+  var current_datetime = date+" "+hour;
+  document.getElementById("current_datetime").value = current_datetime;
+  console.log(date);
+  console.log(hour);
+  console.log(current_datetime);
+  console.log(today);
+</script>
   {% endblock %}
 

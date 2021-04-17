@@ -95,10 +95,10 @@
 
     </div>
 
-    <div class="col-2">
+    <div class="col-1">
 
     </div>
-            <div class="col-5 align-items-start">
+            <div class="col-6 align-items-start">
             {% if cost_list %}
                 <table class="table table-sm">
                     <thead>
@@ -107,6 +107,7 @@
                             <td>kategoria</td>
                             <td class="text-end ms-5">kwota</td>
                             <td class="text-center">waluta</td>
+                            <td >Usuń</td>
                         </tr>
                     </thead>
                     <body>
@@ -116,6 +117,12 @@
                             <td>{{ cost.get_bt_cost_category_display }}</td>
                             <td class="text-end ms-5">{{ cost.bt_cost_amount }}</td>
                             <td class="text-center">{{ cost.bt_cost_currency }}</td>
+                            <td class="pt-2">
+                                <form action="{% url 'e_delegacje:settlement-cost-delete' pk=cost.pk %}" method="POST">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn bi-trash-fill btn-outline-danger" ></button>
+                                </form>
+                            </td>
                         </tr>
 
                     {% endfor %}
