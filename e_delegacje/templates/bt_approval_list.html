@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+{% block content %}
+
+    <h2>Wnioski o delegację</h2>
+
+<table class="table table-sm  table-hover">
+
+<tbody>
+    {% for item in object_list %}
+    <tr>
+        <td>
+        Nr: {{ item.id }}
+            </td>
+                <td>
+       {{ item.trip_purpose_text }}
+            </td>
+{#            <td>#}
+{#                <p>Status: {{ item.get_application_status_display }}</p>#}
+{#            </td>#}
+{#                <td>#}
+{#            <a class="btn btn-outline-secondary"#}
+{#               href="{% url 'e_delegacje:application-details' pk=item.id %}"#}
+{#            style="font-size: 12px"#}
+{#            >#}
+{#                Szczegóły#}
+{#            </a>#}
+{##}
+{#            </td>#}
+
+{#                <td>#}
+{#                    {% if not item.bt_applications_settlements %}#}
+{##}
+{#              <a class="btn btn-outline-secondary"#}
+{#                 href="{% url 'e_delegacje:settlement-create' pk=item.id %}"#}
+{#              style="font-size: 12px"#}
+{#              >#}
+{##}
+{#                Rozlicz wniosek#}
+{#            </a>#}
+{##}
+{#                    {% endif %}#}
+{#            </td>#}
+
+            <td>
+              <a class="btn btn-outline-secondary"
+                 href="{% url 'e_delegacje:approval' pk=item.bt_applications_settlements.pk %}"
+              style="font-size: 12px"
+              >
+                Zaakceptuj wniosek
+            </a>
+
+                </td>
+        </tr>
+
+    {% endfor %}
+</tbody>
+</table>
+    <div class="row">
+        <div class="col-3 align-self-end">
+            <a type="button"
+               class="btn btn-outline-secondary"
+               href="{% url 'e_delegacje:index' %}"
+               style="font-size: 13px"
+            >
+                Powrót
+            </a>
+        </div>
+    </div>
+{% endblock %}
+

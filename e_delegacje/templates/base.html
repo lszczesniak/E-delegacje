@@ -60,13 +60,16 @@
 			  <a class="navbar-brand text-light" href="{% url 'e_delegacje:index' %}">E-delegacje</a>
           </li>
 			<li class="nav-item">
-				<a class="nav-item nav-link text-warning " href="{% url 'e_delegacje:applications-create' %}">Nowy wniosek</a>
+				<a class="nav-item nav-link text-warning " href="{% url 'e_delegacje:applications-create' %}">
+                    Nowy wniosek</a>
 			</li>
 				<li class="nav-item">
-				<a class="nav-item nav-link text-warning " href="{% url 'e_delegacje:applications-list' %}">Lista wniosków</a>
+				<a class="nav-item nav-link text-warning " href="{% url 'e_delegacje:applications-list' %}">
+                    Lista wniosków</a>
 			</li>
 			  <li class="nav-item">
-			  <a class="nav-item nav-link text-warning " href="/">Akceptacja wniosków</a>
+			  <a class="nav-item nav-link text-warning " href="{% url 'e_delegacje:approval-list' %}">
+                  Akceptacja wniosków</a>
 			</li>
 
 		</ul>

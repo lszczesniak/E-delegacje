@@ -9,7 +9,7 @@
             <table class="table table-sm table-light " style="font-size: 12px">
                  {{ form.as_table }}
                 </table>
-            <input name="current_datetime" id="current_datetime" value="" hidden>
+
             </div>
             <div class="row">
                 <div class="col-3 align-self-end">
@@ -34,15 +34,11 @@
 </div>
 
 <script>
-  var today = new Date();
-  var date = today.getFullYear()+'.'+(today.getMonth()+1)+'.'+today.getDate();
-  var hour = today.getHours()+":"+today.getMinutes()+":"+today.getSeconds();
-  var current_datetime = date+" "+hour;
-  document.getElementById("current_datetime").value = current_datetime;
-  console.log(date);
-  console.log(hour);
-  console.log(current_datetime);
-  console.log(today);
+  let today = new Date();
+  let date = today.getFullYear()+'.'+(today.getMonth()+1)+'.'+today.getDate();
+  let hour = today.getHours()+":"+today.getMinutes()+":"+today.getSeconds();
+  let current_datetime = date+" "+hour;
+  document.getElementById("id_current_datetime").value = current_datetime;
 </script>
   {% endblock %}
 

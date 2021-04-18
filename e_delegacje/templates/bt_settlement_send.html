@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block content %}
+
+  <h2>Rozliczenie wniosku o delegację </h2>
+<main>
+
+
+{% include 'bt_settlement_details.html' %}
+
+<hr>
+        <div class="row">
+            <div class="col-2 align-self-end">
+                <a class="btn btn-outline-secondary d-grid"
+                 href="{% url 'e_delegacje:applications-list' %}"
+                style="font-size: 12px"
+                >
+                  powrót
+                </a>
+            </div>
+
+                        <div class="col-2 align-self-end">
+                <a class="btn btn-outline-success d-grid"
+                 href="{% url 'e_delegacje:applications-list' %}"
+                style="font-size: 12px"
+                >
+                  Wyślij do akceptacji
+                </a>
+            </div>
+        </div>
+</div>
+</main>
+
+{% endblock %}

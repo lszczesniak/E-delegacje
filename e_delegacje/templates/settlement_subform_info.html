@@ -29,6 +29,14 @@
 </div>
 
 
+<script>
+  let today = new Date();
+  let date = today.getFullYear()+'.'+(today.getMonth()+1)+'.'+today.getDate();
+  let hour = today.getHours()+":"+today.getMinutes()+":"+today.getSeconds();
+  let current_datetime = date+" "+hour;
+  document.getElementById("id_current_datetime").value = current_datetime;
+</script>
+
 
   {% endblock %}
 

@@ -90,7 +90,7 @@ class BtApplicationSettlementCost(models.Model):
     attachment = models.FileField(null=True, blank=True)
 
     def __str__(self):
-        return f'Koszty do rozliczenia wniosku{self.bt_application_settlement}'
+        return f'{self.bt_cost_description}'
 
 
 class BtApplicationSettlementMileage(models.Model):

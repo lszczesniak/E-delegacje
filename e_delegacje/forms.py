@@ -54,6 +54,7 @@ class BtApplicationForm(forms.Form):
         initial=BtCurrency.objects.get(code='PLN')
     )
     advance_payment = forms.DecimalField(decimal_places=2, max_digits=6, label="Zaliczka", initial=0)
+    current_datetime = forms.CharField(widget=forms.HiddenInput())
 
     def clean(self):
         result = super().clean()
@@ -128,6 +129,7 @@ class BtApplicationSettlementInfoForm(forms.Form):
     bt_start_time = forms.TimeField(label="Godzina wyjazdu", widget=TimeInputWidget)
     bt_end_date = forms.DateField(label="Data powrotu", widget=DateInputWidget)
     bt_end_time = forms.TimeField(label="Godzina powrotu", widget=TimeInputWidget)
+    current_datetime = forms.CharField(widget=forms.HiddenInput())
 
     def clean(self):
         result = super().clean()
@@ -137,6 +139,7 @@ class BtApplicationSettlementInfoForm(forms.Form):
             result['bt_start_date'].day,
             result['bt_start_time'].hour,
             result['bt_start_time'].minute)
+
         comb_end_time = datetime.datetime(
             result['bt_end_date'].year,
             result['bt_end_date'].month,
@@ -145,6 +148,7 @@ class BtApplicationSettlementInfoForm(forms.Form):
             result['bt_end_time'].minute)
         if comb_start_time > comb_end_time:
             raise ValidationError("Data i godzina wyjazdu musi być przed datą i godziną powrotu!")
+        return result
 
 
 class BtApplicationSettlementCostForm(forms.Form):

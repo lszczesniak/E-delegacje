@@ -1,8 +1,6 @@
-{% extends "base.html" %}
+
 {% block content %}
 
-  <h2>Rozliczenie wniosku o delegację </h2>
-<main>
 <div class="container-fluid" >
  <hr>
         <div class="row">
@@ -118,7 +116,7 @@
                           </tr>
                       </table>
                   <a class="btn btn-outline-warning d-grid"
-                     href="{% url 'e_delegacje:settlement-info-update' pk=object.id %}"
+                     href="{% url 'e_delegacje:settlement-info-create' pk=object.id %}"
                      style="font-size: 12px"
                   >
                       Edytuj informacje
@@ -139,6 +137,11 @@
 
 
                 {% if object.bt_application_settlement_costs.exists %}
+                    <div class="row">
+                        <h5>Koszty: {{ cost_sum }} zł.</h5>
+                    <hr>
+                    </div>
+
                     <table class="table table-light table-striped" style="font-size: 12px">
 
 
@@ -182,6 +185,7 @@
                     >
                       Dodaj koszty
                     </a>
+
                 {% endif %}
 
                 </div>
@@ -189,6 +193,10 @@
             <div class="col-3 align-content-end">
 
                 {% if object.bt_application_settlement_mileages.exists %}
+                    <div class="row">
+                        <h5>Kilometrówka: {{ mileage_cost }} zł.</h5>
+                    <hr>
+                    </div>
                     <table class="table table-light table-striped" style="font-size: 12px">
                        <thead>
                             <tr class="fw-bold table-active">
@@ -230,8 +238,12 @@
             </div>
 
             <div class="col-3 align-content-end">
-
+                    <div class="row">
+                        <h5 class="vIntegerField">Dieta: {{ diet }} zł. </h5>
+                    <hr>
+                    </div>
                 {% if object.bt_application_settlement_feeding %}
+
                     <table class="table table-light  table-striped" style="font-size: 12px">
 
                        <tbody>
@@ -273,25 +285,23 @@
     </div>
 <hr>
         <div class="row">
-            <div class="col-6 text-end">
-                <h3>Zaliczka: {{ object.bt_application_id.advance_payment }}</h3>
+            <div class="col-3 ">
+                <h5>Zaliczka: {{ advance }} {{ object.bt_application_id.advance_payment_currency }}</h5>
             </div>
-            <div class="col-6 text-end">
-                <h3>Suma kosztów: {{ object.bt_application_id.advance_payment }}</h3>
+            <div class="col-6 text-center">
+                {% if settlement_amount > 0 %}
+                    <h3>{{ settlement_amount }}</h3>
+                {% else %}
+                    <h3>{{ settlement_amount }}</h3>
+                {% endif %}
+            </div>
+            <div class="col-3 text-end">
+                <h5>Suma kosztów: {{ total_costs }} zł.</h5>
             </div>
 
         </div>
+
 <hr>
-        <div class="row">
-            <div class="col-2 align-self-end">
-                <a class="btn btn-outline-secondary d-grid"
-                 href="{% url 'e_delegacje:applications-list' %}"
-                style="font-size: 12px"
-                >
-                  powrót
-                </a>
-            </div>
-        </div>
 </div>
-</main>
-{% endblock %}
+
+{% endblock content %}
