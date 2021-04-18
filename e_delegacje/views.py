@@ -1,7 +1,7 @@
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse, reverse_lazy
-from django.views.generic import ListView, DetailView, DeleteView, CreateView, FormView
+from django.views.generic import ListView, DetailView, DeleteView, UpdateView
 from django.views import View
 import datetime
 from e_delegacje.enums import BtApplicationStatus
@@ -24,41 +24,6 @@ from e_delegacje.models import (
 from setup.models import BtCurrency
 
 
-# Calculations
-def trip_duration(settlement):
-    start_date = settlement.bt_application_info.bt_start_date
-    start_time = settlement.bt_application_info.bt_start_time
-    end_date = settlement.bt_application_info.bt_end_date
-    end_time = settlement.bt_application_info.bt_end_time
-    bt_start = datetime.datetime(start_date.year, start_date.month, start_date.day, start_time.hour, start_time.minute)
-    bt_end = datetime.datetime(end_date.year, end_date.month, end_date.day, end_time.hour, end_time.minute)
-    return bt_end - bt_start
-
-
-def get_diet_amount_poland(bt_duration):
-    if 0 < (bt_duration.seconds/3600) < 12:
-        text = f'{bt_duration.days}*100% + 50%'
-        print(f'{bt_duration.days}*100% + 50%')
-    elif(bt_duration.seconds/3600) >= 12:
-        text = f'{bt_duration.days + 1}*100%'
-        print(f'{bt_duration.days + 1}*100%')
-    elif bt_duration.days < 1 and (bt_duration.seconds/3600) < 12:
-        text = f'no diet is due'
-        print(f'no diet is due')
-    return text
-
-
-def get_diet_amount_abroad(bt_duration):
-    if 0 < (bt_duration.seconds/3600) < 8:
-        text = f'{bt_duration.days}*100% + 33%'
-        print(f'{bt_duration.days}*100% + 33%')
-    elif 8 < (bt_duration.seconds/3600) < 12:
-        text = f'{bt_duration.days}*100% + 50%'
-        print(f'{bt_duration.days}*100% + 50%')
-    elif(bt_duration.seconds/3600) >= 12:
-        text = f'{bt_duration.days + 1}*100%'
-        print(f'{bt_duration.days + 1}*100%')
-    return text
 
 
 def index(request):
@@ -139,7 +104,10 @@ class BtApplicationSettlementView(DetailView):
 class BtApplicationSettlementCreateView(View):
 
     def get(self, request, pk):
-        settlement = BtApplicationSettlement.objects.create(bt_application_id=BtApplication.objects.get(id=pk))
+        bt_application = BtApplication.objects.get(id=pk)
+        settlement = BtApplicationSettlement.objects.create(bt_application_id=bt_application)
+        bt_application.application_status = BtApplicationStatus.settlement_in_progress.value
+        bt_application.save()
         return HttpResponseRedirect(reverse("e_delegacje:settlement-details", args=[settlement.id]))
 
 
@@ -302,8 +270,49 @@ class BtApplicationSettlementFeedingCreateView(View):
                 dinner_quantity=dinner_quantity,
                 supper_quantity=supper_quantity
             )
-            return HttpResponseRedirect(reverse("e_delegacje:settlement-feeding-create", args=[pk]))
+            return HttpResponseRedirect(reverse("e_delegacje:settlement-details", args=[pk]))
         return render(request, "settlement_subform_feeding.html", {"form": form})
+
+
+# Calculations
+def trip_duration(settlement):
+    start_date = settlement.bt_application_info.bt_start_date
+    start_time = settlement.bt_application_info.bt_start_time
+    end_date = settlement.bt_application_info.bt_end_date
+    end_time = settlement.bt_application_info.bt_end_time
+    bt_start = datetime.datetime(start_date.year, start_date.month, start_date.day, start_time.hour, start_time.minute)
+    bt_end = datetime.datetime(end_date.year, end_date.month, end_date.day, end_time.hour, end_time.minute)
+    return bt_end - bt_start
+
+
+def get_diet_amount_poland(bt_duration):
+    text = 'no diet'
+    if 8 < (bt_duration.seconds/3600) < 12:
+        text = f'{bt_duration.days}*100% + 50%'
+        print(f'{bt_duration.days}*100% + 50%')
+    elif(bt_duration.seconds/3600) >= 12:
+        text = f'{bt_duration.days + 1}*100%'
+        print(f'{bt_duration.days + 1}*100%')
+    elif bt_duration.days < 1 and (bt_duration.seconds/3600) <= 8:
+        text = f'no diet is due'
+        print(f'no diet is due')
+    return text
+
+
+def get_diet_amount_abroad(bt_duration):
+    text = 'no diet'
+    if 0 < (bt_duration.seconds/3600) <= 8:
+        text = f'{bt_duration.days}*100% + 33%'
+        print(f'{bt_duration.days}*100% + 33%')
+    elif 8 < (bt_duration.seconds/3600) < 12:
+        text = f'{bt_duration.days}*100% + 50%'
+        print(f'{bt_duration.days}*100% + 50%')
+    elif(bt_duration.seconds/3600) >= 12:
+        text = f'{bt_duration.days + 1}*100%'
+        print(f'{bt_duration.days + 1}*100%')
+    else:
+        text = f'{bt_duration}'
+    return text
 
 
 # Delete Views
@@ -329,4 +338,47 @@ class BtApplicationSettlementMileageDeleteView(View):
         settlement = BtApplicationSettlement.objects.get(id=item_to_be_deleted.bt_application_settlement.id)
         item_to_be_deleted.delete()
         return HttpResponseRedirect(reverse("e_delegacje:settlement-mileage-create", args=[settlement.id]))
+
+
+# UpdateViews
+class BtApplicationSettlementInfoUpdateView(View):
+
+    def get(self, request, pk):
+        form = BtApplicationSettlementInfoForm()
+        settlement = BtApplicationSettlement.objects.get(id=pk)
+        return render(
+            request,
+            template_name="settlement_subform_info.html",
+            context={"form": form, 'settlement': settlement})
+
+    def post(self, request, pk, *args, **kwargs):
+        form = BtApplicationSettlementInfoForm(request.POST)
+        if form.is_valid():
+            bt_application_settlement = BtApplicationSettlement.objects.get(id=pk)
+            bt_completed = form.cleaned_data["bt_completed"]
+            bt_start_date = form.cleaned_data["bt_start_date"]
+            bt_start_time = form.cleaned_data["bt_start_time"]
+            bt_end_date = form.cleaned_data["bt_end_date"]
+            bt_end_time = form.cleaned_data["bt_end_time"]
+            current_datetime = datetime.datetime.now()
+            settlement_log = f'Nowe rozliczenie wniosku nr: {bt_application_settlement.bt_application_id.id} - ' \
+                             f'{current_datetime}\n'
+            advance_payment = BtApplication.objects.get(
+                id=BtApplicationSettlement.objects.get(id=pk).bt_application_id.id
+            )
+            BtApplicationSettlementInfo.objects.create(
+                bt_application_settlement=bt_application_settlement,
+                bt_completed=bt_completed,
+                bt_start_date=bt_start_date,
+                bt_start_time=bt_start_time,
+                bt_end_date=bt_end_date,
+                bt_end_time=bt_end_time,
+                advance_payment=advance_payment,
+                settlement_log=settlement_log
+            )
+            return HttpResponseRedirect(reverse("e_delegacje:settlement-details", args=[pk]))
+        else:
+            return HttpResponseRedirect(reverse("e_delegacje:index"))
+
+
 

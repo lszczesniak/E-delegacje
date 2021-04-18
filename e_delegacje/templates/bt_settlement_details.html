@@ -118,24 +118,23 @@
                           </tr>
                       </table>
                   <a class="btn btn-outline-warning d-grid"
-                     href="{% url 'e_delegacje:settlement-info-create' pk=object.id %}"
+                     href="{% url 'e_delegacje:settlement-info-update' pk=object.id %}"
                      style="font-size: 12px"
                   >
-                      Edytuj informacje dodatkowe
+                      Edytuj informacje
                   </a>
                 {% else %}
-
 
                   <a class="btn btn-outline-warning d-grid"
                      href="{% url 'e_delegacje:settlement-info-create' pk=object.id %}"
                      style="font-size: 12px"
                   >
-                      Dodaj informacje dodatkowe
+                      Dodaj informacje
                   </a>
 
                 {% endif %}
             </div>
-
+            {% if object.bt_application_info %}
             <div class="col-3">
 
 
@@ -186,7 +185,7 @@
                 {% endif %}
 
                 </div>
-{#        <div class="col-1"></div>#}
+
             <div class="col-3 align-content-end">
 
                 {% if object.bt_application_settlement_mileages.exists %}
@@ -230,47 +229,47 @@
 
             </div>
 
-        <div class="col-3 align-content-end">
+            <div class="col-3 align-content-end">
 
-            {% if object.bt_application_settlement_feeding %}
-                <table class="table table-light  table-striped" style="font-size: 12px">
+                {% if object.bt_application_settlement_feeding %}
+                    <table class="table table-light  table-striped" style="font-size: 12px">
 
-                   <tbody>
-                    <tr>
-                        <td class="fw-bold active">Śniadania</td>
-                        <td>{{ object.bt_application_settlement_feeding.breakfast_quantity }}</td>
-                    </tr>
-                    <tr>
-                        <td class="fw-bold">Obiady</td>
-                        <td>{{ object.bt_application_settlement_feeding.dinner_quantity }}</td>
-                    </tr>
-                    <tr>
-                        <td class="fw-bold">Kolacje</td>
-                        <td>{{ object.bt_application_settlement_feeding.supper_quantity }}</td>
-                    </tr>
-                   </tbody>
+                       <tbody>
+                        <tr>
+                            <td class="fw-bold active">Śniadania</td>
+                            <td>{{ object.bt_application_settlement_feeding.breakfast_quantity }}</td>
+                        </tr>
+                        <tr>
+                            <td class="fw-bold">Obiady</td>
+                            <td>{{ object.bt_application_settlement_feeding.dinner_quantity }}</td>
+                        </tr>
+                        <tr>
+                            <td class="fw-bold">Kolacje</td>
+                            <td>{{ object.bt_application_settlement_feeding.supper_quantity }}</td>
+                        </tr>
+                       </tbody>
 
-               </table>
+                   </table>
 
-                <a class="btn btn-outline-warning d-grid"
-                 href="{% url 'e_delegacje:settlement-feeding-create' pk=object.id %}"
-                style="font-size: 12px"
-                >
-                  Edytuj wyżywienie
-                </a>
+                    <a class="btn btn-outline-warning d-grid"
+                     href="{% url 'e_delegacje:settlement-feeding-create' pk=object.id %}"
+                    style="font-size: 12px"
+                    >
+                      Edytuj wyżywienie
+                    </a>
 
-            {% else %}
-                <a class="btn btn-outline-warning d-grid"
-                 href="{% url 'e_delegacje:settlement-feeding-create' pk=object.id %}"
-                style="font-size: 12px"
-                >
-                  Dodaj wyżywienie
-                </a>
+                {% else %}
+                    <a class="btn btn-outline-warning d-grid"
+                     href="{% url 'e_delegacje:settlement-feeding-create' pk=object.id %}"
+                    style="font-size: 12px"
+                    >
+                      Dodaj wyżywienie
+                    </a>
 
+                {% endif %}
+
+            </div>
             {% endif %}
-
-        </div>
-
     </div>
 <hr>
         <div class="row">

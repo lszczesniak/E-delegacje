@@ -1,19 +1,34 @@
 {% extends "base.html" %}
 {% block content %}
 <h3>Nowy wniosek</h3>
-<div class="col-8 align-items-start">
+<div class="col-7 align-items-start">
+
     <form class="form-control" method="post" >
         {% csrf_token %}
+        <div class="row">
             <table class="table table-sm table-light " style="font-size: 12px">
                  {{ form.as_table }}
                 </table>
             <input name="current_datetime" id="current_datetime" value="" hidden>
-
-            <input class="btn-outline-light text-dark "
-                   type="submit"
-                   value="Zapisz i wyślij do akceptacji"
-                   style="font-size: 13px"
-            >
+            </div>
+            <div class="row">
+                <div class="col-3 align-self-end">
+                    <input class="btn btn-outline-secondary"
+                           type="submit"
+                           value="Zapisz i wyślij do akceptacji"
+                           style="font-size: 13px"
+                        >
+                </div>
+                <div class="col-3 align-self-end">
+                    <a type="button"
+                       class="btn btn-outline-secondary"
+                       href="{% url 'e_delegacje:index' %}"
+                       style="font-size: 13px"
+                    >
+                        Powrót
+                    </a>
+                </div>
+        </div>
 
     </form>
 </div>
