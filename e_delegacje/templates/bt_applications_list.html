@@ -9,10 +9,13 @@
     {% for item in object_list %}
     <tr>
         <td>
-        nr.: {{ item.id }}
+        Nr: {{ item.id }}
             </td>
                 <td>
-       Opis wniosku: {{ item.trip_purpose_text }}
+       {{ item.trip_purpose_text }}
+            </td>
+            <td>
+                <p>Status: {{ item.get_application_status_display }}</p>
             </td>
                 <td>
             <a class="btn btn-outline-secondary"
@@ -56,6 +59,16 @@
     {% endfor %}
 </tbody>
 </table>
-
+    <div class="row">
+        <div class="col-3 align-self-end">
+            <a type="button"
+               class="btn btn-outline-secondary"
+               href="{% url 'e_delegacje:index' %}"
+               style="font-size: 13px"
+            >
+                Powrót
+            </a>
+        </div>
+    </div>
 {% endblock %}
 

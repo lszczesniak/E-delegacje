@@ -12,7 +12,9 @@ from e_delegacje.views import (
     BtApplicationSettlementMileageCreateView,
     BtApplicationSettlementCostCreateView,
     BtApplicationSettlementFeedingCreateView,
-    BtApplicationSettlementInfoCreateFormView, BtApplicationSettlementCostDeleteView,
+    BtApplicationSettlementInfoCreateFormView,
+    BtApplicationSettlementCostDeleteView,
+    BtApplicationSettlementInfoUpdateView,
     BtApplicationSettlementMileageDeleteView,
 )
 
@@ -67,4 +69,11 @@ urlpatterns = [
         BtApplicationSettlementMileageDeleteView.as_view(),
         name='settlement-mileage-delete'
     ),
+    # UpdateViews
+    path(
+        'settlement-info-update/<pk>',
+        BtApplicationSettlementInfoUpdateView.as_view(),
+        name='settlement-info-update'
+    ),
+
 ]

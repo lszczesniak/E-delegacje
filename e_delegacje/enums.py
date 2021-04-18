@@ -5,7 +5,8 @@ from django.db import models
 class BtApplicationStatus(models.TextChoices):
     saved = 'saved', 'Zapisany'
     in_progress = 'in_progress', 'W akceptacji'
-    approved = 'approved', 'Zaakcdptowany'
+    approved = 'approved', 'Zaakceptowany'
+    settlement_in_progress = 'settlement_in_progress', "Rozliczany"
     settled = 'settled', 'Rozliczony'
     canceled = 'canceled', 'Anulowany'
 

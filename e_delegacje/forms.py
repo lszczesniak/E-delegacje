@@ -1,3 +1,7 @@
+import datetime
+
+from django.core.exceptions import ValidationError
+
 from setup.models import BtMileageRates
 from .models import BtUser, BtCostCenter, BtApplication, BtCurrency, BtCountry
 from django.core.mail import EmailMultiAlternatives
@@ -51,6 +55,11 @@ class BtApplicationForm(forms.Form):
     )
     advance_payment = forms.DecimalField(decimal_places=2, max_digits=6, label="Zaliczka", initial=0)
 
+    def clean(self):
+        result = super().clean()
+        if result['planned_start_date'] > result['planned_end_date']:
+            raise ValidationError("Data wyjazdu musi być przed datą powrotu!")
+
     def send_mail(self, user_mail):
 
         result = super().clean()
@@ -89,7 +98,7 @@ class BtApplicationForm(forms.Form):
         text_content = strip_tags(html_content)
         email = EmailMultiAlternatives(
             # subject
-            f'Proszę o akceptację wniosku nr {nr_wniosku}.',
+            f'Proszę o akceptację wniosku nr {application_number}.',
             # content
             text_content,
             # from email
@@ -119,6 +128,23 @@ class BtApplicationSettlementInfoForm(forms.Form):
     bt_start_time = forms.TimeField(label="Godzina wyjazdu", widget=TimeInputWidget)
     bt_end_date = forms.DateField(label="Data powrotu", widget=DateInputWidget)
     bt_end_time = forms.TimeField(label="Godzina powrotu", widget=TimeInputWidget)
+
+    def clean(self):
+        result = super().clean()
+        comb_start_time = datetime.datetime(
+            result['bt_start_date'].year,
+            result['bt_start_date'].month,
+            result['bt_start_date'].day,
+            result['bt_start_time'].hour,
+            result['bt_start_time'].minute)
+        comb_end_time = datetime.datetime(
+            result['bt_end_date'].year,
+            result['bt_end_date'].month,
+            result['bt_end_date'].day,
+            result['bt_end_time'].hour,
+            result['bt_end_time'].minute)
+        if comb_start_time > comb_end_time:
+            raise ValidationError("Data i godzina wyjazdu musi być przed datą i godziną powrotu!")
 
 
 class BtApplicationSettlementCostForm(forms.Form):

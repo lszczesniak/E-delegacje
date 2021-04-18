@@ -7,13 +7,13 @@
       Czy na pewno chcesz usunąć wniosek o delegację numer: {{ object.id }},
          dotyczący {{ object.trip_purpose_text }}?
     </p>
-    <input class="btn-danger" type="submit" value="Wykasuj">
+    <input class="btn btn-outline-danger" type="submit" value="Wykasuj">
 
-    <button class="btn-dark" type="submit">
-        <a class="btn-light bg-transparent text-light" href="{% url 'e_delegacje:application-details' pk=object.pk %}">
+
+        <a class="btn btn-outline-dark" href="{% url 'e_delegacje:application-details' pk=object.pk %}">
             Anuluj
         </a>
-</button>
+
 
 
 

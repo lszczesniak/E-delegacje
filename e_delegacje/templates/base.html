@@ -57,7 +57,7 @@
 					 </a>
 			</li>
           <li class="nav-item">
-			  <a class="navbar-brand text-light" href="#">E-delegacje</a>
+			  <a class="navbar-brand text-light" href="{% url 'e_delegacje:index' %}">E-delegacje</a>
           </li>
 			<li class="nav-item">
 				<a class="nav-item nav-link text-warning " href="{% url 'e_delegacje:applications-create' %}">Nowy wniosek</a>
@@ -95,15 +95,24 @@
 				   data-bs-toggle="dropdown"
 				   aria-expanded="false">Ustawienia zaawansowane</a>
 				<ul class="dropdown-menu bg-secondary" aria-labelledby="Settings_dropdown">
-				  <li><a class="nav-item nav-link text-warning " href="/">Stawki</a></li>
+				  <li><a class="nav-item nav-link text-warning " href="{% url 'setup:user-list-view' %}">
+                      Użytkownicy</a></li>
 				  <li><hr class="dropdown-divider"></li>
-				  <li><a class="nav-item nav-link text-warning " href="/">użytkownicy</a></li>
+				  <li><a class="nav-item nav-link text-warning " href="{% url 'setup:region-list-view' %}">
+                      Regiony</a></li>
+                  <li><a class="nav-item nav-link text-warning " href="{% url 'setup:division-list-view' %}">
+                      Dywizje</a></li>
+                  <li><a class="nav-item nav-link text-warning " href="{% url 'setup:department-list-view' %}">
+                      Działy</a></li>
+                  <li><a class="nav-item nav-link text-warning " href="{% url 'setup:location-list-view' %}">
+                      Lokalizacje</a></li>
 				  <li><hr class="dropdown-divider"></li>
-				  <li><a class="nav-item nav-link text-warning " href="/">Cost Centers</a></li>
-				  <li><a class="nav-item nav-link text-warning " href="/">
-					  Orders</a></li>
-				  <li><hr class="dropdown-divider"></li>
-				  <li><a class="nav-item nav-link text-warning " href="/">Ścieżki akceptacji</a></li>
+				  <li><a class="nav-item nav-link text-warning " href="{% url 'setup:costcenter-list-view' %}">
+                      Cost Centers</a></li>
+				  <li><a class="nav-item nav-link text-warning " href="{% url 'setup:delegationrate-list-view' %}">
+                      Stawki delegacji</a></li>
+                    <li><a class="nav-item nav-link text-warning " href="{% url 'setup:mileagetate-list-view' %}">
+                      Stawki kilometrówki</a></li>
 				  <li><hr class="dropdown-divider"></li>
 				  <li>  <a class="nav-item nav-link text-warning " href="/admin/">Admin</a></li>
 				</ul>
