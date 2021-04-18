@@ -389,7 +389,7 @@ def get_diet_amount_poland(bt_duration, settlement):
             print('pol ponizej doby, ponad 12h')
         else:
             print('pol poniżej żaden if')
-    elif bt_duration.days > 1:
+    elif bt_duration.days >= 1:
         if (bt_duration.seconds / 3600) < 8:
             diet = bt_duration.days * BtDelegationRate.objects.get(country=country).delagation_rate + \
                    BtDelegationRate.objects.get(country=country).delagation_rate / 2
