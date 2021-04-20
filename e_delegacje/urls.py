@@ -17,7 +17,8 @@ from e_delegacje.views import (
     BtApplicationSettlementInfoUpdateView,
     BtApplicationSettlementMileageDeleteView,
     BtApplicationApprovalDetailView,
-    BtApprovalListView
+    BtApprovalListView,
+    BtApplicationSettlementInfoUpdateView2
 )
 
 app_name = 'e_delegacje'
@@ -77,7 +78,7 @@ urlpatterns = [
     # UpdateViews
     path(
         'settlement-info-update/<pk>',
-        BtApplicationSettlementInfoUpdateView.as_view(),
+        BtApplicationSettlementInfoUpdateView2.as_view(),
         name='settlement-info-update'
     ),
 

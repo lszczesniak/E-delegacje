@@ -3,7 +3,7 @@ import datetime
 from django.core.exceptions import ValidationError
 
 from setup.models import BtMileageRates
-from .models import BtUser, BtCostCenter, BtApplication, BtCurrency, BtCountry
+from .models import BtUser, BtCostCenter, BtApplication, BtCurrency, BtCountry, BtApplicationSettlementInfo
 from django.core.mail import EmailMultiAlternatives
 from django import forms
 from django.template.loader import render_to_string
@@ -120,7 +120,7 @@ class BtApplicationSettlementForm(forms.Form):
     )
 
 
-class BtApplicationSettlementInfoForm(forms.Form):
+class BtApplicationSettlementInfoForm(forms.ModelForm):
     bt_completed = forms.TypedChoiceField(
         label="Czy delegacja się odbyła?",
         choices=[("", ""), ('tak', 'tak'), ('nie', 'nie')],
@@ -130,6 +130,10 @@ class BtApplicationSettlementInfoForm(forms.Form):
     bt_end_date = forms.DateField(label="Data powrotu", widget=DateInputWidget)
     bt_end_time = forms.TimeField(label="Godzina powrotu", widget=TimeInputWidget)
     current_datetime = forms.CharField(widget=forms.HiddenInput())
+
+    class Meta:
+        model = BtApplicationSettlementInfo
+        fields = '__all__'
 
     def clean(self):
         result = super().clean()

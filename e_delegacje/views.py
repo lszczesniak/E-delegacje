@@ -5,7 +5,7 @@ from django.views.generic import ListView, DetailView, DeleteView, UpdateView
 from django.views import View
 import datetime
 
-from django.views.generic.edit import FormMixin
+from django.views.generic.edit import FormMixin, BaseUpdateView
 
 from e_delegacje.enums import BtApplicationStatus
 from e_delegacje.forms import (
@@ -528,3 +528,14 @@ class BtApplicationSettlementInfoUpdateView(FormMixin, View):
             return HttpResponseRedirect(reverse("e_delegacje:settlement-details", args=[pk]))
         else:
             return HttpResponseRedirect(reverse("e_delegacje:index"))
+
+
+class BtApplicationSettlementInfoUpdateView2(UpdateView):
+
+    model = BtApplicationSettlementInfo
+    # settlement = BtApplicationSettlement.objects.get(id=BtApplicationSettlementInfo.bt_application_settlement.id)
+    template_name = "settlement_subform_info.html"
+    form_class = BtApplicationSettlementInfoForm
+    success_url = reverse_lazy("e_delegacje:applications-list")
+    # extra_context = {'settlement': settlement}
+
