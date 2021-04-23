@@ -15,8 +15,8 @@
                 godzina: {{ settlement.bt_application_info.bt_end_time }}</h6>
         </div>
         <div class="col-4">
-            <h6>Kraj: {{ settlement.bt_application_id.bt_country }}</h6>
-            <h6>Dieta: {{ diet }} {{ settlement.bt_application_id.advance_payment_currency }}</h6>
+            <h6 id="country">Kraj: {{ settlement.bt_application_id.bt_country }}</h6>
+            <h6 id="diet">Dieta: {{ diet }} {{ settlement.bt_application_id.advance_payment_currency }}</h6>
         </div>
 
     </div>
@@ -29,21 +29,28 @@
             {% csrf_token %}
 
                 <table class="table table-responsive-sm table-light">
+
                     {{ form.as_table }}
                 </table>
 
-            <div class="row">
+            <div class="row" id="submit_row">
             <div class="col-3 align-self-end">
-                <input class="btn btn-outline-secondary" type="submit" value="Dodaj">
+                <input class="btn btn-outline-secondary"
+                       type="submit"
+                       value="Zapisz"
+                       onclick="days_on_change()">
             </div>
-            <div class="col-3 align-self-end">
-                <a type="button"
-                   class="btn btn-outline-secondary"
-                   href="{% url 'e_delegacje:settlement-details' pk=settlement.pk %}"
-                >
-                    Powrót
-                </a>
-        </div>
+                <div class="text-danger" id="message"><p>
+
+                </p></div>
+{#            <div class="col-3 align-self-end">#}
+{#                <a type="button"#}
+{#                   class="btn btn-outline-secondary"#}
+{#                   href="{% url 'e_delegacje:settlement-details' pk=settlement.pk %}"#}
+{#                >#}
+{#                    Powrót#}
+{#                </a>#}
+{#        </div>#}
         </div>
         </form>
 
@@ -68,5 +75,45 @@
     {% endfor %}
 {% endif %}
 
+
+    <script>
+    let diet = Number("{{ diet_amount }}");
+    let country = "{{ settlement.bt_application_id.bt_country }}";
+    let pl_breakfast_rate = 0.25;
+    let pl_dinner_rate = 0.50;
+    let pl_supper_rate = 0.25;
+    let frn_breakfast_rate = 0.15;
+    let frn_dinner_rate = 0.30;
+    let frn_supper_rate = 0.30;
+    let trip_duration_rate = "{{ trip_dur_rate }}";
+    {#const td_number = trip_duration.get#}
+
+    console.log(diet);
+    {#console.log(td_number);#}
+    console.log(trip_duration);
+    let breakfasts_number = document.getElementById('id_bt_application_settlement_feeding-0-breakfast_quantity').
+    getAttribute('value');
+    let dinners_number = document.getElementById('id_bt_application_settlement_feeding-0-dinner_quantity').
+    getAttribute('value');
+    let suppers_number = document.getElementById('id_bt_application_settlement_feeding-0-supper_quantity').
+    getAttribute('value');
+
+    function days_on_change() {
+        let diet_correction = 0;
+        if (country.toLowerCase() === 'polska') {
+            diet_correction = breakfasts_number * pl_breakfast_rate *diet + dinners_number * pl_dinner_rate *diet +
+                suppers_number * pl_supper_rate * diet;
+        }
+        else {
+            diet_correction = breakfasts_number * frn_breakfast_rate *diet + dinners_number * frn_dinner_rate *diet +
+                suppers_number * frn_supper_rate * diet;
+        }
+
+        console.log("korekta diety" + diet_correction);
+        return diet_correction
+    };
+
+
+    </script>
   {% endblock %}
 

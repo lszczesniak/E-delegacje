@@ -4,8 +4,9 @@ from django.urls import reverse, reverse_lazy
 from django.views.generic import ListView, DetailView, DeleteView, UpdateView
 from django.views import View
 import datetime
-
-from django.views.generic.edit import FormMixin, BaseUpdateView
+from django.contrib import messages
+from django.views.generic.detail import SingleObjectMixin
+from django.views.generic.edit import FormMixin, FormView
 
 from e_delegacje.enums import BtApplicationStatus
 from e_delegacje.forms import (
@@ -13,10 +14,11 @@ from e_delegacje.forms import (
     BtApplicationSettlementInfoForm,
     BtApplicationSettlementCostForm,
     BtApplicationSettlementMileageForm,
-    BtApplicationSettlementFeedingForm
+    BtApplicationSettlementFeedingForm,
+    BtApplicationSettlementInfoFormset,
+    BtApplicationSettlementfeedingFormset
 )
 from e_delegacje.models import (
-    BtUser,
     BtApplication,
     BtApplicationSettlement,
     BtApplicationSettlementInfo,
@@ -24,7 +26,7 @@ from e_delegacje.models import (
     BtApplicationSettlementMileage,
     BtApplicationSettlementFeeding,
 )
-from setup.models import BtDelegationRate, BtMileageRates
+from setup.models import BtDelegationRate, BtMileageRates, BtUser
 
 
 def index(request):
@@ -326,19 +328,31 @@ class BtApplicationSettlementFeedingCreateView(View):
 
     def get(self, request, pk):
         settlement = BtApplicationSettlement.objects.get(id=pk)
+        diet_amount = get_diet_amount_poland(trip_duration(settlement), settlement)
         form = BtApplicationSettlementFeedingForm()
         if settlement.bt_application_id.bt_country.country_name.lower() == 'polska':
-            diet = get_diet_amount_poland(trip_duration(settlement), settlement)
+            diet_am = get_diet_amount_poland(trip_duration(settlement), settlement)
+            diet = diet_reconciliation_poland(diet_am, settlement)
+            print(diet)
         else:
-            diet = get_diet_amount_abroad(trip_duration(settlement), settlement)
+            diet_am = get_diet_amount_abroad(trip_duration(settlement), settlement)
+            diet = diet_reconciliation_poland(diet_am, settlement)
+            print(diet)
 
         return render(
             request,
             template_name="settlement_subform_feeding.html",
-            context={"form": form, 'settlement': settlement, 'diet': diet})
+            context={"form": form,
+                     'settlement': settlement,
+                     'diet': diet,
+                     'diet_amount': diet_amount,
+
+                     }
+        )
 
     def post(self, request, pk, *args, **kwargs):
         form = BtApplicationSettlementFeedingForm(request.POST)
+
         if form.is_valid():
             bt_application_settlement = BtApplicationSettlement.objects.get(id=pk)
             breakfast_quantity = form.cleaned_data["breakfast_quantity"]
@@ -366,7 +380,6 @@ def trip_duration(settlement):
                                      start_time.hour,
                                      start_time.minute)
         bt_end = datetime.datetime(end_date.year, end_date.month, end_date.day, end_time.hour, end_time.minute)
-        print('trip_duration:', bt_end - bt_start)
     except:
         bt_start = datetime.datetime.now()
         bt_end = datetime.datetime.now()
@@ -390,19 +403,25 @@ def get_diet_amount_poland(bt_duration, settlement):
         else:
             print('pol poniżej żaden if')
     elif bt_duration.days >= 1:
-        if (bt_duration.seconds / 3600) < 8:
+        if (bt_duration.seconds / 3600) <= 8:
             diet = bt_duration.days * BtDelegationRate.objects.get(country=country).delagation_rate + \
                    BtDelegationRate.objects.get(country=country).delagation_rate / 2
             print('pol powyżej doby, ponizej 8h')
-        elif 8 <= (bt_duration.seconds / 3600) <= 12:
-            diet = bt_duration.days * BtDelegationRate.objects.get(country=country).delagation_rate + \
+        elif 8 < (bt_duration.seconds / 3600):
+            diet = (bt_duration.days + 1) * BtDelegationRate.objects.get(country=country).delagation_rate + \
                    BtDelegationRate.objects.get(country=country).delagation_rate
             print('pol powyżej doby, od 8h do 12h')
-        elif (bt_duration.seconds / 3600) >= 12:
-            diet = (bt_duration.days +1) * BtDelegationRate.objects.get(country=country).delagation_rate
-            print('pol powyżej doby, ponad 12h')
+        # elif (bt_duration.seconds / 3600) >= 12:
+        #     diet = (bt_duration.days + 1) * BtDelegationRate.objects.get(country=country).delagation_rate
+        #     print('pol powyżej doby, ponad 12h')
         else:
             print('pol powyżej żaden if')
+    return diet
+
+
+def diet_reconciliation_poland(diet, settlement):
+
+    country = settlement.bt_application_id.bt_country
     try:
         breakfasts_correction = settlement.bt_application_settlement_feeding.breakfast_quantity * \
                                 BtDelegationRate.objects.get(country=country).delagation_rate * 0.25
@@ -414,41 +433,46 @@ def get_diet_amount_poland(bt_duration, settlement):
         breakfasts_correction = 0
         dinners_correction = 0
         suppers_correction = 0
+    print(breakfasts_correction, dinners_correction, suppers_correction)
     return round(diet - breakfasts_correction - dinners_correction - suppers_correction, 2)
 
 
 def get_diet_amount_abroad(bt_duration, settlement):
     country = settlement.bt_application_id.bt_country
     if bt_duration.days < 1:
-        if (bt_duration.seconds / 3600) < 8:
+        if (bt_duration.seconds / 3600) <= 8:
             diet = BtDelegationRate.objects.get(country=country).delagation_rate / 3
             print('z ponizej doby, ponizej 8h')
-        elif 8 <= (bt_duration.seconds / 3600) <= 12:
+        elif 8 < (bt_duration.seconds / 3600) <= 12:
             diet = BtDelegationRate.objects.get(country=country).delagation_rate / 2
             print('z ponizej doby, od 8h do 12h')
-        elif (bt_duration.seconds / 3600) >= 12:
+        elif (bt_duration.seconds / 3600) > 12:
             diet = BtDelegationRate.objects.get(country=country).delagation_rate
             print('z ponizej doby, ponad 12h')
         else:
             print('poniżej żaden if')
     elif bt_duration.days > 1:
-        if (bt_duration.seconds / 3600) < 8:
+        if (bt_duration.seconds / 3600) <= 8:
             diet = bt_duration.days * BtDelegationRate.objects.get(country=country).delagation_rate + \
                    BtDelegationRate.objects.get(country=country).delagation_rate / 3
             print('z powyżej doby, ponizej 8h')
-        elif 8 <= (bt_duration.seconds / 3600) <= 12:
+        elif 8 < (bt_duration.seconds / 3600) <= 12:
             diet = bt_duration.days * BtDelegationRate.objects.get(country=country).delagation_rate + \
                    BtDelegationRate.objects.get(country=country).delagation_rate / 2
             print(f'bt_duration.days {bt_duration.days} * '
                   f'BtDelegationRate{BtDelegationRate.objects.get(country=country).delagation_rate} +'
                   f'BtDelegationRate {BtDelegationRate.objects.get(country=country).delagation_rate}/2')
             print('z powyżej doby, od 8h do 12h')
-        elif (bt_duration.seconds / 3600) >= 12:
+        elif (bt_duration.seconds / 3600) > 12:
             diet = (bt_duration.days + 1) * BtDelegationRate.objects.get(country=country).delagation_rate
             print('z powyżej doby, ponad 12h')
         else:
             print('z powyżej żaden if')
+    return diet
 
+
+def diet_reconciliation_abroad(diet, settlement):
+    country = settlement.bt_application_id.bt_country
     try:
         breakfasts_correction = settlement.bt_application_settlement_feeding.breakfast_quantity * \
                                 BtDelegationRate.objects.get(country=country).delagation_rate * 0.15
@@ -489,53 +513,71 @@ class BtApplicationSettlementMileageDeleteView(View):
 
 
 # UpdateViews
-class BtApplicationSettlementInfoUpdateView(FormMixin, View):
-    def get_initial(self):
-        initial = super(BtApplicationSettlementInfoUpdateView, self).get_initial()
-        print('initial data', initial)
-        bt_application_settlement_info = self.get_object()
-        initial['bt_completed'] = bt_application_settlement_info.bt_completed,
-        initial['bt_start_date'] = bt_application_settlement_info.bt_start_date,
-        initial['bt_start_time'] = bt_application_settlement_info.bt_start_time,
-        initial['bt_end_date'] = bt_application_settlement_info.bt_end_date,
-        initial['bt_end_time'] = bt_application_settlement_info.bt_end_time
-        return initial
-
-    def get_object(self, *args, **kwargs):
-        settlement_info = get_object_or_404(BtApplicationSettlementInfo, pk=self.kwargs['pk'])
-        return settlement_info
-
-    def get(self, request, pk):
-        form = BtApplicationSettlementInfoForm(request.GET, initial=self.get_initial())
-        settlement = BtApplicationSettlement.objects.get(id=pk)
-        return render(
-            request,
-            template_name="settlement_subform_info.html",
-            context={"form": form, 'settlement': settlement})
-
-    def post(self, request, pk, *args, **kwargs):
-        form = BtApplicationSettlementInfoForm(request.POST)
-        if form.is_valid():
-            bt_application_settlement = BtApplicationSettlement.objects.get(id=pk)
-            bt_application_settlement_info = BtApplicationSettlementInfo.objects.get(
-                bt_application_settlement=bt_application_settlement)
-            bt_application_settlement_info.bt_completed = form.cleaned_data["bt_completed"]
-            bt_application_settlement_info.bt_start_date = form.cleaned_data["bt_start_date"]
-            bt_application_settlement_info.bt_start_time = form.cleaned_data["bt_start_time"]
-            bt_application_settlement_info.bt_end_date = form.cleaned_data["bt_end_date"]
-            bt_application_settlement_info.bt_end_time = form.cleaned_data["bt_end_time"]
-            bt_application_settlement_info.save()
-            return HttpResponseRedirect(reverse("e_delegacje:settlement-details", args=[pk]))
-        else:
-            return HttpResponseRedirect(reverse("e_delegacje:index"))
-
-
-class BtApplicationSettlementInfoUpdateView2(UpdateView):
+class BtApplicationSettlementInfoUpdateView(SingleObjectMixin, FormView):
 
     model = BtApplicationSettlementInfo
-    # settlement = BtApplicationSettlement.objects.get(id=BtApplicationSettlementInfo.bt_application_settlement.id)
     template_name = "settlement_subform_info.html"
-    form_class = BtApplicationSettlementInfoForm
-    success_url = reverse_lazy("e_delegacje:applications-list")
-    # extra_context = {'settlement': settlement}
+
+    def get(self, request, *args, **kwargs):
+        self.object = self.get_object(queryset=BtApplicationSettlement.objects.all())
+        return super().get(request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        self.object = self.get_object(queryset=BtApplicationSettlement.objects.all())
+        return super().post(request, *args, **kwargs)
+
+    def get_form(self, form_class=None):
+        return BtApplicationSettlementInfoFormset(**self.get_form_kwargs(), instance=self.object)
+
+    def form_valid(self, form):
+        form.save()
+        messages.add_message(
+            self.request,
+            messages.SUCCESS,
+            "Zmiany zostąły zapisane"
+        )
+        return HttpResponseRedirect(self.get_success_url())
+
+    def get_success_url(self):
+        return reverse("e_delegacje:settlement-details", kwargs={'pk': self.object.id})
+
+
+class BtApplicationSettlementFeedingUpdateView(SingleObjectMixin, FormView):
+
+    model = BtApplicationSettlementFeeding
+    template_name = "settlement_subform_feeding.html"
+
+    def get(self, request, *args, **kwargs):
+        self.object = self.get_object(queryset=BtApplicationSettlement.objects.all())
+        return super().get(request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        self.object = self.get_object(queryset=BtApplicationSettlement.objects.all())
+        return super().post(request, *args, **kwargs)
+
+    def get_form(self, form_class=None):
+        return BtApplicationSettlementfeedingFormset(**self.get_form_kwargs(), instance=self.object)
+
+    def form_valid(self, form):
+        form.save()
+        return HttpResponseRedirect(self.get_success_url())
+
+    def get_success_url(self):
+        return reverse("e_delegacje:settlement-details", kwargs={'pk': self.object.id})
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        settlement = BtApplicationSettlement.objects.get(id=self.object.id)
+        diet_amount = BtDelegationRate.objects.get(country=self.object.bt_application_id.bt_country).delagation_rate
+        context['settlement'] = settlement
+        context['diet_amount'] = diet_amount
+        context['trip_dur'] = trip_duration(settlement)
+        if settlement.bt_application_id.bt_country.country_name.lower() == 'polska':
+            context['diet'] = get_diet_amount_poland(trip_duration(settlement), settlement)
+        else:
+            context['diet'] = get_diet_amount_abroad(trip_duration(settlement), settlement)
+        return context
+
+
+
 

@@ -15,6 +15,11 @@ class Migration(migrations.Migration):
             model_name='btapplicationsettlementcost',
             name='attachment',
         ),
+        migrations.AddField(
+            model_name='btapplicationsettlementcost',
+            name='bt_cost_currency',
+            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='bt_application_settlement_costs', to='e_delegacje.btcurrency'),
+        ),
         migrations.AlterField(
             model_name='btapplicationsettlementcost',
             name='bt_cost_currency',

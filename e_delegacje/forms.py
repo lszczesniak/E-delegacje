@@ -1,9 +1,15 @@
 import datetime
-
 from django.core.exceptions import ValidationError
 
-from setup.models import BtMileageRates
-from .models import BtUser, BtCostCenter, BtApplication, BtCurrency, BtCountry, BtApplicationSettlementInfo
+from django.forms.models import inlineformset_factory
+from e_delegacje.models import (
+    BtApplicationSettlement,
+    BtApplicationSettlementFeeding,
+    BtApplicationSettlementInfo,
+    BtApplication
+)
+from setup.models import BtMileageRates, BtUser, BtCostCenter, BtCurrency, BtCountry
+
 from django.core.mail import EmailMultiAlternatives
 from django import forms
 from django.template.loader import render_to_string
@@ -133,7 +139,7 @@ class BtApplicationSettlementInfoForm(forms.ModelForm):
 
     class Meta:
         model = BtApplicationSettlementInfo
-        fields = '__all__'
+        exclude = ('bt_completed', 'bt_application_settlement', 'advance_payment', 'settlement_log')
 
     def clean(self):
         result = super().clean()
@@ -143,13 +149,14 @@ class BtApplicationSettlementInfoForm(forms.ModelForm):
             result['bt_start_date'].day,
             result['bt_start_time'].hour,
             result['bt_start_time'].minute)
-
+        print(comb_start_time)
         comb_end_time = datetime.datetime(
             result['bt_end_date'].year,
             result['bt_end_date'].month,
             result['bt_end_date'].day,
             result['bt_end_time'].hour,
             result['bt_end_time'].minute)
+        print(comb_end_time)
         if comb_start_time > comb_end_time:
             raise ValidationError("Data i godzina wyjazdu musi być przed datą i godziną powrotu!")
         return result
@@ -174,7 +181,43 @@ class BtApplicationSettlementMileageForm(forms.Form):
     mileage = forms.IntegerField(label='Liczba kilometrów', min_value=0)
 
 
-class BtApplicationSettlementFeedingForm(forms.Form):
-    breakfast_quantity = forms.IntegerField(label='Liczba zapewnionych śniadań')
-    dinner_quantity = forms.IntegerField(label='Liczba zapewnionych obiadów')
-    supper_quantity = forms.IntegerField(label='Liczba zapewnionych kolacji', min_value=0)
+class BtApplicationSettlementFeedingForm(forms.ModelForm):
+    breakfast_quantity = forms.IntegerField(label='Liczba zapewnionych śniadań', min_value=0, initial=0)
+    dinner_quantity = forms.IntegerField(label='Liczba zapewnionych obiadów', min_value=0, initial=0)
+    supper_quantity = forms.IntegerField(label='Liczba zapewnionych kolacji', min_value=0, initial=0)
+
+    class Meta:
+        model = BtApplicationSettlementInfo
+        fields = ('breakfast_quantity', 'dinner_quantity', 'supper_quantity')
+
+
+BtApplicationSettlementInfoFormset = inlineformset_factory(
+    BtApplicationSettlement,
+    BtApplicationSettlementInfo,
+    fields=('bt_completed', 'bt_start_date', 'bt_start_time', 'bt_end_date', 'bt_end_time'),
+    labels={'bt_start_date': "Data wyjazdu",
+            'bt_start_time': "Godzina wyjazdu",
+            "bt_end_date": "Data powrotu",
+            "bt_end_time": "Godzina powrotu",
+            'bt_completed':"Czy delegacja się odbyła?"
+            },
+    widgets={'bt_start_date': DateInputWidget,
+             'bt_end_date': DateInputWidget,
+             'bt_start_time': TimeInputWidget,
+             'bt_end_time': TimeInputWidget
+             },
+    can_delete=False
+)
+
+
+BtApplicationSettlementfeedingFormset = inlineformset_factory(
+    BtApplicationSettlement, BtApplicationSettlementFeeding,
+    fields=(
+        'breakfast_quantity',
+        'dinner_quantity',
+        'supper_quantity'),
+    labels={'breakfast_quantity': 'Liczba zapewnionych śniadań',
+            'dinner_quantity': 'Liczba zapewnionych obiadów',
+            'supper_quantity': 'Liczba zapewnionych kolacji'},
+    can_delete=False,
+)

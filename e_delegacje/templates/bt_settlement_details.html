@@ -116,7 +116,7 @@
                           </tr>
                       </table>
                   <a class="btn btn-outline-warning d-grid"
-                     href="{% url 'e_delegacje:settlement-info-update' pk=object.bt_application_info.id %}"
+                     href="{% url 'e_delegacje:settlement-info-update' pk=object.id %}"
                      style="font-size: 12px"
                   >
                       Edytuj informacje
@@ -264,7 +264,7 @@
                    </table>
 
                     <a class="btn btn-outline-warning d-grid"
-                     href="{% url 'e_delegacje:settlement-feeding-create' pk=object.id %}"
+                     href="{% url 'e_delegacje:settlement-feeding-update' pk=object.id %}"
                     style="font-size: 12px"
                     >
                       Edytuj wyżywienie
