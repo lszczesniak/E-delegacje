@@ -189,6 +189,7 @@ class BtApplicationSettlementFeedingForm(forms.ModelForm):
     class Meta:
         model = BtApplicationSettlementInfo
         fields = ('breakfast_quantity', 'dinner_quantity', 'supper_quantity')
+        widgets = forms.IntegerField.widget(attrs={'onchange': "get_onchange_meals_correction()"})
 
 
 BtApplicationSettlementInfoFormset = inlineformset_factory(
@@ -220,4 +221,5 @@ BtApplicationSettlementfeedingFormset = inlineformset_factory(
             'dinner_quantity': 'Liczba zapewnionych obiadów',
             'supper_quantity': 'Liczba zapewnionych kolacji'},
     can_delete=False,
+    # widgets=forms.IntegerField.widget(attrs={'onchange': "get_onchange_meals_correction()"})
 )

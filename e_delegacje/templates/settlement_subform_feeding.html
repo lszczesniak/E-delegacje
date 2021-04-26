@@ -77,7 +77,9 @@
 
 
     <script>
-    let diet = Number("{{ diet_amount }}");
+    let diet = Number("{{ diet }}");
+    let diet_amount = Number("{{ diet_amount }}");
+    let diet_rate = Number("{{ diet_rate }}");
     let country = "{{ settlement.bt_application_id.bt_country }}";
     let pl_breakfast_rate = 0.25;
     let pl_dinner_rate = 0.50;
@@ -85,33 +87,34 @@
     let frn_breakfast_rate = 0.15;
     let frn_dinner_rate = 0.30;
     let frn_supper_rate = 0.30;
-    let trip_duration_rate = "{{ trip_dur_rate }}";
-    {#const td_number = trip_duration.get#}
 
-    console.log(diet);
-    {#console.log(td_number);#}
-    console.log(trip_duration);
+    console.log('dieta ' + diet.toString());
+    console.log('dieta_amount ' + diet_amount.toString());
+    console.log('diet_rate ' + diet_rate.toString());
+
     let breakfasts_number = document.getElementById('id_bt_application_settlement_feeding-0-breakfast_quantity').
     getAttribute('value');
     let dinners_number = document.getElementById('id_bt_application_settlement_feeding-0-dinner_quantity').
     getAttribute('value');
     let suppers_number = document.getElementById('id_bt_application_settlement_feeding-0-supper_quantity').
     getAttribute('value');
+    window.onload({
 
-    function days_on_change() {
+    }
+    function get_onchange_meals_correction() {
         let diet_correction = 0;
         if (country.toLowerCase() === 'polska') {
-            diet_correction = breakfasts_number * pl_breakfast_rate *diet + dinners_number * pl_dinner_rate *diet +
-                suppers_number * pl_supper_rate * diet;
+            diet_correction = breakfasts_number * pl_breakfast_rate * diet_rate + dinners_number * pl_dinner_rate *
+                diet_rate + suppers_number * pl_supper_rate * diet_rate;
         }
         else {
-            diet_correction = breakfasts_number * frn_breakfast_rate *diet + dinners_number * frn_dinner_rate *diet +
-                suppers_number * frn_supper_rate * diet;
+            diet_correction = breakfasts_number * frn_breakfast_rate * diet_rate + dinners_number * frn_dinner_rate *
+                diet_rate + suppers_number * frn_supper_rate * diet_rate;
         }
-
-        console.log("korekta diety" + diet_correction);
+        console.log("korekta diety " + diet_correction);
         return diet_correction
     };
+    get_onchange_meals_correction()
 
 
     </script>

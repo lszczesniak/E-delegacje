@@ -165,9 +165,9 @@ class BtApplicationSettlementDetailView(View):
         cost_sum = float(settlement_cost_sum(BtApplicationSettlement.objects.get(pk=settlement.id)))
         mileage_cost = float(mileage_cost_sum(BtApplicationSettlement.objects.get(pk=settlement.id)))
         if settlement.bt_application_id.bt_country.country_name.lower() == 'polska':
-            diet = round(get_diet_amount_poland(settlement), 2)
+            diet = round(diet_reconciliation_poland(settlement), 2)
         else:
-            diet = round(get_diet_amount_abroad(settlement), 2)
+            diet = round(diet_reconciliation_abroad(settlement), 2)
         total_costs = cost_sum + mileage_cost + diet
         settlement_amount = advance - total_costs
         if settlement_amount < 0:
@@ -328,17 +328,15 @@ class BtApplicationSettlementFeedingCreateView(View):
 
     def get(self, request, pk):
         settlement = BtApplicationSettlement.objects.get(id=pk)
-        diet_amount = get_diet_amount_poland(settlement)
         form = BtApplicationSettlementFeedingForm()
         if settlement.bt_application_id.bt_country.country_name.lower() == 'polska':
-            diet_am = get_diet_amount_poland(settlement) # dieta bez odliczeń
-            diet = diet_reconciliation_poland(settlement) # dieta bez odliczeń po korekcie o wyżywienie
-            # print(diet)
+            diet_rate = BtDelegationRate.objects.get(country=settlement.bt_application_id.bt_country).delagation_rate
+            diet_amount = get_diet_amount_poland(settlement)  # dieta bez odliczeń
+            diet = diet_reconciliation_poland(settlement)  # dieta bez odliczeń po korekcie o wyżywienie
         else:
-            diet_am = get_diet_amount_abroad(settlement) # dieta bez odliczeń
-            diet = diet_reconciliation_poland(settlement) # dieta bez odliczeń po korekcie o wyżywienie
-            # print(diet)
-
+            diet_rate = BtDelegationRate.objects.get(country=settlement.bt_application_id.bt_country).delagation_rate
+            diet_amount = get_diet_amount_abroad(settlement)  # dieta bez odliczeń
+            diet = diet_reconciliation_poland(settlement)  # dieta bez odliczeń po korekcie o wyżywienie
         return render(
             request,
             template_name="settlement_subform_feeding.html",
@@ -346,7 +344,7 @@ class BtApplicationSettlementFeedingCreateView(View):
                      'settlement': settlement,
                      'diet': diet,
                      'diet_amount': diet_amount,
-
+                     'diet_rate': diet_rate
                      }
         )
 
@@ -561,13 +559,20 @@ class BtApplicationSettlementFeedingUpdateView(SingleObjectMixin, FormView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         settlement = BtApplicationSettlement.objects.get(id=self.object.id)
-        diet_amount = BtDelegationRate.objects.get(country=self.object.bt_application_id.bt_country).delagation_rate
+        diet_amount = get_diet_amount_poland(settlement)
+
         context['settlement'] = settlement
         context['diet_amount'] = diet_amount
         if settlement.bt_application_id.bt_country.country_name.lower() == 'polska':
-            context['diet'] = round(diet_reconciliation_poland(settlement),2)
+            context['diet'] = round(diet_reconciliation_poland(settlement), 2)
+            context['diet_rate'] = BtDelegationRate.objects.get(
+                country=settlement.bt_application_id.bt_country
+            ).delagation_rate
         else:
-            context['diet'] = round(diet_reconciliation_abroad(settlement),2)
+            context['diet'] = round(diet_reconciliation_abroad(settlement), 2)
+            context['diet_rate'] = BtDelegationRate.objects.get(
+                country=settlement.bt_application_id.bt_country
+            ).delagation_rate
         return context
 
 

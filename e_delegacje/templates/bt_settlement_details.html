@@ -4,7 +4,7 @@
 <div class="container-fluid" >
  <hr>
         <div class="row">
-          <div class="col-4">
+            <div class="col-4">
               <table class="table table-light " style="font-size: 12px">
                   <tr class="table table-primary table-striped text-uppercase">
                       <td class="fw-bold">Numer Wniosku o delegację</td>
@@ -17,7 +17,7 @@
 
                   </tr>
               </table>
-          </div>
+            </div>
             <div class="col-4">
                 <table class="table table-primary text-center table-striped text-uppercase" style="font-size: 12px">
                     <tbody>
@@ -44,7 +44,6 @@
                 </table>
 
             </div>
-
         </div>
         <div class="row">
           <div class="col-9">
@@ -147,10 +146,9 @@
 
                             <thead>
                                 <tr class="fw-bold table-active">
-                                    <td>Opis kosztu</td>
-                                    <td>Kategoria</td>
-                                    <td>Kwota</td>
-                                    <td>Waluta</td>
+                                    <th>Opis kosztu</th>
+                                    <th>Kwota</th>
+                                    <th>Waluta</th>
                                 </tr>
                             </thead>
                             <body>
@@ -160,7 +158,6 @@
                             {% for cost in object.bt_application_settlement_costs.all %}
                                 <tr>
                                     <td>{{ cost.bt_cost_description }}</td>
-                                    <td>{{ cost.get_bt_cost_category_display }}</td>
                                     <td>{{ cost.bt_cost_amount }}</td>
                                     <td>{{ cost.bt_cost_currency }}</td>
                                 </tr>
@@ -284,7 +281,7 @@
             {% endif %}
     </div>
 <hr>
-        <div class="row">
+        <div class="row align-content-between">
             <div class="col-3 ">
                 <h5>Zaliczka: {{ advance }} {{ object.bt_application_id.advance_payment_currency }}</h5>
             </div>
