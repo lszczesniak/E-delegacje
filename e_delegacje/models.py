@@ -46,6 +46,7 @@ class BtApplicationSettlement(models.Model):
         on_delete=models.CASCADE,
         related_name='bt_applications_settlements'
     )
+    settlement_status = models.CharField(max_length=30, choices=BtApplicationStatus.choices)
 
     def get_absolute_url(self):
         return reverse('e_delegacje:settlement-details', kwargs={'pk': self.pk})
@@ -70,6 +71,7 @@ class BtApplicationSettlementInfo(models.Model):
         on_delete=models.CASCADE,
         related_name='bt_application_settlement_info'
     )
+    settlement_exchange_rate = models.DecimalField(decimal_places=5, max_digits=8)
     settlement_log = models.CharField(max_length=2400)
 
     def __str__(self):

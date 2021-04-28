@@ -1,21 +1,33 @@
 {% extends "base.html" %}
 {% block content %}
 
-    <h2>Wnioski o delegację</h2>
+    <h2 class="pb-3">Wnioski o delegację</h2>
 
 <table class="table table-sm  table-hover">
-
+<thead>
+<tr class="fw-bold table-active">
+    <th>
+          <p>Nr.</p>
+    </th>
+        <th>
+          <p>Opis</p>
+    </th>
+            <th colspan="5">
+          <p>Status</p>
+    </th>
+</tr>
+</thead>
 <tbody>
     {% for item in object_list %}
     <tr>
         <td>
-        Nr: {{ item.id }}
+      {{ item.id }}
             </td>
                 <td>
        {{ item.trip_purpose_text }}
             </td>
             <td>
-                <p>Status: {{ item.get_application_status_display }}</p>
+                <p>{{ item.get_application_status_display }}</p>
             </td>
                 <td>
             <a class="btn btn-outline-secondary"
@@ -27,8 +39,23 @@
 
             </td>
 
+                 <td>
+                    {% if not item.bt_applications_settlements and item.application_status == 'rejected' %}
+
+              <a class="btn btn-outline-secondary"
+                 href="{% url 'e_delegacje:application-update' pk=item.id %}"
+              style="font-size: 12px"
+              >
+
+                Edytuj wniosek
+            </a>
+
+                    {% endif %}
+            </td>
+
+
                 <td>
-                    {% if not item.bt_applications_settlements %}
+                    {% if not item.bt_applications_settlements and item.application_status == 'approved' %}
 
               <a class="btn btn-outline-secondary"
                  href="{% url 'e_delegacje:settlement-create' pk=item.id %}"
@@ -42,7 +69,7 @@
             </td>
 
             <td>
-            {% if item.bt_applications_settlements %}
+            {% if item.bt_applications_settlements and item.application_status == 'settlement_in_progress' %}
 
 
               <a class="btn btn-outline-secondary"

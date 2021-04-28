@@ -31,14 +31,13 @@ class TimeInputWidget(forms.TimeInput):
     input_type = 'time'
 
 
-class BtApplicationForm(forms.Form):
+class BtApplicationForm(forms.ModelForm):
     bt_country = forms.ModelChoiceField(
         queryset=BtCountry.objects.all(),
         label="Wybierz kraj",
         initial=BtCountry.objects.get(id=1)
     )
     target_user = forms.ModelChoiceField(queryset=BtUser.objects.all(), label="Delegowany")
-    application_author = forms.ModelChoiceField(queryset=BtUser.objects.all())
     trip_purpose_text = forms.CharField(
         max_length=250,
         widget=forms.Textarea(attrs={'rows':3}),
@@ -61,6 +60,10 @@ class BtApplicationForm(forms.Form):
     )
     advance_payment = forms.DecimalField(decimal_places=2, max_digits=6, label="Zaliczka", initial=0)
     current_datetime = forms.CharField(widget=forms.HiddenInput())
+
+    class Meta:
+        model = BtApplication
+        exclude = ('employee_level', 'application_author', 'application_status', 'application_log')
 
     def clean(self):
         result = super().clean()
@@ -135,11 +138,17 @@ class BtApplicationSettlementInfoForm(forms.ModelForm):
     bt_start_time = forms.TimeField(label="Godzina wyjazdu", widget=TimeInputWidget)
     bt_end_date = forms.DateField(label="Data powrotu", widget=DateInputWidget)
     bt_end_time = forms.TimeField(label="Godzina powrotu", widget=TimeInputWidget)
+    settlement_exchange_rate = forms.DecimalField(decimal_places=5,
+                                                  max_digits=8,
+                                                  label="Kurs rozliczenia",
+                                                  min_value=0,
+                                                  initial=1,
+                                                  help_text='W przypadku zaliczki w walucie PLN wpisz "1".')
     current_datetime = forms.CharField(widget=forms.HiddenInput())
 
     class Meta:
         model = BtApplicationSettlementInfo
-        exclude = ('bt_completed', 'bt_application_settlement', 'advance_payment', 'settlement_log')
+        exclude = ('bt_application_settlement', 'advance_payment', 'settlement_log')
 
     def clean(self):
         result = super().clean()
@@ -195,23 +204,26 @@ class BtApplicationSettlementFeedingForm(forms.ModelForm):
 BtApplicationSettlementInfoFormset = inlineformset_factory(
     BtApplicationSettlement,
     BtApplicationSettlementInfo,
-    fields=('bt_completed', 'bt_start_date', 'bt_start_time', 'bt_end_date', 'bt_end_time'),
+    fields=('bt_completed', 'bt_start_date', 'bt_start_time', 'bt_end_date', 'bt_end_time', 'settlement_exchange_rate'),
+    form=BtApplicationSettlementInfoForm,
     labels={'bt_start_date': "Data wyjazdu",
             'bt_start_time': "Godzina wyjazdu",
             "bt_end_date": "Data powrotu",
             "bt_end_time": "Godzina powrotu",
-            'bt_completed':"Czy delegacja się odbyła?"
+            'bt_completed': "Czy delegacja się odbyła?",
+            'settlement_exchange_rate': "Kurs rozliczenia",
             },
     widgets={'bt_start_date': DateInputWidget,
              'bt_end_date': DateInputWidget,
              'bt_start_time': TimeInputWidget,
-             'bt_end_time': TimeInputWidget
+             'bt_end_time': TimeInputWidget,
              },
+
     can_delete=False
 )
 
 
-BtApplicationSettlementfeedingFormset = inlineformset_factory(
+BtApplicationSettlementFeedingFormset = inlineformset_factory(
     BtApplicationSettlement, BtApplicationSettlementFeeding,
     fields=(
         'breakfast_quantity',

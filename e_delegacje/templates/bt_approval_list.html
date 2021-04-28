@@ -1,60 +1,82 @@
 {% extends "base.html" %}
 {% block content %}
 
-    <h2>Wnioski o delegację</h2>
 
-<table class="table table-sm  table-hover">
 
-<tbody>
-    {% for item in object_list %}
-    <tr>
-        <td>
-        Nr: {{ item.id }}
-            </td>
+<div class="container-fluid">
+<h2>Wnioski o delegację</h2>
+    <div class="row">
+        <table class="table table-sm  table-hover">
+
+        <tbody>
+            {% if object_list %}
+                {% for item in object_list %}
+
+            <tr>
                 <td>
-       {{ item.trip_purpose_text }}
-            </td>
-{#            <td>#}
-{#                <p>Status: {{ item.get_application_status_display }}</p>#}
-{#            </td>#}
-{#                <td>#}
-{#            <a class="btn btn-outline-secondary"#}
-{#               href="{% url 'e_delegacje:application-details' pk=item.id %}"#}
-{#            style="font-size: 12px"#}
-{#            >#}
-{#                Szczegóły#}
-{#            </a>#}
-{##}
-{#            </td>#}
+                Nr: {{ item.id }}
+                    </td>
+                        <td>
+               {{ item.trip_purpose_text }}
+                    </td>
 
-{#                <td>#}
-{#                    {% if not item.bt_applications_settlements %}#}
-{##}
-{#              <a class="btn btn-outline-secondary"#}
-{#                 href="{% url 'e_delegacje:settlement-create' pk=item.id %}"#}
-{#              style="font-size: 12px"#}
-{#              >#}
-{##}
-{#                Rozlicz wniosek#}
-{#            </a>#}
-{##}
-{#                    {% endif %}#}
-{#            </td>#}
+                    <td>
+                      <a class="btn btn-outline-secondary"
+                         href="{% url 'e_delegacje:approval' pk=item.pk %}"
+                      style="font-size: 12px"
+                      >
+                        Zaakceptuj wniosek
+                    </a>
 
-            <td>
-              <a class="btn btn-outline-secondary"
-                 href="{% url 'e_delegacje:approval' pk=item.bt_applications_settlements.pk %}"
-              style="font-size: 12px"
-              >
-                Zaakceptuj wniosek
-            </a>
+                        </td>
+                </tr>
 
-                </td>
-        </tr>
+            {% endfor %},
+            {% else %}
+                <h6 class="offset-1 mt-2 pt-2"> Brak wniosków do akceptacji </h6>
+            {% endif %}
 
-    {% endfor %}
-</tbody>
-</table>
+        </tbody>
+        </table>
+    </div>
+    <hr>
+
+<h2>Rozliczenia delegacji</h2>
+
+    <div class="row">
+        {% if settlements %}
+            <table class="table table-sm  table-hover">
+
+            <tbody>
+
+                {% for item in settlements %}
+                <tr>
+                    <td>
+                    Nr: {{ item.id }}
+                        </td>
+                            <td>
+                   {{ item.bt_application_id.trip_purpose_text }}
+                        </td>
+
+                        <td>
+                          <a class="btn btn-outline-secondary"
+                             href="{% url 'e_delegacje:approval' pk=item.pk %}"
+                          style="font-size: 12px"
+                          >
+                            Zaakceptuj rozliczenie
+                        </a>
+
+                            </td>
+                    </tr>
+
+                {% endfor %}
+            </tbody>
+            </table>
+        {% else %}
+                            <h6 class="offset-1 mt-2 pt-2"> Brak rozliczeń do akceptacji </h6>
+        {% endif %}
+    </div>
+<hr>
     <div class="row">
         <div class="col-3 align-self-end">
             <a type="button"
@@ -66,5 +88,9 @@
             </a>
         </div>
     </div>
+</div>
+
+
+
 {% endblock %}
 

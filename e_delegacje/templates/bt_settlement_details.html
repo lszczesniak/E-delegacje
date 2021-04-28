@@ -1,8 +1,8 @@
-
+{% extends "base.html" %}
 {% block content %}
 
 <div class="container-fluid" >
- <hr>
+<hr>
         <div class="row">
             <div class="col-4">
               <table class="table table-light " style="font-size: 12px">
@@ -62,7 +62,7 @@
 
                   </tr>
 
-                  </tr>
+
                         <tr class="fw-bold">
                             <td>Rodzaj transportu</td>
                             <td>Trasa podrózy</td>
@@ -109,10 +109,14 @@
                               <td class="fw-bold">Godzina powrotu</td>
                               <td>{{ object.bt_application_info.bt_end_time }}</td>
                           </tr>
-                          <tr>
-                              <td class="fw-bold">Historia</td>
-                              <td>{{ object.bt_application_info.settlement_log }}</td>
+                            <tr>
+                              <td class="fw-bold">Kurs rozliczenia</td>
+                              <td>{{ object.bt_application_info.settlement_exchange_rate }}</td>
                           </tr>
+{#                        <tr>#}
+{#                              <td class="fw-bold">Historia</td>#}
+{#                              <td>{{ object.bt_application_info.settlement_log }}</td>#}
+{#                          </tr>  #}
                       </table>
                   <a class="btn btn-outline-warning d-grid"
                      href="{% url 'e_delegacje:settlement-info-update' pk=object.id %}"
@@ -197,7 +201,7 @@
                     <table class="table table-light table-striped" style="font-size: 12px">
                        <thead>
                             <tr class="fw-bold table-active">
-                                <td>Trasa przejazdu</td>
+
                                 <td>Data przejazdu</td>
                                 <td class="text-end ms-5 text-center">Cel przejazdu</td>
                                 <td class="text-center">Liczba kilometrów</td>
@@ -206,7 +210,7 @@
                        <tbody>
                         {% for trip in object.bt_application_settlement_mileages.all %}
                             <tr>
-                                <td>{{ trip.trip_description }}</td>
+
                                 <td>{{ trip.trip_date }}</td>
                                 <td class="text-center">{{ trip.trip_purpose }}</td>
                                 <td class="text-center">{{ trip.mileage }}</td>
@@ -300,5 +304,28 @@
 
 <hr>
 </div>
+<hr>
+        <div class="row">
+            <div class="col-2 align-self-end">
+                <a class="btn btn-outline-secondary d-grid"
+                 href="{% url 'e_delegacje:applications-list' %}"
+                style="font-size: 12px"
+                >
+                  powrót
+                </a>
+            </div>
+
+                        <div class="col-2 align-self-end">
+                <a class="btn btn-outline-success d-grid"
+                 href="{% url 'e_delegacje:settlement-send' pk=object.id %}"
+                style="font-size: 12px"
+                >
+                  Wyślij do akceptacji
+                </a>
+            </div>
+        </div>
+</div>
+</main>
+
 
 {% endblock content %}
