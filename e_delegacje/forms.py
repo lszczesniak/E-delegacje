@@ -1,9 +1,15 @@
 import datetime
-
 from django.core.exceptions import ValidationError
 
-from setup.models import BtMileageRates
-from .models import BtUser, BtCostCenter, BtApplication, BtCurrency, BtCountry
+from django.forms.models import inlineformset_factory
+from e_delegacje.models import (
+    BtApplicationSettlement,
+    BtApplicationSettlementFeeding,
+    BtApplicationSettlementInfo,
+    BtApplication
+)
+from setup.models import BtMileageRates, BtUser, BtCostCenter, BtCurrency, BtCountry
+
 from django.core.mail import EmailMultiAlternatives
 from django import forms
 from django.template.loader import render_to_string
@@ -25,14 +31,13 @@ class TimeInputWidget(forms.TimeInput):
     input_type = 'time'
 
 
-class BtApplicationForm(forms.Form):
+class BtApplicationForm(forms.ModelForm):
     bt_country = forms.ModelChoiceField(
         queryset=BtCountry.objects.all(),
         label="Wybierz kraj",
         initial=BtCountry.objects.get(id=1)
     )
     target_user = forms.ModelChoiceField(queryset=BtUser.objects.all(), label="Delegowany")
-    application_author = forms.ModelChoiceField(queryset=BtUser.objects.all())
     trip_purpose_text = forms.CharField(
         max_length=250,
         widget=forms.Textarea(attrs={'rows':3}),
@@ -54,6 +59,11 @@ class BtApplicationForm(forms.Form):
         initial=BtCurrency.objects.get(code='PLN')
     )
     advance_payment = forms.DecimalField(decimal_places=2, max_digits=6, label="Zaliczka", initial=0)
+    current_datetime = forms.CharField(widget=forms.HiddenInput())
+
+    class Meta:
+        model = BtApplication
+        exclude = ('employee_level', 'application_author', 'application_status', 'application_log')
 
     def clean(self):
         result = super().clean()
@@ -119,7 +129,7 @@ class BtApplicationSettlementForm(forms.Form):
     )
 
 
-class BtApplicationSettlementInfoForm(forms.Form):
+class BtApplicationSettlementInfoForm(forms.ModelForm):
     bt_completed = forms.TypedChoiceField(
         label="Czy delegacja się odbyła?",
         choices=[("", ""), ('tak', 'tak'), ('nie', 'nie')],
@@ -128,6 +138,17 @@ class BtApplicationSettlementInfoForm(forms.Form):
     bt_start_time = forms.TimeField(label="Godzina wyjazdu", widget=TimeInputWidget)
     bt_end_date = forms.DateField(label="Data powrotu", widget=DateInputWidget)
     bt_end_time = forms.TimeField(label="Godzina powrotu", widget=TimeInputWidget)
+    settlement_exchange_rate = forms.DecimalField(decimal_places=5,
+                                                  max_digits=8,
+                                                  label="Kurs rozliczenia",
+                                                  min_value=0,
+                                                  initial=1,
+                                                  help_text='W przypadku zaliczki w walucie PLN wpisz "1".')
+    current_datetime = forms.CharField(widget=forms.HiddenInput())
+
+    class Meta:
+        model = BtApplicationSettlementInfo
+        exclude = ('bt_application_settlement', 'advance_payment', 'settlement_log')
 
     def clean(self):
         result = super().clean()
@@ -137,14 +158,17 @@ class BtApplicationSettlementInfoForm(forms.Form):
             result['bt_start_date'].day,
             result['bt_start_time'].hour,
             result['bt_start_time'].minute)
+        print(comb_start_time)
         comb_end_time = datetime.datetime(
             result['bt_end_date'].year,
             result['bt_end_date'].month,
             result['bt_end_date'].day,
             result['bt_end_time'].hour,
             result['bt_end_time'].minute)
+        print(comb_end_time)
         if comb_start_time > comb_end_time:
             raise ValidationError("Data i godzina wyjazdu musi być przed datą i godziną powrotu!")
+        return result
 
 
 class BtApplicationSettlementCostForm(forms.Form):
@@ -166,7 +190,48 @@ class BtApplicationSettlementMileageForm(forms.Form):
     mileage = forms.IntegerField(label='Liczba kilometrów', min_value=0)
 
 
-class BtApplicationSettlementFeedingForm(forms.Form):
-    breakfast_quantity = forms.IntegerField(label='Liczba zapewnionych śniadań')
-    dinner_quantity = forms.IntegerField(label='Liczba zapewnionych obiadów')
-    supper_quantity = forms.IntegerField(label='Liczba zapewnionych kolacji', min_value=0)
+class BtApplicationSettlementFeedingForm(forms.ModelForm):
+    breakfast_quantity = forms.IntegerField(label='Liczba zapewnionych śniadań', min_value=0, initial=0)
+    dinner_quantity = forms.IntegerField(label='Liczba zapewnionych obiadów', min_value=0, initial=0)
+    supper_quantity = forms.IntegerField(label='Liczba zapewnionych kolacji', min_value=0, initial=0)
+
+    class Meta:
+        model = BtApplicationSettlementInfo
+        fields = ('breakfast_quantity', 'dinner_quantity', 'supper_quantity')
+        widgets = forms.IntegerField.widget(attrs={'onchange': "get_onchange_meals_correction()"})
+
+
+BtApplicationSettlementInfoFormset = inlineformset_factory(
+    BtApplicationSettlement,
+    BtApplicationSettlementInfo,
+    fields=('bt_completed', 'bt_start_date', 'bt_start_time', 'bt_end_date', 'bt_end_time', 'settlement_exchange_rate'),
+    form=BtApplicationSettlementInfoForm,
+    labels={'bt_start_date': "Data wyjazdu",
+            'bt_start_time': "Godzina wyjazdu",
+            "bt_end_date": "Data powrotu",
+            "bt_end_time": "Godzina powrotu",
+            'bt_completed': "Czy delegacja się odbyła?",
+            'settlement_exchange_rate': "Kurs rozliczenia",
+            },
+    widgets={'bt_start_date': DateInputWidget,
+             'bt_end_date': DateInputWidget,
+             'bt_start_time': TimeInputWidget,
+             'bt_end_time': TimeInputWidget,
+             },
+
+    can_delete=False
+)
+
+
+BtApplicationSettlementFeedingFormset = inlineformset_factory(
+    BtApplicationSettlement, BtApplicationSettlementFeeding,
+    fields=(
+        'breakfast_quantity',
+        'dinner_quantity',
+        'supper_quantity'),
+    labels={'breakfast_quantity': 'Liczba zapewnionych śniadań',
+            'dinner_quantity': 'Liczba zapewnionych obiadów',
+            'supper_quantity': 'Liczba zapewnionych kolacji'},
+    can_delete=False,
+    # widgets=forms.IntegerField.widget(attrs={'onchange': "get_onchange_meals_correction()"})
+)

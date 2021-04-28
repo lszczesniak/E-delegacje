@@ -1,0 +1,96 @@
+{% extends "base.html" %}
+{% block content %}
+
+
+
+<div class="container-fluid">
+<h2>Wnioski o delegację</h2>
+    <div class="row">
+        <table class="table table-sm  table-hover">
+
+        <tbody>
+            {% if object_list %}
+                {% for item in object_list %}
+
+            <tr>
+                <td>
+                Nr: {{ item.id }}
+                    </td>
+                        <td>
+               {{ item.trip_purpose_text }}
+                    </td>
+
+                    <td>
+                      <a class="btn btn-outline-secondary"
+                         href="{% url 'e_delegacje:approval' pk=item.pk %}"
+                      style="font-size: 12px"
+                      >
+                        Zaakceptuj wniosek
+                    </a>
+
+                        </td>
+                </tr>
+
+            {% endfor %},
+            {% else %}
+                <h6 class="offset-1 mt-2 pt-2"> Brak wniosków do akceptacji </h6>
+            {% endif %}
+
+        </tbody>
+        </table>
+    </div>
+    <hr>
+
+<h2>Rozliczenia delegacji</h2>
+
+    <div class="row">
+        {% if settlements %}
+            <table class="table table-sm  table-hover">
+
+            <tbody>
+
+                {% for item in settlements %}
+                <tr>
+                    <td>
+                    Nr: {{ item.id }}
+                        </td>
+                            <td>
+                   {{ item.bt_application_id.trip_purpose_text }}
+                        </td>
+
+                        <td>
+                          <a class="btn btn-outline-secondary"
+                             href="{% url 'e_delegacje:approval' pk=item.pk %}"
+                          style="font-size: 12px"
+                          >
+                            Zaakceptuj rozliczenie
+                        </a>
+
+                            </td>
+                    </tr>
+
+                {% endfor %}
+            </tbody>
+            </table>
+        {% else %}
+                            <h6 class="offset-1 mt-2 pt-2"> Brak rozliczeń do akceptacji </h6>
+        {% endif %}
+    </div>
+<hr>
+    <div class="row">
+        <div class="col-3 align-self-end">
+            <a type="button"
+               class="btn btn-outline-secondary"
+               href="{% url 'e_delegacje:index' %}"
+               style="font-size: 13px"
+            >
+                Powrót
+            </a>
+        </div>
+    </div>
+</div>
+
+
+
+{% endblock %}
+

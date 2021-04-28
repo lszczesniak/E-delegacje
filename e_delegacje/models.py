@@ -1,4 +1,6 @@
 from django.db import models
+from django.urls import reverse
+
 from setup.models import BtUser, BtCostCenter, BtDelegationRate, BtMileageRates, BtCurrency, BtCountry
 from django.contrib.auth.models import User, AbstractUser
 from e_delegacje.enums import (
@@ -44,6 +46,10 @@ class BtApplicationSettlement(models.Model):
         on_delete=models.CASCADE,
         related_name='bt_applications_settlements'
     )
+    settlement_status = models.CharField(max_length=30, choices=BtApplicationStatus.choices)
+
+    def get_absolute_url(self):
+        return reverse('e_delegacje:settlement-details', kwargs={'pk': self.pk})
 
     def __str__(self):
         return f'Settlement {self.id} to application {self.bt_application_id.id}'
@@ -65,10 +71,11 @@ class BtApplicationSettlementInfo(models.Model):
         on_delete=models.CASCADE,
         related_name='bt_application_settlement_info'
     )
+    settlement_exchange_rate = models.DecimalField(decimal_places=5, max_digits=8)
     settlement_log = models.CharField(max_length=2400)
 
     def __str__(self):
-        return f'Informacje do rozliczenia wniosku {self.bt_application_settlement}'
+        return f'Informacje {self.id} do rozliczenia wniosku {self.bt_application_settlement}'
 
 
 class BtApplicationSettlementCost(models.Model):
@@ -90,7 +97,7 @@ class BtApplicationSettlementCost(models.Model):
     attachment = models.FileField(null=True, blank=True)
 
     def __str__(self):
-        return f'Koszty do rozliczenia wniosku{self.bt_application_settlement}'
+        return f'{self.bt_cost_description}'
 
 
 class BtApplicationSettlementMileage(models.Model):

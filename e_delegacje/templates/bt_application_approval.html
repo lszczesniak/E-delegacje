@@ -1,19 +1,27 @@
 {% extends "base.html" %}
 {% block content %}
 
-<div class="container-fluid" >
-<hr>
+
+<main>
+<div class="container-fluid">
+    {% if application.bt_applications_settlements.settlement_status == 'in_progress' %}
+
+        <h2>Akceptacja rozliczenia delegacji </h2>
+
+    {% else %}
+      <h2>Akceptacja wniosku o delegację </h2>
+    {% endif %}
         <div class="row">
             <div class="col-4">
               <table class="table table-light " style="font-size: 12px">
                   <tr class="table table-primary table-striped text-uppercase">
                       <td class="fw-bold">Numer Wniosku o delegację</td>
-                      <td >{{ object.bt_application_id.id }}</td>
+                      <td >{{ application.id }}</td>
                   </tr>
 
                   <tr class="table table-primary text-uppercase">
                     <td class="fw-bold">Data wniosku:</td>
-                    <td>{{ object.bt_application_id.application_date }}</td>
+                    <td>{{ application.application_date.isoformat }}</td>
 
                   </tr>
               </table>
@@ -26,7 +34,8 @@
 
                         </tr>
                         <tr>
-                            <td class="text-wrap fw-bold" >{{ object.bt_application_id.trip_purpose_text }}</td>
+                            <td class="text-wrap fw-bold" >
+                                {{ application.trip_purpose_text }}</td>
                         </tr>
                     </tbody>
                 </table>
@@ -38,43 +47,48 @@
                             <td class="fw-bold">Status Wniosku</td>
                         </tr>
                         <tr>
-                            <td colspan="2">{{ object.bt_application_id.get_application_status_display }}</td>
+                            <td colspan="2">{{ application.get_application_status_display }}</td>
                         </tr>
                     </tbody>
                 </table>
 
             </div>
         </div>
-        <div class="row">
-          <div class="col-9">
-                <table class="table table-light offset-2" style="font-size: 13px">
+
+          <div class="row">
+          <div class="col-11">
+                <table class="table table-light offset-1" style="font-size: 13px">
                     <tr class="fw-bold">
 
-                        <td>Kraj</td>
                         <td>Pracownik</td>
-                        <td colspan="2">Cost center</td>
+                        <td>Planowana data wyjazdu</td>
+                        <td colspan="2">Planowana data powrotu</td>
 
                     </tr>
                   <tr>
-                      <td>{{ object.bt_application_id.bt_country }}</td>
-                      <td>{{ object.bt_application_id.target_user }}</td>
-                      <td colspan="2">{{ object.bt_application_id.CostCenter }}</td>
+                      <td>{{ application.target_user }}</td>
+                      <td>{{ application.planned_start_date.isoformat }}</td>
+                      <td colspan="2">{{ application.planned_end_date.isoformat }}</td>
+
 
                   </tr>
 
 
                         <tr class="fw-bold">
-                            <td>Rodzaj transportu</td>
+
+                            <td>Kraj</td>
                             <td>Trasa podrózy</td>
-                            <td>Planowana data wyjazdu</td>
-                            <td>Planowana data powrotu</td>
+                            <td>Rodzaj transportu</td>
+                            <td>Cost center</td>
+
+
                   </tr>
                             </tr>
                         <tr>
-                            <td>{{ object.bt_application_id.get_transport_type_display }}</td>
-                            <td>{{ object.bt_application_id.travel_route }}</td>
-                            <td>{{ object.bt_application_id.planned_start_date }}</td>
-                            <td>{{ object.bt_application_id.planned_end_date }}</td>
+                            <td>{{ application.bt_country }}</td>
+                            <td>{{ application.travel_route }}</td>
+                            <td>{{ application.get_transport_type_display }}</td>
+                            <td >{{ application.CostCenter }}</td>
 
                   </tr>
 
@@ -82,64 +96,48 @@
             </div>
 
             </div>
+
 <hr>
+{% if application.bt_applications_settlements %}
         <div class="row align-content-between">
 
             <div class="col-3">
-                {% if object.bt_application_info %}
-
                   <table class="table table-light table-striped" style="font-size: 12px">
                           <tr>
                               <td class="fw-bold">Delegacja zrealizowana?</td>
-                              <td>{{ object.bt_application_info.bt_completed }}</td>
+                              <td>{{ application.bt_applications_settlements.bt_application_info.bt_completed }}</td>
                           </tr>
                           <tr>
                               <td class="fw-bold">Data wyjazdu</td>
-                              <td>{{ object.bt_application_info.bt_start_date }}</td>
+                              <td>{{ application.bt_applications_settlements.bt_application_info.bt_start_date }}</td>
                           </tr>
                           <tr>
                               <td class="fw-bold">Godzina wyjazdu</td>
-                              <td>{{ object.bt_application_info.bt_start_time }}</td>
+                              <td>{{ application.bt_applications_settlements.bt_application_info.bt_start_time }}</td>
                           </tr>
                           <tr>
                               <td class="fw-bold">Data powrotu</td>
-                              <td>{{ object.bt_application_info.bt_end_date }}</td>
+                              <td>{{ application.bt_applications_settlements.bt_application_info.bt_end_date }}</td>
                           </tr>
                           <tr>
                               <td class="fw-bold">Godzina powrotu</td>
-                              <td>{{ object.bt_application_info.bt_end_time }}</td>
+                              <td>{{ application.bt_applications_settlements.bt_application_info.bt_end_time }}</td>
                           </tr>
                             <tr>
                               <td class="fw-bold">Kurs rozliczenia</td>
-                              <td>{{ object.bt_application_info.settlement_exchange_rate }}</td>
+                              <td>
+                              {{ application.bt_applications_settlements.bt_application_info.settlement_exchange_rate }}
+                              </td>
                           </tr>
-{#                        <tr>#}
-{#                              <td class="fw-bold">Historia</td>#}
-{#                              <td>{{ object.bt_application_info.settlement_log }}</td>#}
-{#                          </tr>  #}
+                          <tr>
+                              <td class="fw-bold">Historia</td>
+                              <td>{{ application.bt_applications_settlements.bt_application_info.settlement_log }}</td>
+                          </tr>
                       </table>
-                  <a class="btn btn-outline-warning d-grid"
-                     href="{% url 'e_delegacje:settlement-info-update' pk=object.id %}"
-                     style="font-size: 12px"
-                  >
-                      Edytuj informacje
-                  </a>
-                {% else %}
-
-                  <a class="btn btn-outline-warning d-grid"
-                     href="{% url 'e_delegacje:settlement-info-create' pk=object.id %}"
-                     style="font-size: 12px"
-                  >
-                      Dodaj informacje
-                  </a>
-
-                {% endif %}
             </div>
-            {% if object.bt_application_info %}
+
             <div class="col-3">
 
-
-                {% if object.bt_application_settlement_costs.exists %}
                     <div class="row">
                         <h5>Koszty: {{ cost_sum }} zł.</h5>
                     <hr>
@@ -170,30 +168,11 @@
 
                             </body>
                         </table>
-                    <a class="btn btn-outline-warning d-grid align-content-end"
-                     type="button"
-                     href="{% url 'e_delegacje:settlement-cost-create' pk=object.id %}"
-                    style="font-size: 12px"
-                    >
-                      Edytuj koszty
-                    </a>
 
-                {% else %}
-                    <a class="btn btn-outline-warning d-grid"
-                     type="button"
-                     href="{% url 'e_delegacje:settlement-cost-create' pk=object.id %}"
-                    style="font-size: 12px"
-                    >
-                      Dodaj koszty
-                    </a>
-
-                {% endif %}
 
                 </div>
 
             <div class="col-3 align-content-end">
-
-                {% if object.bt_application_settlement_mileages.exists %}
                     <div class="row">
                         <h5>Kilometrówka: {{ mileage_cost }} zł.</h5>
                     <hr>
@@ -208,7 +187,7 @@
                             </tr>
                        </thead>
                        <tbody>
-                        {% for trip in object.bt_application_settlement_mileages.all %}
+                        {% for trip in application.bt_applications_settlements.bt_application_settlement_mileages.all %}
                             <tr>
 
                                 <td>{{ trip.trip_date }}</td>
@@ -219,23 +198,6 @@
                        </tbody>
 
                    </table>
-
-                    <a class="btn btn-outline-warning d-grid align-self-end"
-                     href="{% url 'e_delegacje:settlement-mileage-create' pk=object.id %}"
-                    style="font-size: 12px"
-                    >
-                      Edytuj Kilometrówkę
-                    </a>
-                        {% else %}
-                    <a class="btn btn-outline-warning d-grid align-self-end"
-                     href="{% url 'e_delegacje:settlement-mileage-create' pk=object.id %}"
-                    style="font-size: 12px"
-                    >
-                      Dodaj Kilometrówkę
-                    </a>
-
-                        {% endif %}
-
             </div>
 
             <div class="col-3 align-content-end">
@@ -243,47 +205,37 @@
                         <h5 class="vIntegerField">Dieta: {{ diet }} zł. </h5>
                     <hr>
                     </div>
-                {% if object.bt_application_settlement_feeding %}
-
                     <table class="table table-light  table-striped" style="font-size: 12px">
 
                        <tbody>
                         <tr>
                             <td class="fw-bold active">Śniadania</td>
-                            <td>{{ object.bt_application_settlement_feeding.breakfast_quantity }}</td>
+                            <td>
+                    {{ application.bt_applications_settlements.bt_application_settlement_feeding.breakfast_quantity }}
+                            </td>
                         </tr>
                         <tr>
                             <td class="fw-bold">Obiady</td>
-                            <td>{{ object.bt_application_settlement_feeding.dinner_quantity }}</td>
+                            <td>
+                        {{ application.bt_applications_settlements.bt_application_settlement_feeding.dinner_quantity }}
+                            </td>
                         </tr>
                         <tr>
                             <td class="fw-bold">Kolacje</td>
-                            <td>{{ object.bt_application_settlement_feeding.supper_quantity }}</td>
+                            <td>
+                        {{ application.bt_applications_settlements.bt_application_settlement_feeding.supper_quantity }}
+                            </td>
                         </tr>
                        </tbody>
 
                    </table>
-
-                    <a class="btn btn-outline-warning d-grid"
-                     href="{% url 'e_delegacje:settlement-feeding-update' pk=object.id %}"
-                    style="font-size: 12px"
-                    >
-                      Edytuj wyżywienie
-                    </a>
-
-                {% else %}
-                    <a class="btn btn-outline-warning d-grid"
-                     href="{% url 'e_delegacje:settlement-feeding-create' pk=object.id %}"
-                    style="font-size: 12px"
-                    >
-                      Dodaj wyżywienie
-                    </a>
-
-                {% endif %}
-
             </div>
-            {% endif %}
+
     </div>
+
+{% endif %}
+
+</div>
 <hr>
         <div class="row align-content-between">
             <div class="col-3 ">
@@ -301,31 +253,60 @@
             </div>
 
         </div>
-
 <hr>
-</div>
-<hr>
-        <div class="row">
+        <div class="row align-content-between">
             <div class="col-2 align-self-end">
                 <a class="btn btn-outline-secondary d-grid"
-                 href="{% url 'e_delegacje:applications-list' %}"
+                 href="{% url 'e_delegacje:approval-list' %}"
                 style="font-size: 12px"
                 >
                   powrót
                 </a>
             </div>
+            <div class="COL-6">
 
-                        <div class="col-2 align-self-end">
-                <a class="btn btn-outline-success d-grid"
-                 href="{% url 'e_delegacje:settlement-send' pk=object.id %}"
+            </div>
+    {% if application.bt_applications_settlements %}
+            <div class="col-2 align-self-end">
+                <a class="btn btn-success d-grid"
+                 href="{% url 'e_delegacje:settlement-approved' pk=application.id %}"
                 style="font-size: 12px"
                 >
-                  Wyślij do akceptacji
+                  Zaakceptuj
                 </a>
             </div>
+            <div class="col-2 align-self-end">
+
+                <a class="btn btn-danger d-grid"
+                 href="{% url 'e_delegacje:settlement-rejected' pk=application.id %}"
+                style="font-size: 12px"
+                >
+
+                  Odrzuć
+                </a>
+            </div>
+    {% else %}
+            <div class="col-2 align-self-end">
+                <a class="btn btn-success d-grid"
+                 href="{% url 'e_delegacje:application-approved' pk=application.id %}"
+                style="font-size: 12px"
+                >
+                  Zaakceptuj
+                </a>
+            </div>
+            <div class="col-2 align-self-end">
+
+                <a class="btn btn-danger d-grid"
+                 href="{% url 'e_delegacje:application-rejected' pk=application.id %}"
+                style="font-size: 12px"
+                >
+
+                  Odrzuć
+                </a>
+            </div>
+    {% endif %}
         </div>
-</div>
+
+
 </main>
-
-
-{% endblock content %}
+{% endblock %}

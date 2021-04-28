@@ -6,7 +6,8 @@ class BtApplicationStatus(models.TextChoices):
     saved = 'saved', 'Zapisany'
     in_progress = 'in_progress', 'W akceptacji'
     approved = 'approved', 'Zaakceptowany'
-    settlement_in_progress = 'settlement_in_progress', "Rozliczany"
+    rejected = 'rejected', 'Odrzucony'
+    settlement_in_progress = 'settlement_in_progress', "W rozliczeniu"
     settled = 'settled', 'Rozliczony'
     canceled = 'canceled', 'Anulowany'
 

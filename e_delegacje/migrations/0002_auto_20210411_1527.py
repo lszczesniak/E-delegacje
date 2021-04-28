@@ -41,11 +41,11 @@ class Migration(migrations.Migration):
             name='bt_application_settlement',
             field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='bt_application_settlement_costs', to='e_delegacje.btapplicationsettlement'),
         ),
-        migrations.AddField(
-            model_name='btapplicationsettlementcost',
-            name='bt_cost_currency',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='bt_application_settlement_costs', to='setup.btratestax'),
-        ),
+        # migrations.AddField(
+        #     model_name='btapplicationsettlementcost',
+        #     name='bt_cost_currency',
+        #     field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='bt_application_settlement_costs', to='setup.btratestax'),
+        # ),
         migrations.AddField(
             model_name='btapplicationsettlement',
             name='bt_application_id',

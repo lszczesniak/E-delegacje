@@ -5,7 +5,7 @@
 
 
 <div class="col-8 align-items-start">
-    <form class="form-control" method="post">
+    <form class="form-control" method="post" enctype="multipart/form-data">
         {% csrf_token %}
             <table class="table table-responsive-sm table-light bg-light">
                  {{ form.as_table }}
@@ -14,20 +14,36 @@
 
                 <div class="row">
             <div class="col-1 align-self-end">
-                <input class="btn btn-outline-secondary" type="submit" value="Zapisz">
+                <input class="btn btn-outline-success" type="submit" value="Zapisz">
             </div>
-            <div class="col-1 align-self-end">
-                <a type="button"
-                   class="btn btn-outline-secondary"
-                   href="{% url 'e_delegacje:settlement-details' pk=settlement.pk %}"
-                >
-                    Powrót
-                </a>
-        </div>
+
         </div>
     </form>
 </div>
 
+
+    {% if form.errors %}
+    {% for field in form %}
+        {% for error in field.errors %}
+            <div class="alert alert-danger">
+                <strong>{{ error|escape }}</strong>
+            </div>
+        {% endfor %}
+    {% endfor %}
+    {% for error in form.non_field_errors %}
+        <div class="alert alert-danger">
+            <strong>{{ error|escape }}</strong>
+        </div>
+    {% endfor %}
+{% endif %}
+
+<script>
+  let today = new Date();
+  let date = today.getFullYear()+'.'+(today.getMonth()+1)+'.'+today.getDate();
+  let hour = today.getHours()+":"+today.getMinutes()+":"+today.getSeconds();
+  let current_datetime = date+" "+hour;
+  document.getElementById("id_current_datetime").value = current_datetime;
+</script>
 
 
   {% endblock %}
