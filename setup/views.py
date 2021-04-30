@@ -1,5 +1,11 @@
 from django.views.generic import ListView, DetailView, CreateView, UpdateView
-from django.urls import reverse_lazy
+from django.urls import reverse_lazy, reverse
+from django.http import HttpResponse,HttpResponseRedirect
+from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.views import PasswordChangeView, PasswordResetDoneView
+from django.contrib import messages
+from setup.forms import LoginForm
+from django.shortcuts import render, redirect
 from setup.models import (
     BtUser,
     BtRegion,
@@ -11,6 +17,42 @@ from setup.models import (
     BtDepartment,
 
 )
+def user_login(request):
+    if request.method == 'POST':
+        form = LoginForm(request.POST)
+        if form.is_valid():
+            cd = form.cleaned_data
+            user = authenticate(username=cd['username'],
+                password=cd['password'])
+            if user is not None:
+                if user.is_active:
+                    login(request, user)
+                    return HttpResponseRedirect(reverse('e_delegacje:index'))
+                else:
+                    return HttpResponse('Konto jest zablokowane.')
+    else:
+        form = LoginForm()
+    return render(request, 'login.html', {'form': form})
+
+
+def user_logout(request):
+    logout(request)
+#    messages.info(request, "logged successfylly!")
+    return redirect('setup:login')
+
+class MyPasswordChangeView(PasswordChangeView):
+    template_name = 'password_change_form.html'
+    success_url =  reverse_lazy('setup:password-change-done')
+
+class MyPasswordResetDoneView(PasswordResetDoneView):
+    template_name ='password_change_done.html'
+
+
+class BtUserCreateView(CreateView):
+    model = BtUser
+    template_name = "my_name.html"
+    fields = "__all__"
+    success_url = reverse_lazy("setup:user-create")
 
 
 class BtUserListView(ListView):
@@ -40,6 +82,13 @@ class BtRegionUpdateView(UpdateView):
     success_url = reverse_lazy("setup:region-list-view")
 
 
+class BtRegionCreateView(CreateView):
+    model = BtRegion
+    template_name = "my_name.html"
+    fields = "__all__"
+    success_url = reverse_lazy("setup:region-create")
+
+
 class BtDivisionListView(ListView):
     model = BtDivision
     template_name = "division_list_view.html"
@@ -48,6 +97,20 @@ class BtDivisionListView(ListView):
 class BtDivisionDetailView(DetailView):
     model = BtDivision
     template_name = "division_details_view.html"
+
+
+class BtDivisionUpdateView(UpdateView):
+    model = BtDivision
+    fields = ("name", )
+    template_name = "my_name.html"
+    success_url = reverse_lazy("setup:division-list-view")
+
+
+class BtDivisionCreateView(CreateView):
+    model = BtDivision
+    template_name = "my_name.html"
+    fields = "__all__"
+    success_url = reverse_lazy("setup:division-create")
 
 
 class BtLocationListView(ListView):

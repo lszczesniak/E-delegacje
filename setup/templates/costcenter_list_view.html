@@ -1,11 +1,27 @@
 {% extends "base.html" %}
 {% block content %}
-    {% for d in object_list %}
-    <table class="table table-secondary table-striped table-hover">
 
-          <td><a href="{% url 'setup:costcenter-details-view' pk=d.pk %}">Opis  - {{ d.text }}</a></td>
-        <td><a> Profit Center -{{d.profit_center_id}}</td></a> <td><a>Cost Center -{{d.cost_center_id}}</td></a>
+    <h2>Lista MPK-ów</h2>
 
-        </table>
+<table class="table table-sm table-hover">
+    <thead>
+        <tr>
+            <td>Text</td>
+            <td>Cost Center</td>
+            <td>Profit Center</td>
+        </tr>
+    </thead>
+
+    <body>
+        {% for a in object_list %}
+        <tr class="table table-sm table-hover">
+
+            <td><a href="{% url 'setup:costcenter-details-view' pk=a.pk %}">{{ a.text }}</a></td>
+            <td><a>     {{ a.cost_center_number}}</a></td>
+            <td><a>     {{ a.profit_center_id }}</a></td>
+        </tr>
     {% endfor %}
+    </body>
+    </table>
 {% endblock %}
+

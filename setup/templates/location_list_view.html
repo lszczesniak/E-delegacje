@@ -1,13 +1,24 @@
 {% extends "base.html" %}
 {% block content %}
+
+<h2>Lista lokalizacji</h2>
+
+<table class="table table-sm table-hover">
+    <thead>
+        <tr>
+            <td>Nazwa</td>
+            <td>Profit center</td>
+        </tr>
+    </thead>
+ <body>
     {% for d in object_list %}
-    <table class="table table-secondary table-striped table-hover">
-    <tr>
-          <td><a href="{% url 'setup:location-details-view' pk=d.pk %}">Opis  - {{ d.name }}
-              Profit Center -{{d.profit_center}}
-          </a>
-            <td>
-              </tr>
-        </table>
+         <tr class="table table-sm table-hover">
+
+
+          <td><a href="{% url 'setup:location-details-view' pk=d.pk %}">Opis  - {{ d.name }}</a></td>
+           <td><a>     Profit Center -{{d.profit_center}}</a></td>
+       </tr>
     {% endfor %}
+    </body>
+    </table>
 {% endblock %}
