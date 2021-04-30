@@ -46,7 +46,13 @@
 			  aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
-
+<style>
+	.hello-msg{
+	font-size:18 px;
+	color: #fff;
+	margin-right:20px;
+	}
+</style>
       <div class="collapse navbar-collapse bg-secondary text-warning"
 		   id="navbarsExample04"
 		   style="height: 50px">
@@ -71,23 +77,24 @@
 
 		</ul>
 
-
 			<div class="navbar-nav mt-2 mb-1 mb-md-0 mr-0" >
 
 				<div class="nav-item dropdown">
+
 				<a class="nav-link dropdown-toggle text-warning"
 				   href="#" id="User_profile_dropdown"
 				   data-bs-toggle="dropdown"
 				   aria-expanded="false">
-					Użytkownik</a>
+					<span class="hello-msg text-warning">Witaj, {{request.user.first_name}} {{request.user.last_name}}</span></a>
+
 				  <ul class="dropdown-menu bg-secondary" aria-labelledby="User_profile_dropdown">
 				  <li><a class="nav-item nav-link text-warning " href="#">dane użytkownika</a></li>
-				  <li><a class="nav-item nav-link text-warning " href="#">login</a></li>
-				  <li><a class="nav-item nav-link text-warning " href="#">logout</a></li>
+
+				  <li><a class="nav-item nav-link text-warning " href="{% url 'setup:login' %}">login</a></li>
+				  <li><a class="nav-item nav-link text-warning " href="{% url 'setup:logout' %}">logout</a></li>
 				  <li><a class="nav-item nav-link text-warning " href="#">zmień hasło</a></li>
 				  </ul>
 				</div>
-
 
 			  <div class="nav-item dropdown">
 				<a class="nav-link dropdown-toggle text-warning"
@@ -107,7 +114,7 @@
                   <li><a class="nav-item nav-link text-warning " href="{% url 'setup:location-list-view' %}">
                       Lokalizacje</a></li>
 				  <li><hr class="dropdown-divider"></li>
-				  <li><a class="nav-item nav-link text-warning " href="{% url 'setup:costcenter-list-view' %}">
+				  <li><a class="nav-item nav-link text-  warning " href="{% url 'setup:costcenter-list-view' %}">
                       Cost Centers</a></li>
 				  <li><a class="nav-item nav-link text-warning " href="{% url 'setup:delegationrate-list-view' %}">
                       Stawki delegacji</a></li>

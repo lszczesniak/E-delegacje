@@ -137,3 +137,6 @@ EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 
 #AUTH_USER_MODEL="e_delegacje.BtUser"
 AUTH_USER_MODEL = "setup.BtUser"
+
+# LOGIN_REDIRECT_URL = "/setup/"
+# LOGOUT_REDIRECT_URL = "/setup/"

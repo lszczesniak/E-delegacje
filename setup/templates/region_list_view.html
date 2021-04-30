@@ -1,10 +1,23 @@
 {% extends "base.html" %}
 {% block content %}
+
+  <h2>Lista regionów</h2>
+
+<table class="table table-sm table-hover">
+    <thead>
+        <tr>
+            <td>Opis</td>
+
+        </tr>
+    </thead>
+
+    <body>
     {% for r in object_list %}
-            <table class="table table-secondary table-striped table-hover">
+        <tr class="table table-sm table-hover">
           <td><a href="{% url 'setup:region-details-view' pk=r.pk %}">Opis - {{ r.name }}</td>
             </a>
-            </table>
-{% endfor %}
+  </tr>
+    {% endfor %}
+    </body>
+    </table>
 {% endblock %}
-

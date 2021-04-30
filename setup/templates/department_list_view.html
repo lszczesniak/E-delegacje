@@ -1,13 +1,28 @@
 {% extends "base.html" %}
 {% block content %}
+<body>
+<h2>Lista działów</h2>
+<table class="table table-sm table-hover">
+    <thead>
+        <tr>
+            <td>Nazwa działu</td>
+            <td>Manager</td>
+            <td>Profit Center</td>
+
+
+        </tr>
+    </thead>
+
     {% for d in object_list %}
-    <table class="table table-secondary table-striped table-hover">
-    <tr>
-          <td><a href="{% url 'setup:department-details-view' pk=d.pk %}">Nazwa działu -{{d.name}}
-              Menager -{{d.menager_id}}
-          </a>
-            <td>
-              </tr>
-        </table>
-    {% endfor %}
+    <tr class="table table-sm table-hover">
+
+          <td><a href="{% url 'setup:department-details-view' pk=d.pk %}">{{d.name}}</a></td>
+            <td></a>  {{d.menager_id}}</a></td>
+            <td></a>  {{d.profit_center}}</a></td>
+            </tr>
+       {% endfor %}
+
+      </body>
+</table>
+
 {% endblock %}
