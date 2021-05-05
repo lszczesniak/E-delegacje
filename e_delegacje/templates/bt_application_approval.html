@@ -57,16 +57,16 @@
 
           <div class="row">
           <div class="col-11">
-                <table class="table table-light offset-1" style="font-size: 13px">
-                    <tr class="fw-bold">
+                <table class="table table-light" style="font-size: 13px">
+                    <tr class="col-11 fw-bold">
 
                         <td>Pracownik</td>
                         <td>Planowana data wyjazdu</td>
                         <td colspan="2">Planowana data powrotu</td>
 
                     </tr>
-                  <tr>
-                      <td>{{ application.target_user }}</td>
+                  <tr class="col-11">
+                      <td>{{ application.target_user.first_name }} {{ application.target_user.last_name }}</td>
                       <td>{{ application.planned_start_date.isoformat }}</td>
                       <td colspan="2">{{ application.planned_end_date.isoformat }}</td>
 
@@ -88,7 +88,7 @@
                             <td>{{ application.bt_country }}</td>
                             <td>{{ application.travel_route }}</td>
                             <td>{{ application.get_transport_type_display }}</td>
-                            <td >{{ application.CostCenter }}</td>
+                            <td>{{ application.CostCenter }}</td>
 
                   </tr>
 
@@ -153,7 +153,7 @@
                                     <th>Waluta</th>
                                 </tr>
                             </thead>
-                            <body>
+
 
 
 
@@ -166,7 +166,7 @@
 
                             {% endfor %}
 
-                            </body>
+
                         </table>
 
 
@@ -239,7 +239,7 @@
 <hr>
         <div class="row align-content-between">
             <div class="col-3 ">
-                <h5>Zaliczka: {{ advance }} {{ object.bt_application_id.advance_payment_currency }}</h5>
+                <h5>Zaliczka: {{ application.advance_payment }} {{ application.advance_payment_currency }}</h5>
             </div>
             <div class="col-6 text-center">
                 {% if settlement_amount > 0 %}
@@ -248,10 +248,11 @@
                     <h3>{{ settlement_amount }}</h3>
                 {% endif %}
             </div>
+        {% if application.bt_applications_settlements %}
             <div class="col-3 text-end">
                 <h5>Suma kosztów: {{ total_costs }} zł.</h5>
             </div>
-
+        {% endif %}
         </div>
 <hr>
         <div class="row align-content-between">

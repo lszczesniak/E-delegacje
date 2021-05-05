@@ -48,7 +48,7 @@
       </button>
 <style>
 	.hello-msg{
-	font-size:18 px;
+	font-size:18px;
 	color: #fff;
 	margin-right:20px;
 	}
@@ -65,6 +65,9 @@
           <li class="nav-item">
 			  <a class="navbar-brand text-light" href="{% url 'e_delegacje:index' %}">E-delegacje</a>
           </li>
+                {% if request.user.is_authenticated %}
+
+
 			<li class="nav-item">
 				<a class="nav-item nav-link text-warning " href="{% url 'e_delegacje:applications-create' %}">
                     Nowy wniosek</a>
@@ -98,7 +101,7 @@
 				  <li><a class="nav-item nav-link text-warning " href="#">zmień hasło</a></li>
 				  </ul>
 				</div>
-
+            {% if request.user.is_staff %}
 			  <div class="nav-item dropdown">
 				<a class="nav-link dropdown-toggle text-warning"
 				   href="#" id="Settings_dropdown"
@@ -127,14 +130,14 @@
 				  <li>  <a class="nav-item nav-link text-warning " href="/admin/">Admin</a></li>
 				</ul>
 			  </div>
-
+            {% endif %}
 
 			</div>
 		</li>
       </div>
     </div>
   </nav>
-
+ {% endif %}
 	</header>
 
 <main style="font-size: 12px">

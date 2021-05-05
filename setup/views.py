@@ -17,20 +17,28 @@ from setup.models import (
     BtDepartment,
 
 )
+
+
 def user_login(request):
     if request.method == 'POST':
         form = LoginForm(request.POST)
         if form.is_valid():
             cd = form.cleaned_data
-            user = authenticate(username=cd['username'],
-                password=cd['password'])
+            entered_usr = BtUser.objects.get(username=cd['username'])
+            user = authenticate(request, username=entered_usr.username, password=cd['password'])
             if user is not None:
                 if user.is_active:
                     login(request, user)
                     return HttpResponseRedirect(reverse('e_delegacje:index'))
                 else:
                     return HttpResponse('Konto jest zablokowane.')
+            else:
+                print(f'user {entered_usr.username} is none')
+        else:
+            for item in form.errors:
+                print(f'form errors: {item}')
     else:
+
         form = LoginForm()
     return render(request, 'login.html', {'form': form})
 
@@ -40,12 +48,14 @@ def user_logout(request):
 #    messages.info(request, "logged successfylly!")
     return redirect('setup:login')
 
+
 class MyPasswordChangeView(PasswordChangeView):
     template_name = 'password_change_form.html'
-    success_url =  reverse_lazy('setup:password-change-done')
+    success_url = reverse_lazy('setup:password-change-done')
+
 
 class MyPasswordResetDoneView(PasswordResetDoneView):
-    template_name ='password_change_done.html'
+    template_name = 'password_change_done.html'
 
 
 class BtUserCreateView(CreateView):
