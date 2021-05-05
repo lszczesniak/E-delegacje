@@ -11,8 +11,8 @@
             <td>Menager</td>
         </tr>
     </thead>
+    <tbody>
 
-    <body>
         {% for a in object_list %}
         <tr class="table table-sm table-hover">
 
@@ -21,6 +21,16 @@
             <td><a>     {{ a.manager }}</a></td>
         </tr>
     {% endfor %}
-    </body>
+    </tbody>
     </table>
+
+                <div class="col-3 align-self-start">
+            <a type="button"
+               class="btn btn-outline-warning"
+               href="{% url 'setup:user-create' %}"
+               style="font-size: 13px"
+            >
+                Nowy użytkownik
+            </a>
+        </div>
 {% endblock %}

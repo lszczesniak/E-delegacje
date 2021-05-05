@@ -13,13 +13,12 @@
                 {% for item in object_list %}
 
             <tr>
-                <td>
+                    <td>
                 Nr: {{ item.id }}
                     </td>
-                        <td>
+                    <td>
                {{ item.trip_purpose_text }}
                     </td>
-
                     <td>
                       <a class="btn btn-outline-secondary"
                          href="{% url 'e_delegacje:approval' pk=item.pk %}"
@@ -31,15 +30,16 @@
                         </td>
                 </tr>
 
-            {% endfor %},
+            {% endfor %}
             {% else %}
                 <h6 class="offset-1 mt-2 pt-2"> Brak wniosków do akceptacji </h6>
             {% endif %}
 
         </tbody>
         </table>
-    </div>
     <hr>
+    </div>
+
 
 <h2>Rozliczenia delegacji</h2>
 
@@ -51,13 +51,12 @@
 
                 {% for item in settlements %}
                 <tr>
-                    <td>
+                        <td>
                     Nr: {{ item.id }}
                         </td>
-                            <td>
+                        <td>
                    {{ item.bt_application_id.trip_purpose_text }}
                         </td>
-
                         <td>
                           <a class="btn btn-outline-secondary"
                              href="{% url 'e_delegacje:approval' pk=item.pk %}"
@@ -73,10 +72,11 @@
             </tbody>
             </table>
         {% else %}
-                            <h6 class="offset-1 mt-2 pt-2"> Brak rozliczeń do akceptacji </h6>
+                    <h6 class="offset-1 mt-2 pt-2"> Brak rozliczeń do akceptacji </h6>
         {% endif %}
+    <hr>
     </div>
-<hr>
+
     <div class="row">
         <div class="col-3 align-self-end">
             <a type="button"

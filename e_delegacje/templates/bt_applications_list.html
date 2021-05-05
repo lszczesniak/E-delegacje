@@ -12,8 +12,18 @@
         <th>
           <p>Opis</p>
     </th>
-            <th colspan="5">
-          <p>Status</p>
+            <th >
+          <p>Status wniosku</p>
+    </th>
+        </th>
+        <th >
+          <p>Rozliczenie</p>
+    </th>
+        <th >
+          <p>Status rozliczenia</p>
+    </th>
+        <th colspan="2">
+          <p>Szczegóły</p>
     </th>
 </tr>
 </thead>
@@ -21,15 +31,45 @@
     {% for item in object_list %}
     <tr>
         <td>
-      {{ item.id }}
-            </td>
-                <td>
-       {{ item.trip_purpose_text }}
-            </td>
-            <td>
-                <p>{{ item.get_application_status_display }}</p>
-            </td>
-                <td>
+            {{ item.id }}
+        </td>
+        <td>
+            {{ item.trip_purpose_text }}
+        </td>
+        <td>
+            <p>{{ item.get_application_status_display }}</p>
+        </td>
+
+        <td>
+            {% if not item.bt_applications_settlements and item.application_status == 'approved' %}
+
+              <a class="btn btn-outline-secondary"
+                 href="{% url 'e_delegacje:settlement-create' pk=item.id %}"
+              style="font-size: 12px"
+              >
+
+                Rozlicz wniosek
+            </a>
+            {% elif item.bt_applications_settlements and item.application_status == 'settled' %}
+            <a class="btn btn-outline-secondary"
+                 href="{{ item.bt_applications_settlements.get_absolute_url }}"
+              style="font-size: 12px"
+              >
+                Zobacz rozliczenie wniosku
+            </a>
+            {% elif item.bt_applications_settlements and item.application_status == 'settlement_in_progress' %}
+            <a class="btn btn-outline-secondary"
+                 href="{{ item.bt_applications_settlements.get_absolute_url }}"
+              style="font-size: 12px"
+              >
+                Zobacz rozliczenie wniosku
+            </a>
+            {% endif %}
+        </td>
+    <td>
+        <p>{{ item.bt_applications_settlements.get_settlement_status_display }}</p>
+    </td>
+        <td>
             <a class="btn btn-outline-secondary"
                href="{% url 'e_delegacje:application-details' pk=item.id %}"
             style="font-size: 12px"
@@ -37,10 +77,10 @@
                 Szczegóły
             </a>
 
-            </td>
+        </td>
 
-                 <td>
-                    {% if not item.bt_applications_settlements and item.application_status == 'rejected' %}
+         <td>
+            {% if not item.bt_applications_settlements and item.application_status == 'rejected' %}
 
               <a class="btn btn-outline-secondary"
                  href="{% url 'e_delegacje:application-update' pk=item.id %}"
@@ -50,38 +90,9 @@
                 Edytuj wniosek
             </a>
 
-                    {% endif %}
-            </td>
-
-
-                <td>
-                    {% if not item.bt_applications_settlements and item.application_status == 'approved' %}
-
-              <a class="btn btn-outline-secondary"
-                 href="{% url 'e_delegacje:settlement-create' pk=item.id %}"
-              style="font-size: 12px"
-              >
-
-                Rozlicz wniosek
-            </a>
-
-                    {% endif %}
-            </td>
-
-            <td>
-            {% if item.bt_applications_settlements and item.application_status == 'settlement_in_progress' %}
-
-
-              <a class="btn btn-outline-secondary"
-{#                 href="{% url 'e_delegacje:settlement-details' pk=item.bt_applications_settlements.pk %}"#}
-                 href="{{ item.bt_applications_settlements.get_absolute_url }}"
-              style="font-size: 12px"
-              >
-                Zobacz rozliczenie wniosku
-            </a>
-
             {% endif %}
-                </td>
+        </td>
+
         </tr>
 
     {% endfor %}

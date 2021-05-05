@@ -100,35 +100,41 @@ class BtApplicationApprovalDetailView(View):
 
     def get(self, request, pk):
         application = BtApplication.objects.get(id=pk)
-        set_pk = application.bt_applications_settlements.id
-        settlement = BtApplicationSettlement.objects.get(id=set_pk)
-        advance = float(settlement.bt_application_id.advance_payment)
-        cost_sum = float(settlement_cost_sum(BtApplicationSettlement.objects.get(pk=settlement.id)))
-        mileage_cost = float(mileage_cost_sum(BtApplicationSettlement.objects.get(pk=settlement.id)))
-        if settlement.bt_application_id.bt_country.country_name.lower() == 'polska':
-            diet = get_diet_amount_poland(settlement)
-        else:
-            diet = get_diet_amount_abroad(settlement)
-        total_costs = cost_sum + mileage_cost + diet
-        settlement_amount = advance - total_costs
-        if settlement_amount < 0:
-            settlement_amount = f'Do zwrotu dla pracownika: {abs(settlement_amount)} ' \
-                                f'{settlement.bt_application_id.advance_payment_currency.code}.'
-        else:
-            settlement_amount = f'Do zapłaty przez pracownika: {settlement_amount} ' \
-                                f'{settlement.bt_application_id.advance_payment_currency.code}'
-        return render(
-            request,
-            template_name="bt_application_approval.html",
-            context={
-                     'application': application,
-                     'cost_sum': cost_sum,
-                     'total_costs': total_costs,
-                     'advance': advance,
-                     'settlement_amount': settlement_amount,
-                     'mileage_cost': mileage_cost,
-                     'diet': diet
-                     })
+        try:
+            set_pk = application.bt_applications_settlements.id
+            settlement = BtApplicationSettlement.objects.get(id=set_pk)
+            advance = float(settlement.bt_application_id.advance_payment)
+            cost_sum = float(settlement_cost_sum(BtApplicationSettlement.objects.get(pk=settlement.id)))
+            mileage_cost = float(mileage_cost_sum(BtApplicationSettlement.objects.get(pk=settlement.id)))
+            if settlement.bt_application_id.bt_country.country_name.lower() == 'polska':
+                diet = round(get_diet_amount_poland(settlement), 2)
+            else:
+                diet = round(get_diet_amount_abroad(settlement), 2)
+            total_costs = cost_sum + mileage_cost + diet
+            settlement_amount = round(advance - total_costs, 2)
+            if settlement_amount < 0:
+                settlement_amount = f'Do zwrotu dla pracownika: {abs(settlement_amount)} ' \
+                                    f'{settlement.bt_application_id.advance_payment_currency.code}.'
+            else:
+                settlement_amount = f'Do zapłaty przez pracownika: {settlement_amount} ' \
+                                    f'{settlement.bt_application_id.advance_payment_currency.code}'
+            return render(
+                request,
+                template_name="bt_application_approval.html",
+                context={
+                    'application': application,
+                    'cost_sum': round(cost_sum, 2),
+                    'total_costs': round(total_costs, 2),
+                    'advance': advance,
+                    'settlement_amount': settlement_amount,
+                    'mileage_cost': mileage_cost,
+                    'diet': diet
+                })
+        except:
+            return render(
+                request,
+                template_name="bt_application_approval.html",
+                context={'application': application})
 
 
 class BtApplicationUpdateView(UpdateView):
@@ -516,7 +522,7 @@ def get_diet_amount_abroad(settlement):
             diet = bt_duration.days * BtDelegationRate.objects.get(country=country).delagation_rate + \
                    BtDelegationRate.objects.get(country=country).delagation_rate / 3
         elif 8 < (bt_duration.seconds / 3600) <= 12:
-            diet = bt_duration.days * BtDelegationRate.objects.get(country=country).delagation_rate +\
+            diet = bt_duration.days * BtDelegationRate.objects.get(country=country).delagation_rate + \
                    BtDelegationRate.objects.get(country=country).delagation_rate / 2
         elif (bt_duration.seconds / 3600) > 12:
             diet = (bt_duration.days + 1) * BtDelegationRate.objects.get(country=country).delagation_rate
@@ -581,7 +587,6 @@ class BtApplicationSettlementMileageDeleteView(View):
 
 # UpdateViews
 class BtApplicationSettlementInfoUpdateView(SingleObjectMixin, FormView):
-
     model = BtApplicationSettlementInfo
     template_name = "settlement_subform_info.html"
 
@@ -610,7 +615,6 @@ class BtApplicationSettlementInfoUpdateView(SingleObjectMixin, FormView):
 
 
 class BtApplicationSettlementFeedingUpdateView(SingleObjectMixin, FormView):
-
     model = BtApplicationSettlementFeeding
     template_name = "settlement_subform_feeding.html"
 
@@ -650,7 +654,3 @@ class BtApplicationSettlementFeedingUpdateView(SingleObjectMixin, FormView):
                 country=settlement.bt_application_id.bt_country
             ).delagation_rate
         return context
-
-
-
-
