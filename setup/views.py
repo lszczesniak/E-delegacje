@@ -1,3 +1,4 @@
+from django.contrib.auth.forms import AuthenticationForm
 from django.views.generic import ListView, DetailView, CreateView, UpdateView
 from django.urls import reverse_lazy, reverse
 from django.http import HttpResponse,HttpResponseRedirect
@@ -19,13 +20,36 @@ from setup.models import (
 )
 
 
+# def user_login(request):
+#     if request.method == 'POST':
+#         form = AuthenticationForm(data=request.POST)
+#         if form.is_valid():
+#             user = form.get_user()
+#             if user is not None:
+#                 if user.is_active:
+#                     login(request, user)
+#                     return HttpResponseRedirect(reverse('e_delegacje:index'))
+#                 else:
+#                     return HttpResponse('Konto jest zablokowane.')
+#             else:
+#                 print(f'user {form.cleaned_data["username"]} is none')
+#         else:
+#             for item in form.error_messages:
+#                 print(f'form error: {item} for user {form.get_user()}')
+#
+#     else:
+#         form = AuthenticationForm()
+#     return render(request, 'login.html', {'form': form})
+
+
 def user_login(request):
     if request.method == 'POST':
-        form = LoginForm(request.POST)
+        form = LoginForm(data=request.POST)
         if form.is_valid():
-            cd = form.cleaned_data
-            entered_usr = BtUser.objects.get(username=cd['username'])
-            user = authenticate(request, username=entered_usr.username, password=cd['password'])
+            # cd = form.cleaned_data
+            # entered_usr = BtUser.objects.get(username=cd['username'])
+            # user = authenticate(request, username=entered_usr.username, password=cd['password'])
+            user = form.get_user()
             if user is not None:
                 if user.is_active:
                     login(request, user)

@@ -6,6 +6,7 @@
 <table class="table table-sm table-hover">
     <thead>
         <tr>
+            <td>Id</td>
             <td>Imię i Nazwisko użytkownika</td>
             <td>Dział</td>
             <td>Menager</td>
@@ -15,7 +16,7 @@
 
         {% for a in object_list %}
         <tr class="table table-sm table-hover">
-
+            <td><p>{{ a.id }}</p></td>
             <td><a href="{% url 'setup:user-details-view' pk=a.pk %}">{{ a.first_name }}  {{ a.last_name }}</a></td>
             <td><a>     {{ a.department }}</a></td>
             <td><a>     {{ a.manager }}</a></td>
@@ -24,7 +25,7 @@
     </tbody>
     </table>
 
-                <div class="col-3 align-self-start">
+        <div class="col-3 align-self-start">
             <a type="button"
                class="btn btn-outline-warning"
                href="{% url 'setup:user-create' %}"
