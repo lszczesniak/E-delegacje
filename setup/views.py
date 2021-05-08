@@ -5,7 +5,7 @@ from django.http import HttpResponse,HttpResponseRedirect
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.views import PasswordChangeView, PasswordResetDoneView
 from django.contrib import messages
-from setup.forms import LoginForm
+from setup.forms import LoginForm, BtUserCreationForm
 from django.shortcuts import render, redirect
 from setup.models import (
     BtUser,
@@ -18,28 +18,6 @@ from setup.models import (
     BtDepartment,
 
 )
-
-
-# def user_login(request):
-#     if request.method == 'POST':
-#         form = AuthenticationForm(data=request.POST)
-#         if form.is_valid():
-#             user = form.get_user()
-#             if user is not None:
-#                 if user.is_active:
-#                     login(request, user)
-#                     return HttpResponseRedirect(reverse('e_delegacje:index'))
-#                 else:
-#                     return HttpResponse('Konto jest zablokowane.')
-#             else:
-#                 print(f'user {form.cleaned_data["username"]} is none')
-#         else:
-#             for item in form.error_messages:
-#                 print(f'form error: {item} for user {form.get_user()}')
-#
-#     else:
-#         form = AuthenticationForm()
-#     return render(request, 'login.html', {'form': form})
 
 
 def user_login(request):
@@ -57,7 +35,7 @@ def user_login(request):
                 else:
                     return HttpResponse('Konto jest zablokowane.')
             else:
-                print(f'user {entered_usr.username} is none')
+                print(f'user {form.cleaned_data["username"]} is none')
         else:
             for item in form.errors:
                 print(f'form errors: {item}')
@@ -85,8 +63,9 @@ class MyPasswordResetDoneView(PasswordResetDoneView):
 class BtUserCreateView(CreateView):
     model = BtUser
     template_name = "my_name.html"
-    fields = "__all__"
-    success_url = reverse_lazy("setup:user-create")
+    form_class = BtUserCreationForm
+    # fields = "__all__"
+    success_url = reverse_lazy("setup:user-list-view")
 
 
 class BtUserListView(ListView):
