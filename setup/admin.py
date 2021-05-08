@@ -18,10 +18,11 @@ from setup.forms import BtUserCreationForm
 class BtUserAdmin(UserAdmin):
     add_form = BtUserCreationForm
     list_display = ('username', 'first_name', 'last_name', 'manager', 'id',)
-    fieldsets = ((None, {'fields': ('email',
+    fieldsets = ((None, {'fields': ('username',
                                     'password',
                                     'first_name',
                                     'last_name',
+                                    'email',
                                     'department',
                                     'manager',
                                     'employee_level',
@@ -32,10 +33,11 @@ class BtUserAdmin(UserAdmin):
 
     add_fieldsets = ((None, {
         'classes': ('wide',),
-        'fields': ('email',
+        'fields': ('username',
                    'password',
                    'first_name',
                    'last_name',
+                   'email',
                    'department',
                    'manager',
                    'employee_level',
