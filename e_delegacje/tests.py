@@ -72,7 +72,8 @@ class EdelegacjeTestCase(TestCase):
             bt_start_time=datetime.time(8, 00),
             bt_end_date=datetime.datetime(2021, 4, 29),
             bt_end_time=datetime.time(16, 00),
-            advance_payment=settlement_pl.bt_application_id
+            advance_payment=settlement_pl.bt_application_id,
+            settlement_exchange_rate=1
         )
         BtApplicationSettlementFeeding.objects.create(
             bt_application_settlement=settlement_pl,
@@ -105,7 +106,8 @@ class EdelegacjeTestCase(TestCase):
             bt_start_time=datetime.time(8, 00),
             bt_end_date=datetime.datetime(2021, 4, 28),
             bt_end_time=datetime.time(14, 00),
-            advance_payment=settlement_pl_under_8h.bt_application_id
+            advance_payment=settlement_pl_under_8h.bt_application_id,
+            settlement_exchange_rate=1
         )
         BtApplicationSettlementFeeding.objects.create(
             bt_application_settlement=settlement_pl_under_8h,
@@ -138,7 +140,8 @@ class EdelegacjeTestCase(TestCase):
             bt_start_time=datetime.time(8, 00),
             bt_end_date=datetime.datetime(2021, 4, 29),
             bt_end_time=datetime.time(22, 00),
-            advance_payment=settlement_pl_above_12h.bt_application_id
+            advance_payment=settlement_pl_above_12h.bt_application_id,
+            settlement_exchange_rate=1
         )
         BtApplicationSettlementFeeding.objects.create(
             bt_application_settlement=settlement_pl_above_12h,
@@ -172,7 +175,8 @@ class EdelegacjeTestCase(TestCase):
             bt_start_time=datetime.time(8, 00),
             bt_end_date=datetime.datetime(2021, 4, 28),
             bt_end_time=datetime.time(17, 00),
-            advance_payment=settlement_abr.bt_application_id
+            advance_payment=settlement_abr.bt_application_id,
+            settlement_exchange_rate=4.50
         )
         BtApplicationSettlementFeeding.objects.create(
             bt_application_settlement=settlement_abr,
@@ -205,7 +209,8 @@ class EdelegacjeTestCase(TestCase):
             bt_start_time=datetime.time(8, 00),
             bt_end_date=datetime.datetime(2021, 4, 29),
             bt_end_time=datetime.time(22, 00),
-            advance_payment=settlement_abr_above_12.bt_application_id
+            advance_payment=settlement_abr_above_12.bt_application_id,
+            settlement_exchange_rate=4.50
         )
         # days = BtApplicationSettlementInfo.bt_end_date - BtApplicationSettlementInfo.bt_start_date
         # hours = BtApplicationSettlementInfo.bt_end_time - BtApplicationSettlementInfo.bt_start_time
@@ -243,7 +248,8 @@ class EdelegacjeTestCase(TestCase):
             bt_start_time=datetime.time(8, 00),
             bt_end_date=datetime.datetime(2021, 4, 28),
             bt_end_time=datetime.time(15, 00),
-            advance_payment=settlement_abr_under_8h.bt_application_id
+            advance_payment=settlement_abr_under_8h.bt_application_id,
+            settlement_exchange_rate=4.50
         )
         BtApplicationSettlementFeeding.objects.create(
             bt_application_settlement=settlement_abr_under_8h,

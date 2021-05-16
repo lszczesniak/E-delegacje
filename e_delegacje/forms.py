@@ -35,7 +35,7 @@ class BtApplicationForm(forms.ModelForm):
     bt_country = forms.ModelChoiceField(
         queryset=BtCountry.objects.all(),
         label="Wybierz kraj",
-        initial=BtCountry.objects.get(id=1)
+        # initial=BtCountry.objects.get(id=1)
     )
     target_user = forms.ModelChoiceField(queryset=BtUser.objects.all(), label="Delegowany")
     trip_purpose_text = forms.CharField(
@@ -56,7 +56,7 @@ class BtApplicationForm(forms.ModelForm):
     advance_payment_currency = forms.ModelChoiceField(
         queryset=BtCurrency.objects.all(),
         label="Waluta",
-        initial=BtCurrency.objects.get(code='PLN')
+        # initial=BtCurrency.objects.get(code='PLN')
     )
     advance_payment = forms.DecimalField(decimal_places=2, max_digits=6, label="Zaliczka", initial=0)
     current_datetime = forms.CharField(widget=forms.HiddenInput())
@@ -70,29 +70,34 @@ class BtApplicationForm(forms.ModelForm):
         if result['planned_start_date'] > result['planned_end_date']:
             raise ValidationError("Data wyjazdu musi być przed datą powrotu!")
 
-    def send_mail(self, user_mail):
+    def send_mail(self, user_mail, sent_app):
 
         result = super().clean()
-        application_number = result['id']
-        country = result['country']
-        target_user = result['target_user']
-        application_author = result['application_author']
+        application_number = sent_app.id
+        sent_app_date = sent_app.application_date
+        # sent_app_sstatus = sent_app.application_status
+        country = sent_app.bt_country
+        target_user = sent_app.target_user
+        application_author = sent_app.application_author
         application_status = BtApplicationStatus.saved.value
-        trip_purpose_text = result['trip_purpose_text']
-        CostCenter = result['CostCenter']
-        transport_type = result['transport_type']
-        travel_route = result['travel_route']
-        planned_start_date = result['planned_start_date']
-        planned_end_date = result['planned_end_date']
-        advance_payment = result['advance_payment']
+        trip_purpose_text = sent_app.trip_purpose_text
+        CostCenter = sent_app.CostCenter
+        transport_type = sent_app.transport_type
+        travel_route = sent_app.travel_route
+        planned_start_date = sent_app.planned_start_date
+        planned_end_date = sent_app.planned_end_date
+        advance_payment = sent_app.advance_payment
+        advance_payment_currency = sent_app.advance_payment_currency
         employee_level = BtUser.objects.get(id=target_user.id)
 
         html_content = render_to_string(
-            'email_template.html',
+            'bt_approval_mail_detail.html',
             {
                 'application_number': application_number,
                 'country': country,
                 'target_user': target_user,
+                'sent_app_date': sent_app_date,
+                # 'sent_app_sstatus': sent_app_sstatus,
                 'application_author': application_author,
                 'application_status': application_status,
                 'trip_purpose_text': trip_purpose_text,
@@ -102,6 +107,7 @@ class BtApplicationForm(forms.ModelForm):
                 'planned_start_date': planned_start_date,
                 'planned_end_date': planned_end_date,
                 'advance_payment': advance_payment,
+                'advance_payment_currency': advance_payment_currency,
                 'employee_level': employee_level,
             }
         )

@@ -5,7 +5,6 @@ from e_delegacje.views import (
     BtApplicationListView,
     BtApplicationDetailView,
     BtApplicationDeleteView,
-    BtApplicationSettlementView,
     BtApplicationSettlementCreateView,
     BtApplicationSettlementsListView,
     BtApplicationSettlementDetailView,
@@ -24,7 +23,7 @@ from e_delegacje.views import (
     BtApplicationUpdateView,
     send_settlement_to_approver,
     bt_settlement_approved,
-    bt_settlement_rejected
+    bt_settlement_rejected, BtApplicationApprovalMailDetailView
 
 )
 
@@ -41,7 +40,7 @@ urlpatterns = [
     path('application-update/<pk>', BtApplicationUpdateView.as_view(), name='application-update'),
     # BtApplicatons - wnioski o rozliczenie delegacji
     path('settlement-create/<pk>', BtApplicationSettlementCreateView.as_view(), name='settlement-create'),
-    path('settlement-add-forms/<pk>', BtApplicationSettlementView.as_view(), name='settlement-add-forms'),
+    # path('settlement-add-forms/<pk>', BtApplicationSettlementView.as_view(), name='settlement-add-forms'),
     path('settlements-list', BtApplicationSettlementsListView.as_view(), name='settlements-list'),
     path('settlement-details/<pk>', BtApplicationSettlementDetailView.as_view(), name='settlement-details'),
     path('settlement-send/<pk>', send_settlement_to_approver, name='settlement-send'),
@@ -53,6 +52,7 @@ urlpatterns = [
     path('application-rejected/<pk>', bt_application_rejected, name='application-rejected'),
     path('settlement-approved/<pk>', bt_settlement_approved, name='settlement-approved'),
     path('settlement-rejected/<pk>', bt_settlement_rejected, name='settlement-rejected'),
+    path('approve/mail/<pk>', BtApplicationApprovalMailDetailView.as_view(), name='approval-mail'),
 
     # podformularze do rozliczenia wniosku
 
