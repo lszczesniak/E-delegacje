@@ -1,0 +1,310 @@
+{% load static %}
+{#<!DOCTYPE html>#}
+<html {% if LANGUAGE_CODE %}lang="{{ LANGUAGE_CODE }}"{% endif %}>
+
+
+<head>
+  <meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	<title>E-Delegacje</title>
+
+	<meta name="description" content="Aplikacja do zarządzania podróżami służbowymi w firmie">
+	<meta name="keywords" content="podróże służbowe, delegacje, wyniki">
+	<meta name="author" content="Łukasz Szcześniak, Gerard Borowski">
+
+	<meta http-equiv="X-Ua-Compatible" content="IE=edge">
+	<link href="https://fonts.googleapis.com/css?family=Open+Sans:400,700&amp;subset=latin-ext" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/bootstrap.min.css' %}"/>
+	<link rel="stylesheet" type="text/css" href="{% static 'css/navbar.css' %}"/>
+	<link rel="stylesheet" type="text/css" href="{% static 'bootstrap-icons/bootstrap-icons.css' %}"/>
+
+<style>
+	div.picture1 {
+   width:100px; /*width of your image*/
+   height:100px; /*height of your image*/
+   background-image:url("{% static 'img/bt_image.jpg' %}");
+   margin:0; /* If you want no margin */
+   padding:0; /*if your want to padding */
+}
+
+</style>
+  </head>
+
+<body style="background-color: #fff">
+    <main>
+
+        {% if application.bt_applications_settlements.settlement_status == 'in_progress' %}
+
+            <h2>Akceptacja rozliczenia delegacji </h2>
+
+        {% else %}
+          <h2>Akceptacja wniosku o delegację </h2>
+        {% endif %}
+
+          <table  style="font-size: 12px;
+          border: 1px;
+          border-inline: 1px;
+          border-inline-color: #0a53be;
+          border-color: #0a53be;
+          border-style: solid;">
+              <tr>
+                  <th style="font-weight: bold" >Numer Wniosku o delegację</th>
+                  <td >{{ application_number }}</td>
+              </tr>
+                <tr>
+                    <th class="fw-bold">Status Wniosku</th>
+                    <td colspan="2">{{ application_status }}</td>
+                </tr>
+              <tr >
+                <th class="fw-bold" >Data wniosku:</th>
+                <td colspan="3">{{ sent_app_date.isoformat }}</td>
+
+
+              </tr>
+
+                <tr>
+                    <th class="fw-bold" >Cel podróży/Opis:</th>
+                    <td colspan="2">{{ trip_purpose_text }}</td>
+                </tr>
+          </table>
+          <table  style="font-size: 12px;
+          border: 1px;
+          border-inline: 1px;
+          border-inline-color: #0a53be;
+          border-color: #0a53be;
+          border-style: solid;">
+                <tr class="col-11 fw-bold">
+
+                    <th>Pracownik</th>
+                    <th>Planowana data wyjazdu</th>
+                    <th>Planowana data powrotu</th>
+                    <th> </th>
+                </tr>
+
+              <tr >
+                  <td style="align-content: center">{{ target_user.first_name }} {{ target_user.last_name }}</td>
+                  <td style="align-content: center">{{ planned_start_date.isoformat }}</td>
+                  <td style="align-content: center">{{ planned_end_date.isoformat }}</td>
+                    <td></td>
+              </tr>
+          </table>
+          <table  style="font-size: 12px;
+          border: 1px;
+          border-inline: 1px;
+          border-inline-color: #0a53be;
+          border-color: #0a53be;
+          border-style: solid;">
+                    <tr style="font-weight: bold">
+
+                        <td>Kraj</td>
+                        <td>Trasa podrózy</td>
+                        <td>Rodzaj transportu</td>
+                        <td>Cost center</td>
+
+
+              </tr>
+
+                    <tr>
+                        <td>{{ country }}</td>
+                        <td>{{ travel_route }}</td>
+                        <td>{{ transport_type }}</td>
+                        <td>{{ CostCenter }}</td>
+
+              </tr>
+
+            </table>
+
+{##}
+{#    {% if application.bt_applications_settlements %}#}
+{#            <div class="row align-content-between">#}
+{##}
+{#                <div class="col-3">#}
+{#                      <table class="table table-light table-striped" style="font-size: 12px">#}
+{#                              <tr>#}
+{#                                  <td class="fw-bold">Delegacja zrealizowana?</td>#}
+{#                                  <td>{{ application.bt_applications_settlements.bt_application_info.bt_completed }}</td>#}
+{#                              </tr>#}
+{#                              <tr>#}
+{#                                  <td class="fw-bold">Data wyjazdu</td>#}
+{#                                  <td>{{ application.bt_applications_settlements.bt_application_info.bt_start_date }}</td>#}
+{#                              </tr>#}
+{#                              <tr>#}
+{#                                  <td class="fw-bold">Godzina wyjazdu</td>#}
+{#                                  <td>{{ application.bt_applications_settlements.bt_application_info.bt_start_time }}</td>#}
+{#                              </tr>#}
+{#                              <tr>#}
+{#                                  <td class="fw-bold">Data powrotu</td>#}
+{#                                  <td>{{ application.bt_applications_settlements.bt_application_info.bt_end_date }}</td>#}
+{#                              </tr>#}
+{#                              <tr>#}
+{#                                  <td class="fw-bold">Godzina powrotu</td>#}
+{#                                  <td>{{ application.bt_applications_settlements.bt_application_info.bt_end_time }}</td>#}
+{#                              </tr>#}
+{#                                <tr>#}
+{#                                  <td class="fw-bold">Kurs rozliczenia</td>#}
+{#                                  <td>#}
+{#                                  {{ application.bt_applications_settlements.bt_application_info.settlement_exchange_rate }}#}
+{#                                  </td>#}
+{#                              </tr>#}
+{#                              <tr>#}
+{#                                  <td class="fw-bold">Historia</td>#}
+{#                                  <td>{{ application.bt_applications_settlements.bt_application_info.settlement_log }}</td>#}
+{#                              </tr>#}
+{#                          </table>#}
+{#                </div>#}
+{##}
+{#                <div class="col-3">#}
+{##}
+{#                        <div class="row">#}
+{#                            <h5>Koszty: {{ cost_sum }} zł.</h5>#}
+{#                        <hr>#}
+{#                        </div>#}
+{##}
+{#                        <table class="table table-light table-striped" style="font-size: 12px">#}
+{##}
+{##}
+{#                                <thead>#}
+{#                                    <tr class="fw-bold table-active">#}
+{#                                        <th>Opis kosztu</th>#}
+{#                                        <th>Kwota</th>#}
+{#                                        <th>Waluta</th>#}
+{#                                    </tr>#}
+{#                                </thead>#}
+{##}
+{##}
+{##}
+{##}
+{#                                {% for cost in object.bt_application_settlement_costs.all %}#}
+{#                                    <tr>#}
+{#                                        <td>{{ cost.bt_cost_description }}</td>#}
+{#                                        <td>{{ cost.bt_cost_amount }}</td>#}
+{#                                        <td>{{ cost.bt_cost_currency }}</td>#}
+{#                                    </tr>#}
+{##}
+{#                                {% endfor %}#}
+{##}
+{##}
+{#                            </table>#}
+{##}
+{##}
+{#                    </div>#}
+{##}
+{#                <div class="col-3 align-content-end">#}
+{#                        <div class="row">#}
+{#                            <h5>Kilometrówka: {{ mileage_cost }} zł.</h5>#}
+{#                        <hr>#}
+{#                        </div>#}
+{#                        <table class="table table-light table-striped" style="font-size: 12px">#}
+{#                           <thead>#}
+{#                                <tr class="fw-bold table-active">#}
+{##}
+{#                                    <td>Data przejazdu</td>#}
+{#                                    <td class="text-end ms-5 text-center">Cel przejazdu</td>#}
+{#                                    <td class="text-center">Liczba kilometrów</td>#}
+{#                                </tr>#}
+{#                           </thead>#}
+{#                           <tbody>#}
+{#                            {% for trip in application.bt_applications_settlements.bt_application_settlement_mileages.all %}#}
+{#                                <tr>#}
+{##}
+{#                                    <td>{{ trip.trip_date }}</td>#}
+{#                                    <td class="text-center">{{ trip.trip_purpose }}</td>#}
+{#                                    <td class="text-center">{{ trip.mileage }}</td>#}
+{#                                </tr>#}
+{#                           {% endfor %}#}
+{#                           </tbody>#}
+{##}
+{#                       </table>#}
+{#                </div>#}
+{##}
+{#                <div class="col-3 align-content-end">#}
+{#                        <div class="row">#}
+{#                            <h5 class="vIntegerField">Dieta: {{ diet }} zł. </h5>#}
+{#                        <hr>#}
+{#                        </div>#}
+{#                        <table class="table table-light  table-striped" style="font-size: 12px">#}
+{##}
+{#                           <tbody>#}
+{#                            <tr>#}
+{#                                <td class="fw-bold active">Śniadania</td>#}
+{#                                <td>#}
+{#                        {{ application.bt_applications_settlements.bt_application_settlement_feeding.breakfast_quantity }}#}
+{#                                </td>#}
+{#                            </tr>#}
+{#                            <tr>#}
+{#                                <td class="fw-bold">Obiady</td>#}
+{#                                <td>#}
+{#                            {{ application.bt_applications_settlements.bt_application_settlement_feeding.dinner_quantity }}#}
+{#                                </td>#}
+{#                            </tr>#}
+{#                            <tr>#}
+{#                                <td class="fw-bold">Kolacje</td>#}
+{#                                <td>#}
+{#                            {{ application.bt_applications_settlements.bt_application_settlement_feeding.supper_quantity }}#}
+{#                                </td>#}
+{#                            </tr>#}
+{#                           </tbody>#}
+{##}
+{#                       </table>#}
+{#                </div>#}
+{##}
+{#        </div>#}
+{##}
+{#    {% endif %}#}
+
+
+<hr>
+
+    <h5>Zaliczka: {{ advance_payment }} {{ advance_payment_currency }}</h5>
+
+{#                <div class="col-6 text-center">#}
+{#                    {% if settlement_amount > 0 %}#}
+{#                        <h3>{{ settlement_amount }}</h3>#}
+{#                    {% else %}#}
+{#                        <h3>{{ settlement_amount }}</h3>#}
+{#                    {% endif %}#}
+{#                </div>#}
+{#            {% if application.bt_applications_settlements %}#}
+{#                <div class="col-3 text-end">#}
+{#                    <h5>Suma kosztów: {{ total_costs }} zł.</h5>#}
+{#                </div>#}
+{#            {% endif %}#}
+
+    <hr>
+<table><tr>
+                    <td colspan="2"><a class="btn btn-outline-secondary d-grid"
+                     href="http://127.0.0.1:8000/e-delegacje/approval-list"
+                    style="font-size: 12px"
+                    >
+                      przejdź do aplikacji
+                    </a></td>
+
+                    <td><a class="btn btn-success d-grid"
+                     href="http://127.0.0.1:8000/e-delegacje/application-approved/{{ application_number}}"
+                    style="font-size: 12px"
+                    >
+                      Zaakceptuj
+                    </a></td>
+                    <td><a class="btn btn-danger d-grid"
+                     href="http://127.0.0.1:8000/e-delegacje/application-rejected/{{ application_number}}"
+                    style="font-size: 12px"
+                    >
+
+                      Odrzuć
+                    </a></td>
+    </tr></table>
+
+
+                    <a class="btn btn-danger d-grid"
+                     href="{% url 'e_delegacje:application-rejected' pk=application_number %}"
+                    style="font-size: 12px"
+                    >
+
+                      Odrzuć
+                    </a>
+
+
+
+    </main>
+</body>
+</html>
