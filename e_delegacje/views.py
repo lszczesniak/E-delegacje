@@ -8,6 +8,7 @@ from django.contrib import messages
 from django.views.generic.detail import SingleObjectMixin
 from django.views.generic.edit import FormView
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.decorators import login_required
 from e_delegacje.enums import BtApplicationStatus
 from e_delegacje.forms import (
     BtApplicationForm,
@@ -29,10 +30,10 @@ from e_delegacje.models import (
 from setup.models import BtDelegationRate, BtMileageRates, BtUser
 from django.contrib.auth.decorators import login_required
 
-
+@login_required
 def index(request):
     applications = BtApplication.objects.all()
-    return render(request, template_name='index_del.html',context={'applications': applications})
+    return render(request, template_name='index_del.html', context={'applications': applications})
 
 
 class BtApplicationCreateView(View):
@@ -187,17 +188,29 @@ class BtApplicationUpdateView(UpdateView):
 
 
 def bt_application_approved(request, pk):
+
     bt_application = BtApplication.objects.get(id=pk)
-    bt_application.application_status = BtApplicationStatus.approved.value
-    bt_application.save()
-    return HttpResponseRedirect(reverse("e_delegacje:approval-list"))
+    if bt_application.application_status == BtApplicationStatus.in_progress.value:
+        bt_application.application_status = BtApplicationStatus.approved.value
+        bt_application.save()
+    else:
+        return render(request, template_name='already_processed.html', context={'application': bt_application})
+
+    return render(request, template_name='approve_reject_success.html', context={'application': bt_application})
+
+    # return HttpResponseRedirect(reverse("e_delegacje:approval-list"))
 
 
 def bt_application_rejected(request, pk):
     bt_application = BtApplication.objects.get(id=pk)
-    bt_application.application_status = BtApplicationStatus.rejected.value
-    bt_application.save()
-    return HttpResponseRedirect(reverse("e_delegacje:approval-list"))
+    if bt_application.application_status == BtApplicationStatus.in_progress.value:
+        bt_application.application_status = BtApplicationStatus.rejected.value
+        bt_application.save()
+    else:
+        return render(request, template_name='already_processed.html', context={'application': bt_application})
+
+    return render(request, template_name='approve_reject_success.html', context={'application': bt_application})
+    # return HttpResponseRedirect(reverse("e_delegacje:approval-list"))
 
 
 def send_settlement_to_approver(request, pk):
