@@ -3,13 +3,13 @@ from django.db import models
 
 
 class BtApplicationStatus(models.TextChoices):
-    saved = 'saved', 'Zapisany'
-    in_progress = 'in_progress', 'W akceptacji'
-    approved = 'approved', 'Zaakceptowany'
-    rejected = 'rejected', 'Odrzucony'
+    saved = 'saved', 'zapisany'
+    in_progress = 'in_progress', 'w akceptacji'
+    approved = 'approved', 'zaakceptowany'
+    rejected = 'rejected', 'odrzucony'
     settlement_in_progress = 'settlement_in_progress', "W rozliczeniu"
-    settled = 'settled', 'Rozliczony'
-    canceled = 'canceled', 'Anulowany'
+    settled = 'settled', 'rozliczony'
+    canceled = 'canceled', 'anulowany'
 
 
 class BtTransportType(models.TextChoices):

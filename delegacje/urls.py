@@ -23,5 +23,5 @@ urlpatterns = [
     path('e-delegacje/', include("e_delegacje.urls")),
     path('setup/', include("setup.urls")),
     # path('', user_login, name='login'),
-    # path('accounts/login/', user_login, name='login'),
+    path('accounts/login/', user_login, name='login'),
 ]

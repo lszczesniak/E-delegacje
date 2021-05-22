@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+<div class="row">
+    <div class="offset-3">
+        <h2>Wniosek nr: {{ application.id }} został {{ application.get_application_status_display }}.</h2>
+    </div>
+</div>
+<div class="row">
+
+        <div class="col-12 offset-3">
+             <br>
+            <h6><a class="btn btn-outline-secondary"
+                   href="{% url 'e_delegacje:approval-list' %}">
+                    Zaakceptuj kolejny wniosek lub rozliczenie</a>
+            lub
+            <a class="btn btn-outline-secondary"
+                   href="{% url 'setup:logout' %}">
+                Wyloguj
+            </a>
+                </h6>
+        </div>
+</div>
+<div class="row" >
+    <div class="col-12 offset-3">
+        {% if application.get_application_status_display == "zaakceptowany" %}
+            <img src="{% static 'img/approved-stamp-green.jpg' %}" alt="" width="450" height="330" >
+        {% else %}
+            <img src="{% static 'img/rejected-stamp-red1.jpg' %}" alt="" width="450" height="330" >
+        {% endif %}
+    </div>
+</div>
+  {% endblock %}
