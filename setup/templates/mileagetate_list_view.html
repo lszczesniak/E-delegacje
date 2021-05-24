@@ -1,13 +1,39 @@
 {% extends "base.html" %}
 {% block content %}
-    {% for d in object_list %}
-    <table class="table table-secondary table-striped table-hover">
-    <tr>
-          <td><a href="{% url 'setup:mileagetate_details_view' pk=d.pk %}">Opis  - {{ d.vehicle_type }}
-              Stawka -{{d.rate}}
-          </a>
-            <td>
-              </tr>
-        </table>
+
+
+    <h2>Stawka kilometrówki</h2>
+<a type="button"
+               class="btn btn-outline-warning"
+               href="{% url 'setup:mileagetate-create' %}"
+               style="font-size: 13px"
+            >
+                Nowa Stawka
+            </a>
+
+
+<table class="table table-sm table-hover">
+    <thead>
+        <tr>
+            <td>Typ pojazdu</td>
+
+            <td>Stawka w PLN</td>
+        </tr>
+    </thead>
+
+    <body>
+        {% for a in object_list %}
+        <tr class="table table-sm table-hover">
+
+          <td><a href="{% url 'setup:mileagetate-details-view' pk=a.pk %}">   {{ a.vehicle_type }}</a></td>
+          <td><a>Stawka -{{a.rate}}</a></td>
+
+
+        </tr>
     {% endfor %}
+    </body>
+    </table>
 {% endblock %}
+
+
+

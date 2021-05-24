@@ -2,6 +2,16 @@
 {% block content %}
 <body>
 <h2>Lista działów</h2>
+        <div class="col-3 align-self-start">
+            <a type="button"
+               class="btn btn-outline-warning"
+               href="{% url 'setup:department-create' %}"
+               style="font-size: 13px"
+            >
+                Nowy dział
+            </a>
+        </div>
+
 <table class="table table-sm table-hover">
     <thead>
         <tr>

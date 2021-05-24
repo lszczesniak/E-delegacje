@@ -174,7 +174,7 @@ class BtMileageRatesCreateView(CreateView):
     model = BtMileageRates
     template_name = "my_name.html"
     fields = "__all__"
-    success_url = reverse_lazy("setup:mileagerate-create")
+    success_url = reverse_lazy("setup:mileagetate-create")
 
 
 class BtDelegationRateListView(ListView):
@@ -196,7 +196,7 @@ class BtDelegationRateCreateView(CreateView):
 
 class BtDelegationRateUpdateView(UpdateView):
     model = BtDelegationRate
-    fields = ("delagation_rate","alpha_code", )
+    fields = ("delegation_rate","alpha_code", )
     template_name = "my_name.html"
     success_url = reverse_lazy("setup:delegationrate-list-view")
 

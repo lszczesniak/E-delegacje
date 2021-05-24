@@ -69,7 +69,7 @@ urlpatterns = [
 
     path('mileagetate-list-view/', BtMileageRatesListView.as_view(), name="mileagetate-list-view"),
     path('mileagetate-details-view/<pk>', BtMileageRatesDetailView.as_view(), name="mileagetate-details-view"),
-    path('mileagetate-create-view/', BtMileageRatesCreateView.as_view(), name="mileagerate-create"),
+    path('mileagetate-create-view/', BtMileageRatesCreateView.as_view(), name="mileagetate-create"),
 
 
     path('delegationrate-list-view/', BtDelegationRateListView.as_view(), name="delegationrate-list-view"),

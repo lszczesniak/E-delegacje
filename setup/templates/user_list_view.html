@@ -2,7 +2,15 @@
 {% block content %}
 
     <h2>Lista użytkowników</h2>
-
+        <div class="col-3 align-self-start">
+            <a type="button"
+               class="btn btn-outline-warning"
+               href="{% url 'setup:user-create' %}"
+               style="font-size: 13px"
+            >
+                Nowy użytkownik
+            </a>
+        </div>
 <table class="table table-sm table-hover">
     <thead>
         <tr>
@@ -25,13 +33,5 @@
     </tbody>
     </table>
 
-        <div class="col-3 align-self-start">
-            <a type="button"
-               class="btn btn-outline-warning"
-               href="{% url 'setup:user-create' %}"
-               style="font-size: 13px"
-            >
-                Nowy użytkownik
-            </a>
-        </div>
+
 {% endblock %}

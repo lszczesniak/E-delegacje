@@ -1,7 +1,16 @@
 {% extends "base.html" %}
 {% block content %}
 
+
     <h2>Lista MPK-ów</h2>
+<a type="button"
+               class="btn btn-outline-warning"
+               href="{% url 'setup:costcenter-create' %}"
+               style="font-size: 13px"
+            >
+                Nowy MPK
+            </a>
+
 
 <table class="table table-sm table-hover">
     <thead>
