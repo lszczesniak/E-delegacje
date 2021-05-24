@@ -14,7 +14,13 @@
                 <li><h4>
                     <a class="nav-item nav-link text-secondary "
                        href="{% url 'e_delegacje:applications-list' %}">
-                        Lista wniosków</a></h4></li>
+                        Lista wniosków
+{#                        <span class="fs-6 fw-lighter fst-italic">#}
+{#                        ({{ request.user.bt_applications_author.count }} + {{ request.user.bt_applications.count }}})#}
+{#                    </span>#}
+                    </a>
+                </h4></li>
+
             </ul>
         </div>
         <div class="col-1" >
