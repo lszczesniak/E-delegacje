@@ -56,9 +56,10 @@ class BtApplicationForm(forms.ModelForm):
     advance_payment_currency = forms.ModelChoiceField(
         queryset=BtCurrency.objects.all(),
         label="Waluta",
+        blank=True,
         # initial=BtCurrency.objects.get(code='PLN')
     )
-    advance_payment = forms.DecimalField(decimal_places=2, max_digits=6, label="Zaliczka", initial=0)
+    advance_payment = forms.DecimalField(decimal_places=2, max_digits=6, label="Zaliczka", initial=0, min_value=0)
     current_datetime = forms.CharField(widget=forms.HiddenInput())
 
     class Meta:
@@ -184,6 +185,7 @@ class BtApplicationSettlementCostForm(forms.Form):
     bt_cost_currency = forms.ModelChoiceField(queryset=BtCurrency.objects.all(), label="Waluta", initial='')
     bt_cost_document_date = forms.DateField(label="Data dokumentu", widget=DateInputWidget)
     bt_cost_VAT_rate = forms.TypedChoiceField(choices=BtVatRates.choices, label="Stawka vat")
+    # attachment = forms.FileField()
 
 
 class BtApplicationSettlementMileageForm(forms.Form):
@@ -241,3 +243,10 @@ BtApplicationSettlementFeedingFormset = inlineformset_factory(
     can_delete=False,
     # widgets=forms.IntegerField.widget(attrs={'onchange': "get_onchange_meals_correction()"})
 )
+
+
+class BtRejectionForm(forms.Form):
+    application_log = forms.CharField(max_length=240,
+                                      label="Przyczyna odrzucenia",
+                                      widget=forms.Textarea(attrs={'rows': 5})
+                                      )

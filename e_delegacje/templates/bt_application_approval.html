@@ -3,13 +3,16 @@
 
 
 <main>
+
+
 <div class="container-fluid">
+
     {% if application.bt_applications_settlements.settlement_status == 'in_progress' %}
 
         <h2>Akceptacja rozliczenia delegacji </h2>
 
     {% else %}
-      <h2>Akceptacja wniosku o delegację </h2>
+      <h2>Akceptacja wniosku o delegację</h2>
     {% endif %}
         <div class="row">
             <div class="col-4">
@@ -129,10 +132,10 @@
                               {{ application.bt_applications_settlements.bt_application_info.settlement_exchange_rate }}
                               </td>
                           </tr>
-                          <tr>
-                              <td class="fw-bold">Historia</td>
-                              <td>{{ application.bt_applications_settlements.bt_application_info.settlement_log }}</td>
-                          </tr>
+{#                          <tr>#}
+{#                              <td class="fw-bold">Historia</td>#}
+{#                              <td>{{ application.bt_applications_settlements.bt_application_info.settlement_log }}</td>#}
+{#                          </tr>#}
                       </table>
             </div>
 
@@ -154,14 +157,11 @@
                                 </tr>
                             </thead>
 
-
-
-
-                            {% for cost in object.bt_application_settlement_costs.all %}
+                        {% for cost in application.bt_applications_settlements.bt_application_settlement_costs.all %}
                                 <tr>
-                                    <td>{{ cost.bt_cost_description }}</td>
-                                    <td>{{ cost.bt_cost_amount }}</td>
-                                    <td>{{ cost.bt_cost_currency }}</td>
+            <td>{{ cost.bt_cost_description }}</td>
+            <td>{{ cost.bt_cost_amount }}</td>
+            <td>{{ cost.bt_cost_currency }}</td>
                                 </tr>
 
                             {% endfor %}
@@ -277,18 +277,20 @@
                 </a>
             </div>
             <div class="col-2 align-self-end">
-
                 <a class="btn btn-danger d-grid"
-                 href="{% url 'e_delegacje:settlement-rejected' pk=application.id %}"
-                style="font-size: 12px"
+                   href="#"
+                   style="font-size: 12px"
+                   data-bs-toggle="modal"
+                   data-bs-target="#RejectionModalPopup"
                 >
-
-                  Odrzuć
+                                  Odrzuć
                 </a>
+
+
             </div>
     {% else %}
             <div class="col-2 align-self-end">
-                <a class="btn btn-success d-grid"
+                <a type="button" class="btn btn-success d-grid"
                  href="{% url 'e_delegacje:application-approved' pk=application.id %}"
                 style="font-size: 12px"
                 >
@@ -297,15 +299,58 @@
             </div>
             <div class="col-2 align-self-end">
 
-                <a class="btn btn-danger d-grid"
-                 href="{% url 'e_delegacje:application-rejected' pk=application.id %}"
-                style="font-size: 12px"
+{#                <a class="btn btn-danger d-grid"#}
+{#                 href="{% url 'e_delegacje:application-rejected' pk=application.id %}"#}
+{#                style="font-size: 12px"#}
+{#                >#}
+                <button type="button"
+                        class="btn btn-danger d-grid"
+                        style="font-size: 12px"
+                        data-bs-toggle="modal"
+                        data-bs-target="#RejectionModalPopup"
                 >
-
                   Odrzuć
-                </a>
+                </button>
             </div>
     {% endif %}
+
+    <div class="modal fade" id="RejectionModalPopup" tabindex="-1" aria-labelledby="RejectionModalPopup" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Odrzucenie</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+          <form class="form-control" method="post" >
+                {% csrf_token %}
+
+            <table class="table table-sm table-light " style="font-size: 12px">
+                 {{ rejected_form.as_table }}
+                </table>
+              <input class="btn btn-outline-danger"
+               type="submit"
+               value="Odrzuć"
+               style="font-size: 13px"
+            >
+          </form>
+
+          </div>
+{#          <div class="modal-footer">#}
+{#            <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal" style="font-size: 13px">#}
+{#                Zamknij#}
+{#            </button>#}
+{##}
+{##}
+{##}
+{#          </div>#}
+        </div>
+      </div>
+    </div>
+
+
+
+
         </div>
 
 

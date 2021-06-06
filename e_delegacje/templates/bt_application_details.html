@@ -60,6 +60,24 @@
 
         </table>
     </div>
+    <div class="col-3">
+        <table class="table table-sm  table-hover">
+            <thead>
+            <tr>
+                <th>
+                    Historia
+                </th>
+            </tr>
+            </thead>
+        <tbody>
+            <tr>
+                <td>
+                    {{ object.application_log|linebreaks }}
+                </td>
+            </tr>
+        </tbody>
+        </table>
+    </div>
   </div>
 
 <div class="row" style="font-size: 12px">
@@ -82,16 +100,6 @@
     </div>
 </div>
 
-{#        <div class="row">#}
-{#        <div class="col-3 align-self-end">#}
-{#            <a type="button"#}
-{#               class="btn btn-outline-secondary"#}
-{#               href="{% url 'e_delegacje:index' %}"#}
-{#               style="font-size: 13px"#}
-{#            >#}
-{#                Powrót#}
-{#            </a>#}
-{#        </div>#}
-{#    </div>#}
+
 
 {% endblock %}

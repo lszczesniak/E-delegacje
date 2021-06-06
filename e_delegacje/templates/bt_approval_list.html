@@ -6,10 +6,11 @@
 <div class="container-fluid">
 <h2>Wnioski o delegację</h2>
     <div class="row">
+          {% if object_list %}
         <table class="table table-sm  table-hover">
 
         <tbody>
-            {% if object_list %}
+
                 {% for item in object_list %}
 
             <tr>
@@ -72,7 +73,7 @@
             </tbody>
             </table>
         {% else %}
-                    <h6 class="offset-1 mt-2 pt-2"> Brak rozliczeń do akceptacji </h6>
+            <h6 class="offset-1 mt-2 pt-2"> Brak rozliczeń do akceptacji </h6>
         {% endif %}
     <hr>
     </div>

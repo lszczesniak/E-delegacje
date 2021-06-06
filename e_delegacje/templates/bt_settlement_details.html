@@ -315,14 +315,31 @@
                 </a>
             </div>
 
-                        <div class="col-2 align-self-end">
+
+            <div class="col-2 align-self-end">
+            {% if object.bt_application_id.bt_applications_settlements.settlement_status == 'saved' %}
                 <a class="btn btn-outline-success d-grid"
                  href="{% url 'e_delegacje:settlement-send' pk=object.id %}"
                 style="font-size: 12px"
                 >
-                  Wyślij do akceptacji
+                    Wyślij do akceptacji
                 </a>
+            {% elif object.bt_application_id.bt_applications_settlements.settlement_status == 'rejected' %}
+                <a class="btn btn-outline-success d-grid"
+                 href="{% url 'e_delegacje:settlement-send' pk=object.id %}"
+                style="font-size: 12px"
+                >
+                    Wyślij do akceptacji
+                </a>
+            {% else %}
+                <a class="btn btn-outline-secondary d-grid"
+                style="font-size: 12px"
+                >
+                    Wyślij do akceptacji
+                </a>
+            {% endif %}
             </div>
+
         </div>
 </div>
 </main>

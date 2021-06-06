@@ -74,9 +74,7 @@
 			</li>
 				<li class="nav-item">
 				<a class="nav-item nav-link text-warning " href="{% url 'e_delegacje:applications-list' %}">
-                    Lista wniosków <span class="fs-6 fw-lighter fst-italic">
-                    ({{ request.user.bt_applications_author.count }})
-                </span>
+                    Lista wniosków
                 </a>
 			</li>
                 {% if not request.user.get_employee_level_display == 'podstawowy' %}
@@ -102,9 +100,11 @@
 
 				  <ul class="dropdown-menu bg-secondary" aria-labelledby="User_profile_dropdown">
 				  <li><a class="nav-item nav-link text-warning " href="#">dane użytkownika</a></li>
-
-				  <li><a class="nav-item nav-link text-warning " href="{% url 'setup:login' %}">login</a></li>
-				  <li><a class="nav-item nav-link text-warning " href="{% url 'setup:logout' %}">logout</a></li>
+                    {% if request.user.is_anonymous  %}
+				  <li><a class="nav-item nav-link text-warning " href="{% url 'setup:login' %}">zaloguj</a></li>
+                    {% else %}
+				  <li><a class="nav-item nav-link text-warning " href="{% url 'setup:logout' %}">wyloguj</a></li>
+                        {% endif %}
 				  <li><a class="nav-item nav-link text-warning " href="#">zmień hasło</a></li>
 				  </ul>
 				</div>
