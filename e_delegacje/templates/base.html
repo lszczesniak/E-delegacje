@@ -63,23 +63,23 @@
 					 </a>
 			</li>
           <li class="nav-item">
-			  <a class="navbar-brand text-light" href="{% url 'e_delegacje:index' %}">E-delegacje</a>
+			  <a class="navbar-brand text-light " href="{% url 'e_delegacje:index' %}">E-delegacje</a>
           </li>
         {% if request.user.is_authenticated %}
 
 
 			<li class="nav-item">
-				<a class="nav-item nav-link text-warning " href="{% url 'e_delegacje:applications-create' %}">
+				<a class="nav-item nav-link text-warning hello-msg" href="{% url 'e_delegacje:applications-create' %}">
                     Nowy wniosek</a>
 			</li>
 				<li class="nav-item">
-				<a class="nav-item nav-link text-warning " href="{% url 'e_delegacje:applications-list' %}">
+				<a class="nav-item nav-link text-warning hello-msg" href="{% url 'e_delegacje:applications-list' %}">
                     Lista wniosków
                 </a>
 			</li>
                 {% if not request.user.get_employee_level_display == 'podstawowy' %}
 			  <li class="nav-item">
-			  <a class="nav-item nav-link text-warning " href="{% url 'e_delegacje:approval-list' %}">
+			  <a class="nav-item nav-link text-warning hello-msg" href="{% url 'e_delegacje:approval-list' %}">
                   Akceptacja wniosków
 
               </a>
@@ -110,7 +110,7 @@
 				</div>
             {% if request.user.is_staff %}
 			  <div class="nav-item dropdown">
-				<a class="nav-link dropdown-toggle text-warning"
+				<a class="nav-link dropdown-toggle text-warning hello-msg"
 				   href="#" id="Settings_dropdown"
 				   data-bs-toggle="dropdown"
 				   aria-expanded="false">Ustawienia zaawansowane</a>
@@ -148,15 +148,10 @@
 	</header>
 
 <main style="font-size: 12px">
-    <div class="container " >
-		<div class="row">
-		  <div class="jumbotron text-dark ">
-<!--			<h1>Witaj w e-delegacjach</h1>-->
-		  </div>
-		</div>
+<div class="container text-dark " >
 
 				{% block content %}    {% endblock %}
-			  </div>
+</div>
 </main>
 
 

@@ -35,7 +35,7 @@ class BtApplicationForm(forms.ModelForm):
     bt_country = forms.ModelChoiceField(
         queryset=BtCountry.objects.all(),
         label="Wybierz kraj",
-        # initial=BtCountry.objects.get(id=1)
+        initial=BtCountry.objects.get(id=1)
     )
     target_user = forms.ModelChoiceField(queryset=BtUser.objects.all(), label="Delegowany")
     trip_purpose_text = forms.CharField(
@@ -57,7 +57,7 @@ class BtApplicationForm(forms.ModelForm):
         queryset=BtCurrency.objects.all(),
         label="Waluta",
         blank=True,
-        # initial=BtCurrency.objects.get(code='PLN')
+        initial=BtCurrency.objects.get(code='PLN')
     )
     advance_payment = forms.DecimalField(decimal_places=2, max_digits=6, label="Zaliczka", initial=0, min_value=0)
     current_datetime = forms.CharField(widget=forms.HiddenInput())
@@ -249,4 +249,13 @@ class BtRejectionForm(forms.Form):
     application_log = forms.CharField(max_length=240,
                                       label="Przyczyna odrzucenia",
                                       widget=forms.Textarea(attrs={'rows': 5})
+                                      )
+
+
+class BtApprovedForm(forms.Form):
+    application_log = forms.CharField(max_length=240,
+                                      label="Przyczyna odrzucenia",
+                                      widget=forms.HiddenInput(),
+                                      initial='approved',
+
                                       )

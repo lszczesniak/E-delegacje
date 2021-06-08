@@ -2,66 +2,117 @@
 {% block content %}
 
   <h2>Szczegóły wniosku o delegację</h2>
-<div class="row" style="font-size: 12px">
-  <div class="col-8">
-      <br>
-      <table class="table table-sm  table-hover">
-                <tr>
-              <td>Numer Wniosku</td>
-              <td>{{ object.id }}</td>
-          </tr>
-                <tr>
-              <td>Kraj</td>
-              <td>{{ object.bt_country }}</td>
-          </tr>
-                <tr>
-              <td>Pracownik</td>
-              <td>{{ object.target_user }}</td>
-          </tr>
-                <tr>
-              <td>Status Wniosku</td>
-              <td>{{ object.get_application_status_display }}</td>
-          </tr>
-                 <tr>
-              <td>Data wniosku</td>
-              <td>{{ object.application_date }}</td>
-          </tr>
-               <tr>
-              <td>Cel podróży</td>
-              <td>{{ object.trip_purpose_text }}</td>
-          </tr>
-                <tr>
-              <td>Cost center</td>
-              <td>{{ object.CostCenter }}</td>
-          </tr>
-          </tr>
-                <tr>
-              <td>Rodzaj transportu</td>
-              <td>{{ object.get_transport_type_display }}</td>
-          </tr>
-                    </tr>
-                <tr>
-              <td>Trasa podrózy</td>
-              <td>{{ object.travel_route }}</td>
-          </tr>
-                    </tr>
-                <tr>
-              <td>Planowana data wyjazdu</td>
-              <td>{{ object.planned_start_date }}</td>
-          </tr>
-                 <tr>
-              <td>Planowana data powrotu</td>
-              <td>{{ object.planned_end_date }}</td>
-          </tr>
-                <tr>
-              <td>Zaliczka</td>
-              <td>{{ object.advance_payment }} zł.</td>
-          </tr>
 
-        </table>
+<div class="row py-4" style="font-size: 12px">
+{% if object.application_status not in 'settled canceled'%}
+    <div class="col-2">
+
+              <a class="btn btn-outline-danger d-grid"
+                 href="{% url 'e_delegacje:application-delete' pk=object.pk %}"
+                 style="font-size: 13px"
+              >
+                  Usuń wniosek
+              </a>
     </div>
-    <div class="col-3">
-        <table class="table table-sm  table-hover">
+    {% endif %}
+    <div class="col-2">
+                    <a type="button"
+               class="btn btn-outline-secondary d-grid"
+               href="{% url 'e_delegacje:applications-list' %}"
+               style="font-size: 13px"
+            >
+                Powrót
+            </a>
+
+    </div>
+</div>
+
+ <hr>
+<div class="row">
+    <div class="col-8">
+        <div class="row">
+            <div class="col-4">
+              <table class="table table-light " style="font-size: 12px">
+                  <tr class="table table-primary table-striped text-uppercase">
+                      <td class="fw-bold">Numer Wniosku o delegację</td>
+                      <td >{{ object.id }}</td>
+                  </tr>
+
+                  <tr class="table table-primary text-uppercase">
+                    <td class="fw-bold">Data wniosku:</td>
+                    <td>{{ object.application_date.isoformat }}</td>
+
+                  </tr>
+              </table>
+            </div>
+            <div class="col-4">
+                <table class="table table-primary text-center table-striped text-uppercase" style="font-size: 12px">
+                    <tbody>
+                        <tr>
+                            <td class="fw-bold" >Cel podróży/Opis:</td>
+
+                        </tr>
+                        <tr>
+                            <td class="text-wrap fw-bold" >{{ object.trip_purpose_text }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="col-4">
+                <table class="table table-primary table-striped text-uppercase text-end" style="font-size: 12px">
+                    <tbody>
+                        <tr>
+                            <td class="fw-bold">Status Wniosku</td>
+                        </tr>
+                        <tr>
+                            <td colspan="2">{{ object.get_application_status_display }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+            </div>
+        </div>
+        <div class="row">
+          <div class="col-9">
+                <table class="table table-light offset-2" style="font-size: 13px">
+                    <tr class="fw-bold">
+
+                        <td>Kraj</td>
+                        <td>Pracownik</td>
+                        <td colspan="2">Cost center</td>
+
+                    </tr>
+                  <tr>
+                      <td>{{ object.bt_country }}</td>
+                      <td>{{ object.target_user }}</td>
+                      <td colspan="2">{{ object.CostCenter }}</td>
+
+                  </tr>
+
+
+                        <tr class="fw-bold">
+                            <td>Rodzaj transportu</td>
+                            <td>Trasa podrózy</td>
+                            <td>Planowana data wyjazdu</td>
+                            <td>Planowana data powrotu</td>
+                  </tr>
+                            </tr>
+                        <tr>
+                            <td>{{ object.get_transport_type_display }}</td>
+                            <td>{{ object.travel_route }}</td>
+                            <td>{{ object.planned_start_date.isoformat }}</td>
+                            <td>{{ object.planned_end_date.isoformat }}</td>
+
+                  </tr>
+
+                </table>
+            </div>
+
+            </div>
+    </div>
+{#    <div class="col-1"></div>#}
+    <div class="col-4">
+    <table class="table table-sm  table-hover">
             <thead>
             <tr>
                 <th>
@@ -77,29 +128,8 @@
             </tr>
         </tbody>
         </table>
-    </div>
-  </div>
-
-<div class="row" style="font-size: 12px">
-    <div class="col-2">
-
-              <a class="btn btn-outline-danger"
-                 href="{% url 'e_delegacje:application-delete' pk=object.pk %}"
-                 style="font-size: 13px"
-              >
-                  Usuń wniosek
-              </a>
-                    <a type="button"
-               class="btn btn-outline-secondary"
-               href="{% url 'e_delegacje:applications-list' %}"
-               style="font-size: 13px"
-            >
-                Powrót
-            </a>
-
-    </div>
 </div>
-
-
+</div>
+<hr>
 
 {% endblock %}

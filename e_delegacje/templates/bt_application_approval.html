@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load static %}
 {% block content %}
 
 
@@ -270,15 +271,15 @@
     {% if application.bt_applications_settlements %}
             <div class="col-2 align-self-end">
                 <a class="btn btn-success d-grid"
-                 href="{% url 'e_delegacje:settlement-approved' pk=application.id %}"
                 style="font-size: 12px"
+                data-bs-toggle="modal"
+                data-bs-target="#ApprovalModalPopup"
                 >
                   Zaakceptuj
                 </a>
             </div>
             <div class="col-2 align-self-end">
                 <a class="btn btn-danger d-grid"
-                   href="#"
                    style="font-size: 12px"
                    data-bs-toggle="modal"
                    data-bs-target="#RejectionModalPopup"
@@ -290,42 +291,39 @@
             </div>
     {% else %}
             <div class="col-2 align-self-end">
-                <a type="button" class="btn btn-success d-grid"
-                 href="{% url 'e_delegacje:application-approved' pk=application.id %}"
+                <a class="btn btn-success d-grid"
                 style="font-size: 12px"
+                data-bs-toggle="modal"
+                data-bs-target="#ApprovalModalPopup"
                 >
                   Zaakceptuj
                 </a>
             </div>
             <div class="col-2 align-self-end">
 
-{#                <a class="btn btn-danger d-grid"#}
-{#                 href="{% url 'e_delegacje:application-rejected' pk=application.id %}"#}
-{#                style="font-size: 12px"#}
-{#                >#}
-                <button type="button"
-                        class="btn btn-danger d-grid"
-                        style="font-size: 12px"
-                        data-bs-toggle="modal"
-                        data-bs-target="#RejectionModalPopup"
+                <a class="btn btn-danger d-grid"
+                    style="font-size: 12px"
+                    data-bs-toggle="modal"
+                    data-bs-target="#RejectionModalPopup"
                 >
                   Odrzuć
-                </button>
+                </a>
             </div>
     {% endif %}
 
-    <div class="modal fade" id="RejectionModalPopup" tabindex="-1" aria-labelledby="RejectionModalPopup" aria-hidden="true">
+<div class="modal fade" id="RejectionModalPopup" tabindex="-1" aria-labelledby="RejectionModalPopup" aria-hidden="true">
       <div class="modal-dialog">
         <div class="modal-content">
-          <div class="modal-header">
+          <div class="modal-header ">
             <h5 class="modal-title" id="exampleModalLabel">Odrzucenie</h5>
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
           <div class="modal-body">
+              <img src="{% static 'img/rejected-stamp-red1.jpg' %}" alt="" width="450" height="330" >
           <form class="form-control" method="post" >
                 {% csrf_token %}
 
-            <table class="table table-sm table-light " style="font-size: 12px">
+            <table class="table-sm table-borderless" style="font-size: 12px">
                  {{ rejected_form.as_table }}
                 </table>
               <input class="btn btn-outline-danger"
@@ -336,14 +334,40 @@
           </form>
 
           </div>
-{#          <div class="modal-footer">#}
-{#            <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal" style="font-size: 13px">#}
-{#                Zamknij#}
-{#            </button>#}
-{##}
-{##}
-{##}
-{#          </div>#}
+
+        </div>
+     </div>
+    </div>
+<div class="modal fade" id="ApprovalModalPopup" tabindex="-1" aria-labelledby="ApprovalModalPopup" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="ApproveModalLabel">Akceptacja</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+              <img src="{% static 'img/approved-stamp-green.jpg' %}" alt="" width="450" height="330" >
+{% if application.bt_applications_settlements %}
+              <a class="btn btn-outline-success"
+               type="button"
+                 href="{% url 'e_delegacje:settlement-approved' pk=application.bt_applications_settlements.id %}"
+
+               style="font-size: 13px"
+            >Zaakceptuj
+              </a>
+
+{% else %}
+               <a class="btn btn-outline-success"
+               type="button"
+                 href="{% url 'e_delegacje:application-approved' pk=application.id %}"
+
+               style="font-size: 13px"
+            >Zaakceptuj
+              </a>
+
+{% endif %}
+          </div>
+
         </div>
       </div>
     </div>
@@ -351,7 +375,7 @@
 
 
 
-        </div>
+
 
 
 </main>

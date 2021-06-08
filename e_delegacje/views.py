@@ -18,7 +18,8 @@ from e_delegacje.forms import (
     BtApplicationSettlementFeedingForm,
     BtApplicationSettlementInfoFormset,
     BtApplicationSettlementFeedingFormset,
-    BtRejectionForm
+    BtRejectionForm,
+    BtApprovedForm
 )
 from e_delegacje.models import (
     BtApplication,
@@ -115,6 +116,7 @@ class BtApplicationApprovalDetailView(View):
 
         application = BtApplication.objects.get(id=pk)
         rejected_form = BtRejectionForm()
+        approved_form = BtApprovedForm()
         try:
             set_pk = application.bt_applications_settlements.id
             settlement = BtApplicationSettlement.objects.get(id=set_pk)
@@ -144,26 +146,23 @@ class BtApplicationApprovalDetailView(View):
                     'settlement_amount': settlement_amount,
                     'mileage_cost': mileage_cost,
                     'diet': diet,
-                    'rejected_form': rejected_form
+                    'rejected_form': rejected_form,
+                    'approved_form': approved_form
                 })
         except:
             return render(
                 request,
                 template_name="bt_application_approval.html",
-                context={'application': application, 'rejected_form': rejected_form})
+                context={'application': application, 'rejected_form': rejected_form, 'approved_form': approved_form})
 
     def post(self, request, pk):
         rejected_form = BtRejectionForm(request.POST)
         if rejected_form.is_valid():
             bt_application = BtApplication.objects.get(id=pk)
-            print('przed try')
             try:
                 settlement = BtApplicationSettlement.objects.get(id=bt_application.bt_applications_settlements.id)
-                print(f'wejście w try - rozliczenie numer {settlement.id}, status {settlement.settlement_status}')
                 settlement.settlement_status = BtApplicationStatus.rejected.value
-                print(f'po zmianie statusu - rozliczenie numer {settlement.id}, status {settlement.settlement_status}')
                 settlement.save()
-                print(f'po save - rozliczenie numer {settlement.id}, status {settlement.settlement_status}')
                 bt_application.application_log = \
                     bt_application.application_log + \
                     f"\n-----\nRozliczenie odrzucone przez {request.user.first_name} " \
@@ -175,8 +174,8 @@ class BtApplicationApprovalDetailView(View):
                 bt_application.application_status = BtApplicationStatus.rejected.value
                 bt_application.application_log = bt_application.application_log + \
                                                  f"\n-----\nWniosek odrzucony przez {request.user.first_name} " \
-                                                 f"{request.user.last_name}\n" \
-                                                 f"Powód: {rejected_form.cleaned_data['application_log']}.\n-----\n"
+                                                 f"{request.user.last_name}.\n\n Powód: " \
+                                                 f"{rejected_form.cleaned_data['application_log']}.\n-----\n"
                 bt_application.save()
                 return HttpResponseRedirect(reverse("e_delegacje:approval-list"))
         else:
@@ -230,6 +229,34 @@ class BtApplicationUpdateView(UpdateView):
     form_class = BtApplicationForm
     success_url = reverse_lazy("e_delegacje:applications-list")
 
+    def post(self, request, *args, **kwargs):
+        application = self.get_object()
+
+        form = BtApplicationForm(request.POST)
+        if form.is_valid():
+            application.bt_country = form.cleaned_data['bt_country']
+            application.target_user = form.cleaned_data['target_user']
+            application.application_status = BtApplicationStatus.in_progress.value
+            application.trip_purpose_text = form.cleaned_data['trip_purpose_text']
+            application.CostCenter = form.cleaned_data['CostCenter']
+            application.transport_type = form.cleaned_data['transport_type']
+            application.travel_route = form.cleaned_data['travel_route']
+            application.planned_start_date = form.cleaned_data['planned_start_date']
+            application.planned_end_date = form.cleaned_data['planned_end_date']
+            application.advance_payment = form.cleaned_data['advance_payment']
+            application.advance_payment_currency = form.cleaned_data['advance_payment_currency']
+            application.current_datetime = form.cleaned_data['current_datetime']
+            application.application_log = application.application_log + \
+                              f'Wniosek o delegację poprawiony przez: {request.user.first_name} ' \
+                              f'{request.user.last_name} - {application.current_datetime}\n'
+            application.save()
+            # form.send_mail(user_mail=target_user.manager.email, sent_app=BtApplication.objects.last())
+
+            return HttpResponseRedirect(reverse("e_delegacje:applications-list"))
+        else:
+            print(form.errors)
+            return HttpResponseRedirect(reverse("e_delegacje:index"))
+
 
 def bt_application_approved(request, pk):
     bt_application = BtApplication.objects.get(id=pk)
@@ -242,9 +269,8 @@ def bt_application_approved(request, pk):
     else:
         return render(request, template_name='already_processed.html', context={'application': bt_application})
 
-    return render(request, template_name='approve_reject_success.html', context={'application': bt_application})
-
-    # return HttpResponseRedirect(reverse("e_delegacje:approval-list"))
+    # return render(request, template_name='approve_reject_success.html', context={'application': bt_application})
+    return HttpResponseRedirect(reverse("e_delegacje:approval-list"))
 
 
 def bt_application_rejected(request, pk):
