@@ -1,107 +1,22 @@
 {% extends "base.html" %}
 {% block content %}
 
-    <h2 class="pb-3">Wnioski o delegację</h2>
+<h2 class="pb-3">Lista wniosków</h2>
+<div class="row mb-4">
 
-<table class="table table-sm  table-hover">
-<thead>
-<tr class="fw-bold table-active">
-    <th>
-          <p>Nr.</p>
-    </th>
-        <th>
-          <p>Opis</p>
-    </th>
-            <th >
-          <p>Status wniosku</p>
-    </th>
-        </th>
-        <th >
-          <p>Rozliczenie</p>
-    </th>
-        <th >
-          <p>Status rozliczenia</p>
-    </th>
-        <th colspan="2">
-          <p>Szczegóły</p>
-    </th>
-</tr>
-</thead>
-<tbody>
-    {% for item in object_list %}
-    <tr>
-        <td>
-            {{ item.id }}
-        </td>
-        <td>
-            {{ item.trip_purpose_text }}
-        </td>
-        <td>
-            <p>{{ item.get_application_status_display }}</p>
-        </td>
-
-        <td>
-            {% if not item.bt_applications_settlements and item.application_status == 'approved' %}
-
-              <a class="btn btn-outline-secondary"
-                 href="{% url 'e_delegacje:settlement-create' pk=item.id %}"
-              style="font-size: 12px"
-              >
-
-                Rozlicz wniosek
-            </a>
-            {% elif item.bt_applications_settlements and item.application_status == 'settled' %}
-            <a class="btn btn-outline-secondary"
-                 href="{{ item.bt_applications_settlements.get_absolute_url }}"
-              style="font-size: 12px"
-              >
-                Zobacz rozliczenie wniosku
-            </a>
-            {% elif item.bt_applications_settlements and item.application_status == 'settlement_in_progress' %}
-            <a class="btn btn-outline-secondary"
-                 href="{{ item.bt_applications_settlements.get_absolute_url }}"
-              style="font-size: 12px"
-              >
-                Zobacz rozliczenie wniosku
-            </a>
-            {% endif %}
-        </td>
-    <td>
-        <p>{{ item.bt_applications_settlements.get_settlement_status_display }}</p>
-    </td>
-        <td>
-            <a class="btn btn-outline-secondary"
-               href="{% url 'e_delegacje:application-details' pk=item.id %}"
-            style="font-size: 12px"
-            >
-                Szczegóły
-            </a>
-
-        </td>
-
-         <td>
-            {% if not item.bt_applications_settlements and item.application_status == 'rejected' %}
-
-              <a class="btn btn-outline-secondary"
-                 href="{% url 'e_delegacje:application-update' pk=item.id %}"
-              style="font-size: 12px"
-              >
-
-                Edytuj wniosek
-            </a>
-
-            {% endif %}
-        </td>
-
-        </tr>
-
-    {% endfor %}
-</tbody>
-</table>
-    <div class="row">
-        <div class="col-1 align-self-end">
+    <div class="col-2 align-self-start">
             <a type="button"
-               class="btn btn-outline-secondary"
+               class="btn btn-outline-warning d-grid"
+               href="{% url 'e_delegacje:applications-create' %}"
+               style="font-size: 13px"
+            >
+                Nowy wniosek
+            </a>
+        </div>
+
+    <div class="col-2 align-self-end">
+            <a type="button"
+               class="btn btn-outline-secondary d-grid"
                href="{% url 'e_delegacje:index' %}"
                style="font-size: 13px"
             >
@@ -109,15 +24,218 @@
             </a>
         </div>
 
-            <div class="col-3 align-self-start">
-            <a type="button"
-               class="btn btn-outline-warning"
-               href="{% url 'e_delegacje:applications-create' %}"
-               style="font-size: 13px"
-            >
-                Nowy wniosek
-            </a>
-        </div>
-    </div>
+</div>
+
+<div class="row">
+<h4 class="pb-3">Bieżące</h4>
+    <table class="table table-sm  table-hover table-responsive-sm">
+    <thead>
+    <tr class="fw-bold table-active">
+        <th>
+              <p>Nr.</p>
+        </th>
+            <th>
+              <p>Opis</p>
+        </th>
+                <th >
+              <p>Status wniosku</p>
+        </th>
+            </th>
+            <th >
+              <p>Rozliczenie</p>
+        </th>
+            <th >
+              <p>Status rozliczenia</p>
+        </th>
+            <th colspan="2">
+              <p>Szczegóły</p>
+        </th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr><td colspan="7"></td></tr>
+
+        {% for item in object_list %}
+
+            {% if item.target_user == request.user or item.application_author == request.user %}
+                {% if item.application_status not in 'settled, cancelled' %}
+                <tr>
+                    <td>
+                        {{ item.id }}
+                    </td>
+                    <td>
+                        {{ item.trip_purpose_text }}
+                    </td>
+                    <td>
+                        <p>{{ item.get_application_status_display }}</p>
+                    </td>
+
+                    <td>
+                        {% if not item.bt_applications_settlements and item.application_status == 'approved' %}
+
+                          <a class="btn btn-outline-secondary"
+                             href="{% url 'e_delegacje:settlement-create' pk=item.id %}"
+                          style="font-size: 12px"
+                          >
+
+                            Rozlicz wniosek
+                        </a>
+                        {% elif item.bt_applications_settlements and item.application_status == 'settled' %}
+                        <a class="btn btn-outline-secondary"
+                             href="{{ item.bt_applications_settlements.get_absolute_url }}"
+                          style="font-size: 12px"
+                          >
+                            Zobacz rozliczenie wniosku
+                        </a>
+                        {% elif item.bt_applications_settlements and item.application_status == 'settlement_in_progress' %}
+                        <a class="btn btn-outline-secondary"
+                             href="{{ item.bt_applications_settlements.get_absolute_url }}"
+                          style="font-size: 12px"
+                          >
+                            Zobacz rozliczenie wniosku
+                        </a>
+                        {% endif %}
+                    </td>
+                <td>
+                    <p>{{ item.bt_applications_settlements.get_settlement_status_display }}</p>
+                </td>
+                    <td>
+                        <a class="btn btn-outline-secondary"
+                           href="{% url 'e_delegacje:application-details' pk=item.id %}"
+                        style="font-size: 12px"
+                        >
+                            Szczegóły
+                        </a>
+
+                    </td>
+
+                     <td>
+                        {% if not item.bt_applications_settlements and item.application_status == 'rejected' %}
+
+                          <a class="btn btn-outline-secondary"
+                             href="{% url 'e_delegacje:application-update' pk=item.id %}"
+                          style="font-size: 12px"
+                          >
+
+                            Edytuj wniosek
+                        </a>
+
+                        {% endif %}
+                    </td>
+
+                    </tr>
+                {% endif %}
+            {% endif %}
+        {% endfor %}
+    </tbody>
+    </table>
+</div>
+
+<hr class="bg-success border-5 border-top border-success">
+
+<div class="row">
+    <h4 class="pb-3 text-secondary">Rozliczone lub anulowane</h4>
+    <table class="table table-secondary table-hover table-responsive-sm">
+{#    <thead>#}
+{#    <tr class="fw-bold table-active">#}
+{#        <th>#}
+{#              <p>Nr.</p>#}
+{#        </th>#}
+{#            <th>#}
+{#              <p>Opis</p>#}
+{#        </th>#}
+{#                <th >#}
+{#              <p>Status wniosku</p>#}
+{#        </th>#}
+{#            </th>#}
+{#            <th >#}
+{#              <p>Rozliczenie</p>#}
+{#        </th>#}
+{#            <th >#}
+{#              <p>Status rozliczenia</p>#}
+{#        </th>#}
+{#            <th colspan="2">#}
+{#              <p>Szczegóły</p>#}
+{#        </th>#}
+{#    </tr>#}
+{#    </thead>#}
+    <tbody>
+    <tr><td colspan="7"></td></tr>
+
+        {% for item in object_list %}
+
+            {% if item.target_user == request.user or item.application_author == request.user %}
+                {% if item.application_status in 'settled, cancelled' %}
+                <tr>
+                    <td>
+                        {{ item.id }}
+                    </td>
+                    <td>
+                        {{ item.trip_purpose_text }}
+                    </td>
+                    <td>
+                        <p>{{ item.get_application_status_display }}</p>
+                    </td>
+
+                    <td>
+                        {% if not item.bt_applications_settlements and item.application_status == 'approved' %}
+
+                          <a class="btn btn-outline-secondary"
+                             href="{% url 'e_delegacje:settlement-create' pk=item.id %}"
+                          style="font-size: 12px"
+                          >
+
+                            Rozlicz wniosek
+                        </a>
+                        {% elif item.bt_applications_settlements and item.application_status == 'settled' %}
+                        <a class="btn btn-outline-secondary"
+                             href="{{ item.bt_applications_settlements.get_absolute_url }}"
+                          style="font-size: 12px"
+                          >
+                            Zobacz rozliczenie wniosku
+                        </a>
+                        {% elif item.bt_applications_settlements and item.application_status == 'settlement_in_progress' %}
+                        <a class="btn btn-outline-secondary"
+                             href="{{ item.bt_applications_settlements.get_absolute_url }}"
+                          style="font-size: 12px"
+                          >
+                            Zobacz rozliczenie wniosku
+                        </a>
+                        {% endif %}
+                    </td>
+                <td>
+                    <p>{{ item.bt_applications_settlements.get_settlement_status_display }}</p>
+                </td>
+                    <td>
+                        <a class="btn btn-outline-secondary"
+                           href="{% url 'e_delegacje:application-details' pk=item.id %}"
+                        style="font-size: 12px"
+                        >
+                            Szczegóły
+                        </a>
+
+                    </td>
+
+                     <td>
+                        {% if not item.bt_applications_settlements and item.application_status == 'rejected' %}
+
+                          <a class="btn btn-outline-secondary"
+                             href="{% url 'e_delegacje:application-update' pk=item.id %}"
+                          style="font-size: 12px"
+                          >
+
+                            Edytuj wniosek
+                        </a>
+
+                        {% endif %}
+                    </td>
+
+                    </tr>
+                {% endif %}
+            {% endif %}
+        {% endfor %}
+    </tbody>
+    </table>
+</div>
 {% endblock %}
 

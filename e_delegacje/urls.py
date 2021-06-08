@@ -38,6 +38,7 @@ urlpatterns = [
     path('application-details/<pk>', BtApplicationDetailView.as_view(), name='application-details'),
     path('application-delete/<pk>', BtApplicationDeleteView.as_view(), name='application-delete'),
     path('application-update/<pk>', BtApplicationUpdateView.as_view(), name='application-update'),
+
     # BtApplicatons - wnioski o rozliczenie delegacji
     path('settlement-create/<pk>', BtApplicationSettlementCreateView.as_view(), name='settlement-create'),
     # path('settlement-add-forms/<pk>', BtApplicationSettlementView.as_view(), name='settlement-add-forms'),

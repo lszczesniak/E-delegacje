@@ -5,24 +5,25 @@
 
 <div class="container-fluid">
 <h2>Wnioski o delegację</h2>
-    <div class="row">
+    <div class="row pt-4">
+          {% if object_list %}
         <table class="table table-sm  table-hover">
 
         <tbody>
-            {% if object_list %}
+
                 {% for item in object_list %}
 
             <tr>
-                    <td>
+                    <td class="col-3 ">
                 Nr: {{ item.id }}
                     </td>
-                    <td>
+                    <td class="col-4 ">
                {{ item.trip_purpose_text }}
                     </td>
-                    <td>
-                      <a class="btn btn-outline-secondary"
+                    <td class="col-5 ">
+                      <a class="btn btn-outline-secondary d-block"
                          href="{% url 'e_delegacje:approval' pk=item.pk %}"
-                      style="font-size: 12px"
+                      style="font-size: 14px"
                       >
                         Zaakceptuj wniosek
                     </a>
@@ -43,24 +44,24 @@
 
 <h2>Rozliczenia delegacji</h2>
 
-    <div class="row">
+    <div class="row pt-4">
         {% if settlements %}
             <table class="table table-sm  table-hover">
 
             <tbody>
 
-                {% for item in settlements %}
+                {% for settlement in settlements %}
                 <tr>
-                        <td>
-                    Nr: {{ item.id }}
+                        <td class="col-3 ">
+                    Nr: {{ settlement.id }}
                         </td>
-                        <td>
-                   {{ item.bt_application_id.trip_purpose_text }}
+                        <td class="col-4 ">
+                   {{ settlement.bt_application_id.trip_purpose_text }}
                         </td>
-                        <td>
-                          <a class="btn btn-outline-secondary"
-                             href="{% url 'e_delegacje:approval' pk=item.pk %}"
-                          style="font-size: 12px"
+                        <td class="col-5 ">
+                          <a class="btn btn-outline-secondary d-block"
+                             href="{% url 'e_delegacje:approval' pk=settlement.bt_application_id.id %}"
+                          style="font-size: 14px"
                           >
                             Zaakceptuj rozliczenie
                         </a>
@@ -72,7 +73,7 @@
             </tbody>
             </table>
         {% else %}
-                    <h6 class="offset-1 mt-2 pt-2"> Brak rozliczeń do akceptacji </h6>
+            <h6 class="offset-1 mt-2 pt-2"> Brak rozliczeń do akceptacji </h6>
         {% endif %}
     <hr>
     </div>
@@ -80,7 +81,7 @@
     <div class="row">
         <div class="col-3 align-self-end">
             <a type="button"
-               class="btn btn-outline-secondary"
+               class="btn btn-outline-secondary d-grid"
                href="{% url 'e_delegacje:index' %}"
                style="font-size: 13px"
             >
