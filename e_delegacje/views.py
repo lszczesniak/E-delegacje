@@ -265,6 +265,7 @@ def bt_application_approved(request, pk):
         bt_application.application_log = \
             bt_application.application_log + \
             f"\nWniosek zaakceptowany przez {request.user.first_name} {request.user.last_name} "
+
         bt_application.save()
     else:
         return render(request, template_name='already_processed.html', context={'application': bt_application})
@@ -299,6 +300,8 @@ def send_settlement_to_approver(request, pk):
 def bt_settlement_approved(request, pk):
     bt_application = BtApplication.objects.get(bt_applications_settlements__id=pk)
     bt_application.application_status = BtApplicationStatus.settled.value
+    bt_application.approver = request.user.first_name
+    bt_application.approval_date = datetime.datetime.now()
     bt_application.save()
 
     settlement = BtApplicationSettlement.objects.get(id=pk)
@@ -802,13 +805,16 @@ class CreatePDF(DetailView):
         total_costs = cost_sum + mileage_cost + diet
         settlement_amount = advance - total_costs
         if settlement_amount < 0:
-            settlement_amount = f'Do zwrotu dla pracownika: {abs(settlement_amount)} ' \
+            settlement_amount = f'Do zwrotu dla pracownika: {abs(round(settlement_amount, 4))} ' \
                                 f'{settlement.bt_application_id.advance_payment_currency.code}'
         else:
-            settlement_amount = f'Do zapłaty przez pracownika: {settlement_amount} ' \
+            settlement_amount = f'Do zapłaty przez pracownika: {round(settlement_amount, 4)} ' \
                                 f'{settlement.bt_application_id.advance_payment_currency.code}'
 
         context['settlement_amount'] = settlement_amount
+        context['cost_sum'] = cost_sum
         context['total_costs'] = total_costs
+        context['diet'] = diet
+        context['mileage_cost'] = mileage_cost
 
         return context
