@@ -39,6 +39,8 @@ class BtApplication(models.Model):
                                                  null=True,
                                                  blank=True)
     application_log = models.CharField(max_length=2400)
+    approver = models.CharField(max_length=30, null=True, blank=True)
+    approval_date = models.DateField(null=True, blank=True)
 
     def __str__(self):
         return f'{self.trip_purpose_text}'

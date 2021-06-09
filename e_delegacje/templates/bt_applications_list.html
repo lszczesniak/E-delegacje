@@ -136,29 +136,7 @@
 <div class="row">
     <h4 class="pb-3 text-secondary">Rozliczone lub anulowane</h4>
     <table class="table table-secondary table-hover table-responsive-sm">
-{#    <thead>#}
-{#    <tr class="fw-bold table-active">#}
-{#        <th>#}
-{#              <p>Nr.</p>#}
-{#        </th>#}
-{#            <th>#}
-{#              <p>Opis</p>#}
-{#        </th>#}
-{#                <th >#}
-{#              <p>Status wniosku</p>#}
-{#        </th>#}
-{#            </th>#}
-{#            <th >#}
-{#              <p>Rozliczenie</p>#}
-{#        </th>#}
-{#            <th >#}
-{#              <p>Status rozliczenia</p>#}
-{#        </th>#}
-{#            <th colspan="2">#}
-{#              <p>Szczegóły</p>#}
-{#        </th>#}
-{#    </tr>#}
-{#    </thead>#}
+
     <tbody>
     <tr><td colspan="7"></td></tr>
 
@@ -217,17 +195,14 @@
                     </td>
 
                      <td>
-                        {% if not item.bt_applications_settlements and item.application_status == 'rejected' %}
-
-                          <a class="btn btn-outline-secondary"
-                             href="{% url 'e_delegacje:application-update' pk=item.id %}"
-                          style="font-size: 12px"
-                          >
-
-                            Edytuj wniosek
-                        </a>
-
-                        {% endif %}
+                <a class="btn btn-outline-danger"
+                    style="font-size: 12px"
+                   href="{% url 'e_delegacje:application-create-pdf' pk=item.id %}"
+{#                    data-bs-toggle="modal"#}
+{#                    data-bs-target="#PDFModalPopup"#}
+                >
+                  PDF
+                </a>
                     </td>
 
                     </tr>
@@ -237,5 +212,32 @@
     </tbody>
     </table>
 </div>
+
+<div class="modal fade" id="PDFModalPopup" tabindex="-1" aria-labelledby="PDFModalPopup" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="PDFModalLabel">Pobierz PDF</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+              <div class="row">
+                <div class="col-5">
+                    <a class="btn btn-outline-secondary d-block">
+                        Pokaż
+                    </a>
+                </div>
+                <div class="col-5">
+                      <a class="btn btn-outline-secondary d-block">
+                          Pobierz
+                      </a>
+                </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
 {% endblock %}
 
