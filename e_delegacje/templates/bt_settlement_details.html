@@ -115,10 +115,7 @@
                               <td class="fw-bold">Kurs rozliczenia</td>
                               <td>{{ object.bt_application_info.settlement_exchange_rate }}</td>
                           </tr>
-{#                        <tr>#}
-{#                              <td class="fw-bold">Historia</td>#}
-{#                              <td>{{ object.bt_application_info.settlement_log }}</td>#}
-{#                          </tr>  #}
+
                       </table>
                     {% if object.settlement_status in 'saved rejected' %}
                   <a class="btn btn-outline-warning d-grid"

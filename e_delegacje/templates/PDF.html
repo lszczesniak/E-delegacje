@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+{% load static %}
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Wniosek nr: {{ object.id }}</title>
+
+    <meta http-equiv="X-Ua-Compatible" content="IE=edge">
+	<link href="https://fonts.googleapis.com/css?family=Open+Sans:400,700&amp;subset=latin-ext" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/bootstrap.min.css' %}"/>
+	<link rel="stylesheet" type="text/css" href="{% static 'css/navbar.css' %}"/>
+	<link rel="stylesheet" type="text/css" href="{% static 'bootstrap-icons/bootstrap-icons.css' %}"/>
+</head>
+<body>
+<div class="container">
+    <div class="row pt-5 mt-5 mb-4">
+        <div class="col-8">
+
+           <h2 style="text-align:start"> Rozliczenie kosztów podróży służbowej nr: <span class="fw-bold">{{ object.id }}</span></h2>
+
+        </div>
+        <div class="col-4 ">
+
+            <h4 style="text-align:end">
+                Data wniosku:
+                <span class="fw-bold ">
+                    {{ object.application_date.isoformat }}
+                </span>
+            </h4>
+
+        </div>
+    </div>
+    <div class="row">
+        <h5>
+            Delegowany:
+            <span class="fw-bold">
+                {{ object.target_user.first_name }} {{ object.target_user.last_name }}
+            </span>
+        </h5>
+    </div>
+    <div class="row">
+            <h5>
+            Dział:
+            <span class="fw-bold">
+                {{ object.target_user.department.name }}
+            </span>
+        </h5>
+    </div>
+    <div class="row pb-5">
+        <h5>
+            Przełożony:
+            <span class="fw-bold">
+                {{ object.target_user.manager.first_name }} {{ object.target_user.manager.last_name}}
+            </span>
+        </h5>
+    </div>
+
+    <div class="row pb-5">
+    <div class="col-4">
+      <table class="table table-light " style="font-size: 12px">
+          <tr class="table table-primary table-striped text-uppercase">
+              <td class="fw-bold">Data i godzina wyjazdu</td>
+              <td >{{ object.bt_applications_settlements.bt_application_info.bt_start_date.isoformat }}
+                  {{ object.bt_applications_settlements.bt_application_info.bt_start_time.isoformat }}
+              </td>
+          </tr>
+
+          <tr class="table table-primary text-uppercase">
+            <td class="fw-bold">Data i godzina powrotu:</td>
+            <td>{{ object.bt_applications_settlements.bt_application_info.bt_end_date.isoformat }}
+                  {{ object.bt_applications_settlements.bt_application_info.bt_end_time.isoformat }}</td>
+
+          </tr>
+        <tr class="table table-primary text-uppercase">
+            <td class="fw-bold">Środek lokomcji:</td>
+            <td>{{ object.get_transport_type_display }}
+                 </td>
+          </tr>
+          <tr class="table table-primary text-uppercase">
+            <td class="fw-bold">Trasa przejazdu:</td>
+            <td>{{ object.travel_route }}
+                 </td>
+          </tr>
+      </table>
+    </div>
+    <div class="col-4">
+        <table class="table table-primary text-center table-striped text-uppercase" style="font-size: 12px">
+            <tbody>
+                <tr>
+                    <td class="fw-bold" >Cel podróży/Opis:</td>
+
+                </tr>
+                <tr>
+                    <td class="text-wrap fw-bold" >
+                        {{ object.trip_purpose_text }}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="col-4">
+        <table class="table table-primary table-striped text-uppercase text-end" style="font-size: 12px">
+            <tbody>
+                <tr>
+                    <td class="fw-bold">MPK</td>
+                </tr>
+                <tr>
+                    <td colspan="2">{{ object.CostCenter.cost_center_number }} -
+                        {{ object.CostCenter.text }}
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+    </div>
+</div>
+
+
+<div class="row pb-5">
+{% if object.bt_applications_settlements.bt_application_settlement_costs.exists %}
+<div class="col-6">
+    <h5>Koszty: {{ cost_sum }} zł.</h5>
+<hr>
+    <table class="table table-light table-striped" style="font-size: 12px">
+
+
+    <thead>
+        <tr class="fw-bold table-active">
+            <th>Opis kosztu</th>
+            <th>Kwota</th>
+            <th>Waluta</th>
+        </tr>
+    </thead>
+
+{% for cost in object.bt_applications_settlements.bt_application_settlement_costs.all %}
+        <tr>
+<td>{{ cost.bt_cost_description }}</td>
+<td>{{ cost.bt_cost_amount }}</td>
+<td>{{ cost.bt_cost_currency }}</td>
+        </tr>
+
+    {% endfor %}
+
+
+</table>
+</div>
+{% endif %}
+
+{% if object.bt_applications_settlements.bt_application_settlement_feeding %}
+<div class="col-6">
+
+        <h5 class="vIntegerField">
+            Dieta: {{ diet }} zł.
+        </h5>
+    <hr>
+
+    <table class="table table-light  table-striped" style="font-size: 12px">
+
+       <tbody>
+        <tr>
+            <td class="fw-bold active">Śniadania</td>
+            <td>{{ object.bt_applications_settlements.bt_application_settlement_feeding.breakfast_quantity }}</td>
+        </tr>
+        <tr>
+            <td class="fw-bold">Obiady</td>
+            <td>{{ object.bt_applications_settlements.bt_application_settlement_feeding.dinner_quantity }}</td>
+        </tr>
+        <tr>
+            <td class="fw-bold">Kolacje</td>
+            <td>{{ object.bt_applications_settlements.bt_application_settlement_feeding.supper_quantity }}</td>
+        </tr>
+       </tbody>
+
+   </table>
+
+    </div>
+
+
+{% endif %}
+</div>
+
+{% if object.bt_applications_settlements.bt_application_settlement_mileages.exists %}
+<div class="row pb-5">
+    <div class="col-6 align-content-end">
+        <div class="row">
+            <h5>Kilometrówka: {{ mileage_cost }} zł.</h5>
+        <hr>
+        </div>
+        <div class="row">
+        <table class="table table-light table-striped" style="font-size: 12px">
+                       <thead>
+                            <tr class="fw-bold table-active">
+
+                                <td>Data przejazdu</td>
+                                <td class="text-end ms-5 text-center">Cel przejazdu</td>
+                                <td class="text-center">Liczba kilometrów</td>
+                            </tr>
+                       </thead>
+                       <tbody>
+                        {% for trip in object.bt_applications_settlements.bt_application_settlement_mileages.all %}
+                            <tr>
+
+                                <td>{{ trip.trip_date }}</td>
+                                <td class="text-center">{{ trip.trip_purpose }}</td>
+                                <td class="text-center">{{ trip.mileage }}</td>
+                            </tr>
+                       {% endfor %}
+                       </tbody>
+
+                   </table>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+<hr>
+<div class="row align-content-between">
+    <div class="col-3 ">
+        <h5>Zaliczka: {{ object.advance_payment }} {{ object.advance_payment_currency }}</h5>
+    </div>
+    <div class="col-6 text-center">
+        {% if settlement_amount > 0 %}
+            <h3>{{ settlement_amount }}</h3>
+        {% else %}
+            <h3>{{ settlement_amount }}</h3>
+        {% endif %}
+    </div>
+    <div class="col-3 text-end">
+        <h5>Suma kosztów: {{ total_costs }} zł.</h5>
+    </div>
+
+</div>
+<hr>
+<div class="row border border-1 border-dark">
+    <table>
+
+    <tr>
+        <th><h3 class="offset-3">Akceptacja:</h3></th>
+    </tr>
+    <tr>
+        <th><p class="offset-3">Akceptujący:</p></th>
+    </tr>
+    <tr>
+        <th><p class="offset-3">Data:</p></th>
+    </tr>
+    </table>
+</div>
+</div>
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js"
+		integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf"
+		crossorigin="anonymous"></script>
+</body>
+</html>

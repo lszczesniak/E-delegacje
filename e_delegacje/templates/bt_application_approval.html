@@ -113,19 +113,19 @@
                           </tr>
                           <tr>
                               <td class="fw-bold">Data wyjazdu</td>
-                              <td>{{ application.bt_applications_settlements.bt_application_info.bt_start_date }}</td>
+                              <td>{{ application.bt_applications_settlements.bt_application_info.bt_start_date.isoformat }}</td>
                           </tr>
                           <tr>
                               <td class="fw-bold">Godzina wyjazdu</td>
-                              <td>{{ application.bt_applications_settlements.bt_application_info.bt_start_time }}</td>
+                              <td>{{ application.bt_applications_settlements.bt_application_info.bt_start_time.isoformat }}</td>
                           </tr>
                           <tr>
                               <td class="fw-bold">Data powrotu</td>
-                              <td>{{ application.bt_applications_settlements.bt_application_info.bt_end_date }}</td>
+                              <td>{{ application.bt_applications_settlements.bt_application_info.bt_end_date.isoformat }}</td>
                           </tr>
                           <tr>
                               <td class="fw-bold">Godzina powrotu</td>
-                              <td>{{ application.bt_applications_settlements.bt_application_info.bt_end_time }}</td>
+                              <td>{{ application.bt_applications_settlements.bt_application_info.bt_end_time.isoformat }}</td>
                           </tr>
                             <tr>
                               <td class="fw-bold">Kurs rozliczenia</td>
@@ -133,10 +133,7 @@
                               {{ application.bt_applications_settlements.bt_application_info.settlement_exchange_rate }}
                               </td>
                           </tr>
-{#                          <tr>#}
-{#                              <td class="fw-bold">Historia</td>#}
-{#                              <td>{{ application.bt_applications_settlements.bt_application_info.settlement_log }}</td>#}
-{#                          </tr>#}
+
                       </table>
             </div>
 
