@@ -64,7 +64,12 @@ class BtApplicationForm(forms.ModelForm):
 
     class Meta:
         model = BtApplication
-        exclude = ('employee_level', 'application_author', 'application_status', 'application_log')
+        exclude = ('employee_level',
+                   'application_author',
+                   'application_status',
+                   'application_log',
+                   'approver',
+                   'approval_date')
 
     def clean(self):
         result = super().clean()

@@ -345,6 +345,7 @@
           <div class="modal-body">
               <img src="{% static 'img/approved-stamp-green.jpg' %}" alt="" width="450" height="330" >
 {% if application.bt_applications_settlements %}
+
               <a class="btn btn-outline-success"
                type="button"
                  href="{% url 'e_delegacje:settlement-approved' pk=application.bt_applications_settlements.id %}"
