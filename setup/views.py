@@ -5,7 +5,7 @@ from django.http import HttpResponse,HttpResponseRedirect
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.views import PasswordChangeView, PasswordResetDoneView
 from django.contrib import messages
-from setup.forms import LoginForm, BtUserCreationForm
+from setup.forms import LoginForm, BtUserCreationForm, LocationForm
 from django.shortcuts import render, redirect
 from setup.models import (
     BtUser,
@@ -134,7 +134,8 @@ class BtLocationListView(ListView):
 class BtLocationCreateView(CreateView):
     model = BtLocation
     template_name = "my_name.html"
-    fields = "__all__"
+    form_class = LocationForm
+#    fields = "__all__"
     success_url = reverse_lazy("setup:location-create")
 
 

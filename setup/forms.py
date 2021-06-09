@@ -1,7 +1,7 @@
 from django import forms
 from django.contrib.auth.forms import AuthenticationForm
 from django.core.exceptions import ValidationError
-from setup.models import BtUser
+from setup.models import BtUser, BtLocation
 
 
 class LoginForm(AuthenticationForm):
@@ -38,5 +38,22 @@ class BtUserCreationForm(forms.ModelForm):
         if commit:
             user.save()
         return user
+
+
+class LocationForm(forms.ModelForm):
+    name = forms.CharField(label="Nazwa",max_length=100)
+    profit_center = forms.CharField(label="Profit Center", max_length=10)
+
+    class Meta:
+        model = BtLocation
+        fields = "__all__"
+
+    def clean(self):
+        result = super().clean()
+
+        if BtLocation.objects.get(profit_center=result['profit_center']) is not None:
+            self.add_error('profit_center', f'Taki Profit Center juz istnieje {result["profit_center"]}')
+
+        return result
 
 
