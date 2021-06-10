@@ -1,15 +1,19 @@
 {% extends "base.html" %}
+{% load static %}
 {% block content %}
 
 
 <main>
+
+
 <div class="container-fluid">
+
     {% if application.bt_applications_settlements.settlement_status == 'in_progress' %}
 
         <h2>Akceptacja rozliczenia delegacji </h2>
 
     {% else %}
-      <h2>Akceptacja wniosku o delegację </h2>
+      <h2>Akceptacja wniosku o delegację</h2>
     {% endif %}
         <div class="row">
             <div class="col-4">
@@ -109,19 +113,19 @@
                           </tr>
                           <tr>
                               <td class="fw-bold">Data wyjazdu</td>
-                              <td>{{ application.bt_applications_settlements.bt_application_info.bt_start_date }}</td>
+                              <td>{{ application.bt_applications_settlements.bt_application_info.bt_start_date.isoformat }}</td>
                           </tr>
                           <tr>
                               <td class="fw-bold">Godzina wyjazdu</td>
-                              <td>{{ application.bt_applications_settlements.bt_application_info.bt_start_time }}</td>
+                              <td>{{ application.bt_applications_settlements.bt_application_info.bt_start_time.isoformat }}</td>
                           </tr>
                           <tr>
                               <td class="fw-bold">Data powrotu</td>
-                              <td>{{ application.bt_applications_settlements.bt_application_info.bt_end_date }}</td>
+                              <td>{{ application.bt_applications_settlements.bt_application_info.bt_end_date.isoformat }}</td>
                           </tr>
                           <tr>
                               <td class="fw-bold">Godzina powrotu</td>
-                              <td>{{ application.bt_applications_settlements.bt_application_info.bt_end_time }}</td>
+                              <td>{{ application.bt_applications_settlements.bt_application_info.bt_end_time.isoformat }}</td>
                           </tr>
                             <tr>
                               <td class="fw-bold">Kurs rozliczenia</td>
@@ -129,10 +133,7 @@
                               {{ application.bt_applications_settlements.bt_application_info.settlement_exchange_rate }}
                               </td>
                           </tr>
-                          <tr>
-                              <td class="fw-bold">Historia</td>
-                              <td>{{ application.bt_applications_settlements.bt_application_info.settlement_log }}</td>
-                          </tr>
+
                       </table>
             </div>
 
@@ -154,14 +155,11 @@
                                 </tr>
                             </thead>
 
-
-
-
-                            {% for cost in object.bt_application_settlement_costs.all %}
+                        {% for cost in application.bt_applications_settlements.bt_application_settlement_costs.all %}
                                 <tr>
-                                    <td>{{ cost.bt_cost_description }}</td>
-                                    <td>{{ cost.bt_cost_amount }}</td>
-                                    <td>{{ cost.bt_cost_currency }}</td>
+            <td>{{ cost.bt_cost_description }}</td>
+            <td>{{ cost.bt_cost_amount }}</td>
+            <td>{{ cost.bt_cost_currency }}</td>
                                 </tr>
 
                             {% endfor %}
@@ -270,27 +268,30 @@
     {% if application.bt_applications_settlements %}
             <div class="col-2 align-self-end">
                 <a class="btn btn-success d-grid"
-                 href="{% url 'e_delegacje:settlement-approved' pk=application.id %}"
                 style="font-size: 12px"
+                data-bs-toggle="modal"
+                data-bs-target="#ApprovalModalPopup"
                 >
                   Zaakceptuj
                 </a>
             </div>
             <div class="col-2 align-self-end">
-
                 <a class="btn btn-danger d-grid"
-                 href="{% url 'e_delegacje:settlement-rejected' pk=application.id %}"
-                style="font-size: 12px"
+                   style="font-size: 12px"
+                   data-bs-toggle="modal"
+                   data-bs-target="#RejectionModalPopup"
                 >
-
-                  Odrzuć
+                                  Odrzuć
                 </a>
+
+
             </div>
     {% else %}
             <div class="col-2 align-self-end">
                 <a class="btn btn-success d-grid"
-                 href="{% url 'e_delegacje:application-approved' pk=application.id %}"
                 style="font-size: 12px"
+                data-bs-toggle="modal"
+                data-bs-target="#ApprovalModalPopup"
                 >
                   Zaakceptuj
                 </a>
@@ -298,15 +299,81 @@
             <div class="col-2 align-self-end">
 
                 <a class="btn btn-danger d-grid"
-                 href="{% url 'e_delegacje:application-rejected' pk=application.id %}"
-                style="font-size: 12px"
+                    style="font-size: 12px"
+                    data-bs-toggle="modal"
+                    data-bs-target="#RejectionModalPopup"
                 >
-
                   Odrzuć
                 </a>
             </div>
     {% endif %}
+
+<div class="modal fade" id="RejectionModalPopup" tabindex="-1" aria-labelledby="RejectionModalPopup" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header ">
+            <h5 class="modal-title" id="exampleModalLabel">Odrzucenie</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+              <img src="{% static 'img/rejected-stamp-red1.jpg' %}" alt="" width="450" height="330" >
+          <form class="form-control" method="post" >
+                {% csrf_token %}
+
+            <table class="table-sm table-borderless" style="font-size: 12px">
+                 {{ rejected_form.as_table }}
+                </table>
+              <input class="btn btn-outline-danger"
+               type="submit"
+               value="Odrzuć"
+               style="font-size: 13px"
+            >
+          </form>
+
+          </div>
+
         </div>
+     </div>
+    </div>
+<div class="modal fade" id="ApprovalModalPopup" tabindex="-1" aria-labelledby="ApprovalModalPopup" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="ApproveModalLabel">Akceptacja</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+              <img src="{% static 'img/approved-stamp-green.jpg' %}" alt="" width="450" height="330" >
+{% if application.bt_applications_settlements %}
+
+              <a class="btn btn-outline-success"
+               type="button"
+                 href="{% url 'e_delegacje:settlement-approved' pk=application.bt_applications_settlements.id %}"
+
+               style="font-size: 13px"
+            >Zaakceptuj
+              </a>
+
+{% else %}
+               <a class="btn btn-outline-success"
+               type="button"
+                 href="{% url 'e_delegacje:application-approved' pk=application.id %}"
+
+               style="font-size: 13px"
+            >Zaakceptuj
+              </a>
+
+{% endif %}
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+
+
+
+
 
 
 </main>

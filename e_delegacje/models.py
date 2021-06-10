@@ -33,8 +33,18 @@ class BtApplication(models.Model):
     planned_start_date = models.DateField()
     planned_end_date = models.DateField()
     advance_payment = models.DecimalField(decimal_places=2, max_digits=8, null=True, blank=True)
-    advance_payment_currency = models.ForeignKey(BtCurrency, on_delete=models.PROTECT, related_name='bt_applications')
+    advance_payment_currency = models.ForeignKey(BtCurrency,
+                                                 on_delete=models.PROTECT,
+                                                 related_name='bt_applications',
+                                                 null=True,
+                                                 blank=True)
     application_log = models.CharField(max_length=2400)
+    approver = models.ForeignKey(BtUser,
+                                 on_delete=models.PROTECT,
+                                 related_name='bt_approver',
+                                 null=True,
+                                 blank=True)
+    approval_date = models.DateField(null=True, blank=True)
 
     def __str__(self):
         return f'{self.trip_purpose_text}'
@@ -134,6 +144,4 @@ class BtApplicationSettlementFeeding(models.Model):
 
     def __str__(self):
         return f'Wyżywienie do rozliczenia wniosku{self.bt_application_settlement}'
-
-
 

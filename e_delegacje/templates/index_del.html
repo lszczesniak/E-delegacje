@@ -4,27 +4,36 @@
 
 
 <div class="row">
-        <div class="col-3 ">
+        <div class="col-4 ">
             <ul>
                   <li><h4>
-                <a class="nav-item nav-link text-secondary "
+                <a class="btn btn-outline-secondary my-3 d-block"
                    href="{% url 'e_delegacje:applications-create' %}">Nowy wniosek</a>
-
                 </h4></li>
                 <li><h4>
-                    <a class="nav-item nav-link text-secondary "
+                    <a class="btn btn-outline-secondary my-3 d-block"
                        href="{% url 'e_delegacje:applications-list' %}">
                         Lista wniosków
-{#                        <span class="fs-6 fw-lighter fst-italic">#}
-{#                        ({{ request.user.bt_applications_author.count }} + {{ request.user.bt_applications.count }}})#}
-{#                    </span>#}
+                    <span class="fs-6 fw-lighter fst-italic">
+                        ({{ items_number }})
+                    </span>
                     </a>
                 </h4></li>
+                {% if not request.user.get_employee_level_display == 'podstawowy' %}
+			  <li><h4>
+			  <a class="btn btn-outline-secondary my-3 d-block" href="{% url 'e_delegacje:approval-list' %}">
+                  Akceptacja wniosków
+                    <span class="fs-6 fw-lighter fst-italic">
+                        ({{ approval_items }})
+                    </span>
+              </a>
+			</h4></li>
+                {% endif %}
 
             </ul>
         </div>
-        <div class="col-1" >
-            <img src="{% static 'img/bt_image.jpg' %}" alt="" width="700" height="400" >
+        <div class="col-8" >
+            <img src="{% static 'img/bt_image.jpg' %}" alt="" width="800" height="auto" >
 
           </div>
 
