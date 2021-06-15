@@ -1,7 +1,7 @@
 from django import forms
 from django.contrib.auth.forms import AuthenticationForm
 from django.core.exceptions import ValidationError
-from setup.models import BtUser
+from setup.models import BtUser, BtLocation
 
 
 class LoginForm(AuthenticationForm):
@@ -40,3 +40,27 @@ class BtUserCreationForm(forms.ModelForm):
         return user
 
 
+class LocationForm(forms.ModelForm):
+    profit_center = forms.CharField(label="Profit Center", max_length=10,)
+
+    class Meta:
+        model = BtLocation
+        fields = "__all__"
+
+
+    def clean_profit_center(self):      # nie działało
+        profit_center = self.cleaned_data['profit_center']
+        obj = BtLocation.objects.filter(profit_center=profit_center)
+        if obj:
+            raise forms.ValidationError('Profit center juz istnieje')
+
+
+# def clean_phone(self):
+#     phone = self.cleaned_data.get("phone")
+#     # parse digits from the string
+#     digit_list = re.findall("\d+", phone)
+#     phone = ''.join(digit_list)
+
+    # if CustomUser.objects.filter(phone=phone).exists():
+    #     raise forms.ValidationError("phone number is already exists")
+    # return phone

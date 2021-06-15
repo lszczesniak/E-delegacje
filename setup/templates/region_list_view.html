@@ -2,6 +2,15 @@
 {% block content %}
 
   <h2>Lista regionów</h2>
+        <div class="col-3 align-self-start">
+            <a type="button"
+               class="btn btn-outline-warning"
+               href="{% url 'setup:region-create' %}"
+               style="font-size: 13px"
+            >
+                Nowy region
+            </a>
+        </div>
 
 <table class="table table-sm table-hover">
     <thead>
@@ -14,7 +23,7 @@
     <body>
     {% for r in object_list %}
         <tr class="table table-sm table-hover">
-          <td><a href="{% url 'setup:region-details-view' pk=r.pk %}">Opis - {{ r.name }}</td>
+          <td><a href="{% url 'setup:region-details-view' pk=r.pk %}">{{ r.name }}</td>
             </a>
   </tr>
     {% endfor %}
