@@ -41,19 +41,26 @@ class BtUserCreationForm(forms.ModelForm):
 
 
 class LocationForm(forms.ModelForm):
-    name = forms.CharField(label="Nazwa",max_length=100)
-    profit_center = forms.CharField(label="Profit Center", max_length=10)
+    profit_center = forms.CharField(label="Profit Center", max_length=10,)
 
     class Meta:
         model = BtLocation
         fields = "__all__"
 
-    def clean(self):
-        result = super().clean()
 
-        if BtLocation.objects.get(profit_center=result['profit_center']) is not None:
-            self.add_error('profit_center', f'Taki Profit Center juz istnieje {result["profit_center"]}')
+    def clean_profit_center(self):      # nie działało
+        profit_center = self.cleaned_data['profit_center']
+        obj = BtLocation.objects.filter(profit_center=profit_center)
+        if obj:
+            raise forms.ValidationError('Profit center juz istnieje')
 
-        return result
 
+# def clean_phone(self):
+#     phone = self.cleaned_data.get("phone")
+#     # parse digits from the string
+#     digit_list = re.findall("\d+", phone)
+#     phone = ''.join(digit_list)
 
+    # if CustomUser.objects.filter(phone=phone).exists():
+    #     raise forms.ValidationError("phone number is already exists")
+    # return phone

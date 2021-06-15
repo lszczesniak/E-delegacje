@@ -1,5 +1,5 @@
 from django.contrib.auth.forms import AuthenticationForm
-from django.views.generic import ListView, DetailView, CreateView, UpdateView
+from django.views.generic import ListView, DetailView, CreateView, UpdateView, FormView
 from django.urls import reverse_lazy, reverse
 from django.http import HttpResponse,HttpResponseRedirect
 from django.contrib.auth import authenticate, login, logout
@@ -126,6 +126,8 @@ class BtDivisionCreateView(CreateView):
     success_url = reverse_lazy("setup:division-create")
 
 
+
+
 class BtLocationListView(ListView):
     model = BtLocation
     template_name = "location_list_view.html"
@@ -137,6 +139,34 @@ class BtLocationCreateView(CreateView):
     form_class = LocationForm
 #    fields = "__all__"
     success_url = reverse_lazy("setup:location-create")
+
+class BtLocationFormView(FormView):
+    model = BtLocation
+    template_name = "my_name.html"
+    form_class = LocationForm
+    success_url = reverse_lazy("setup:location-create2")
+
+    def form_valid(self, form):
+        result = super().form_valid(form)
+        profit_center = form.cleaned_data["profit_center"]
+        BtLocation.objects.create(profit_center=profit_center)
+        return result
+
+    def form_invalid(self, form):
+        return super().form_invalid(form)
+    #     profit_center = form.cleaned_data["profit_center"]
+    #     if BtLocation.objects.get(profit_center=result['profit_center']) is not None:
+    #         self.add_error('profit_center', f'Taki Profit Center juz istnieje {result["profit_center"]}')
+    #     BtLocation.objects.create(profit_center=profit_center)
+    #     return result
+
+        #     if result['profit_center'] == BtLocation.objects.get['profit_center']:
+        #         raise ValidationError("cosssss!")
+        # if BtLocation.objects.get(profit_center=result['profit_center']) is not None:
+        #     self.add_error('profit_center', f'Taki Profit Center juz istnieje {result["profit_center"]}')
+        #        return result
+#        return result
+
 
 
 class BtLocationDetailView(DetailView):
@@ -224,3 +254,7 @@ class BtDepartmentUpdateView(UpdateView):
     fields = ("name", )
     template_name = "my_name.html"
     success_url = reverse_lazy("setup:department-list-view")
+
+
+def upload(request):
+    return render(request, 'upload.html')
