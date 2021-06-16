@@ -257,4 +257,8 @@ class BtDepartmentUpdateView(UpdateView):
 
 
 def upload(request):
+    if request.method == "POST":
+        uploaded_files = request.FILES['document']
+        print(uploaded_files.name)
+        print(uploaded_files.size)
     return render(request, 'upload.html')

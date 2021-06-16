@@ -41,6 +41,7 @@ class BtUserCreationForm(forms.ModelForm):
 
 
 class LocationForm(forms.ModelForm):
+    name = forms.CharField(max_length=100)
     profit_center = forms.CharField(label="Profit Center", max_length=10,)
 
     class Meta:
@@ -52,6 +53,5 @@ class LocationForm(forms.ModelForm):
         profit_center = self.cleaned_data['profit_center']
         obj = BtLocation.objects.filter(profit_center=profit_center)
         if obj:
-            raise forms.ValidationError('Ten Profit center juz istnieje')
-
+            raise forms.ValidationError('Ten Profit center juz istnieje Proszę popraw pole Profit Center')
 
