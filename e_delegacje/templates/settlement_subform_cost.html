@@ -7,7 +7,7 @@
 <div class="container-fluid pt-3">
     <div class="row align-content-between">
         <div class="col-5 align-items-start">
-            <form class="form-control bg-light pt-3 pb-3" method="post">
+            <form class="form-control bg-light pt-3 pb-3" method="post" enctype="multipart/form-data">
             {% csrf_token %}
 
             <div class="mb-3">
@@ -64,9 +64,10 @@
                                step="0.01"
                                required
                                id="id_bt_cost_amount"
+                               placeholder="Kwota Brutto"
                         >
                     <select name="bt_cost_currency" id="bt_cost_currency" class="form-select">
-                            <option selected>Wybierz</option>
+                            <option selected>Waluta</option>
                     {% for currency in form.bt_cost_currency %}
                         {{ currency  }}
                     {% endfor %}
@@ -75,15 +76,21 @@
 
 
                     </div>
-                    <div class="col-auto">
+                    <div class="col-auto py-2">
 
-                    {{ form.attachment }}
+                    <input type="file"
+                           name="attachment"
+                           required
+                           id="formFileMultiple"
+                           multiple
+                           class="form-control text-secondary">
+
 
 
                     </div>
 
 
-        <div class="row">
+        <div class="row pt-4">
             <div class="col-4">
                 <input class="btn btn-outline-success" type="submit" value="Dodaj koszt">
             </div>
@@ -120,7 +127,7 @@
                         <tr>
                             <td>{{ cost.bt_cost_description }}</td>
                             <td>{{ cost.get_bt_cost_category_display }}</td>
-                            <td class="text-end ms-5">{{ cost.bt_cost_amount }}</td>
+                            <td class="text-end ms-5">{{ cost.bt_cost_amount|floatformat:2 }}</td>
                             <td class="text-center">{{ cost.bt_cost_currency }}</td>
                             <td class="pt-2">
                                 <form action="{% url 'e_delegacje:settlement-cost-delete' pk=cost.pk %}" method="POST">
@@ -143,9 +150,12 @@
 
     {% if form.errors %}
     {% for field in form %}
+
         {% for error in field.errors %}
             <div class="alert alert-danger">
+                <p>{{ field }}</p>
                 <strong>{{ error|escape }}</strong>
+
             </div>
         {% endfor %}
     {% endfor %}

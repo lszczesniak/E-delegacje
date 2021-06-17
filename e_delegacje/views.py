@@ -1,3 +1,7 @@
+import functools
+import ssl
+
+from django.conf import settings
 from django.http import HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404
 from django.urls import reverse, reverse_lazy
@@ -9,6 +13,8 @@ from django.views.generic.detail import SingleObjectMixin
 from django.views.generic.edit import FormView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.exceptions import ObjectDoesNotExist
+from django_weasyprint.utils import django_url_fetcher
+
 from e_delegacje.enums import BtApplicationStatus
 from e_delegacje.forms import (
     BtApplicationForm,
@@ -31,6 +37,11 @@ from e_delegacje.models import (
 )
 from setup.models import BtDelegationRate, BtMileageRates, BtUser
 from django.contrib.auth.decorators import login_required
+from django.http import HttpResponse
+from django.template.loader import get_template
+from xhtml2pdf import pisa
+from django_weasyprint import WeasyTemplateResponseMixin
+from django_weasyprint.views import CONTENT_TYPE_PNG, WeasyTemplateResponse
 
 
 @login_required
@@ -103,6 +114,7 @@ class BtApplicationCreateView(View):
 class BtApplicationListView(ListView):
     model = BtApplication
     template_name = "bt_applications_list.html"
+    ordering = ['-id']
 
 
 class BtApplicationDetailView(DetailView):
@@ -131,10 +143,10 @@ class BtApplicationApprovalDetailView(View):
             settlement_amount = round(advance - total_costs, 2)
             if settlement_amount < 0:
                 settlement_amount = f'Do zwrotu dla pracownika: {abs(settlement_amount)} ' \
-                                    f'{settlement.bt_application_id.advance_payment_currency.code}.'
+                                    f'{settlement.bt_application_id.advance_payment_currency.text}.'
             else:
                 settlement_amount = f'Do zapłaty przez pracownika: {settlement_amount} ' \
-                                    f'{settlement.bt_application_id.advance_payment_currency.code}'
+                                    f'{settlement.bt_application_id.advance_payment_currency.text}'
             return render(
                 request,
                 template_name="bt_application_approval.html",
@@ -300,8 +312,8 @@ def send_settlement_to_approver(request, pk):
 def bt_settlement_approved(request, pk):
     bt_application = BtApplication.objects.get(bt_applications_settlements__id=pk)
     bt_application.application_status = BtApplicationStatus.settled.value
-    bt_application.approver = request.user.first_name
-    bt_application.approval_date = datetime.datetime.now()
+    bt_application.approver = request.user
+    bt_application.approval_date = datetime.datetime.now().strftime("%Y.%m.%d %H:%M:%S")
     bt_application.save()
 
     settlement = BtApplicationSettlement.objects.get(id=pk)
@@ -322,6 +334,7 @@ def bt_settlement_rejected(request, pk):
 class BtApprovalListView(LoginRequiredMixin, ListView):
     model = BtApplication
     template_name = "bt_approval_list.html"
+    ordering = ['-id']
 
     def get_queryset(self):
         return BtApplication.objects.filter(
@@ -345,6 +358,12 @@ class BtApplicationSettlementCreateView(View):
             bt_application_id=bt_application,
             settlement_status=BtApplicationStatus.saved.value
         )
+        BtApplicationSettlementFeeding.objects.create(
+            bt_application_settlement=settlement,
+            breakfast_quantity=0,
+            dinner_quantity=0,
+            supper_quantity=0
+        )
         bt_application.application_status = BtApplicationStatus.settlement_in_progress.value
         bt_application.save()
         return HttpResponseRedirect(reverse("e_delegacje:settlement-details", args=[settlement.id]))
@@ -354,6 +373,12 @@ class BtApplicationSettlementCreateView(View):
         settlement = BtApplicationSettlement.objects.create(
             bt_application_id=bt_application,
             settlement_status=BtApplicationStatus.saved.value
+        )
+        BtApplicationSettlementFeeding.objects.create(
+            bt_application_settlement=settlement,
+            breakfast_quantity=0,
+            dinner_quantity=0,
+            supper_quantity=0
         )
         bt_application.application_status = BtApplicationStatus.settlement_in_progress.value
         bt_application.save()
@@ -380,10 +405,10 @@ class BtApplicationSettlementDetailView(View):
         settlement_amount = advance - total_costs
         if settlement_amount < 0:
             settlement_amount = f'Do zwrotu dla pracownika: {abs(settlement_amount)} ' \
-                                f'{settlement.bt_application_id.advance_payment_currency.code}'
+                                f'{settlement.bt_application_id.advance_payment_currency.text}'
         else:
             settlement_amount = f'Do zapłaty przez pracownika: {settlement_amount} ' \
-                                f'{settlement.bt_application_id.advance_payment_currency.code}'
+                                f'{settlement.bt_application_id.advance_payment_currency.text}'
         return render(
             request,
             template_name="bt_settlement_details.html",
@@ -790,6 +815,7 @@ class BtApplicationSettlementFeedingUpdateView(SingleObjectMixin, FormView):
 class CreatePDF(DetailView):
     model = BtApplication
     template_name = 'PDF.html'
+    target = '_blank'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -818,3 +844,92 @@ class CreatePDF(DetailView):
         context['mileage_cost'] = mileage_cost
 
         return context
+
+
+def render_pdf_view(request, *args, **kwargs):
+    pk = kwargs.get('pk')
+    get_object_or_404(BtApplication, pk=pk)
+    application = get_object_or_404(BtApplication, pk=pk)
+    settlement = BtApplicationSettlement.objects.get(id=application.bt_applications_settlements.id)
+    advance = float(application.advance_payment)
+    cost_sum = float(settlement_cost_sum(BtApplicationSettlement.objects.get(pk=settlement.id)))
+    mileage_cost = float(mileage_cost_sum(BtApplicationSettlement.objects.get(pk=settlement.id)))
+    if settlement.bt_application_id.bt_country.country_name.lower() == 'polska':
+        diet = round(diet_reconciliation_poland(settlement), 2)
+    else:
+        diet = round(diet_reconciliation_abroad(settlement), 2)
+    total_costs = cost_sum + mileage_cost + diet
+    settlement_amount = advance - total_costs
+    if settlement_amount < 0:
+        settlement_amount = f'Do zwrotu dla pracownika: {abs(round(settlement_amount, 4))} ' \
+                            f'{settlement.bt_application_id.advance_payment_currency.code}'
+    else:
+        settlement_amount = f'Do zapłaty przez pracownika: {round(settlement_amount, 4)} ' \
+                            f'{settlement.bt_application_id.advance_payment_currency.code}'
+    context = {'object': application,
+               'settlement_amount': settlement_amount,
+               'cost_sum': cost_sum,
+               'total_costs': total_costs,
+               'diet': diet,
+               'mileage_cost': mileage_cost
+               }
+
+    template_path = 'PDF.html'
+
+    # Create a Django response object, and specify content_type as pdf
+    response = HttpResponse(content_type='application/pdf')
+    # if download get this code
+    # response['Content-Disposition'] = 'attachment; filename="report.pdf"'
+    # if display get this code
+    response['Content-Disposition'] = 'filename="report.pdf"'
+    # find the template and render it.
+    template = get_template(template_path)
+    html = template.render(context)
+
+    # create a pdf
+    pisa_status = pisa.CreatePDF(html, dest=response)
+    # if error then show some funy view
+    if pisa_status.err:
+        return HttpResponse('We had some errors <pre>' + html + '</pre>')
+    return response
+
+
+class CustomWeasyTemplateResponse(WeasyTemplateResponse):
+    # customized response class to change the default URL fetcher
+    def get_url_fetcher(self):
+        # disable host and certificate check
+        context = ssl.create_default_context()
+        context.check_hostname = False
+        context.verify_mode = ssl.CERT_NONE
+        return functools.partial(django_url_fetcher, ssl_context=context)
+
+
+class PrintInLinePDFView(WeasyTemplateResponseMixin, CreatePDF):
+    # output of MyModelView rendered as PDF with hardcoded CSS
+
+    pdf_stylesheets = [
+        settings.STATICFILES_DIRS[0] + '/css/bootstrap.css',
+    ]
+    # show pdf in-line (default: True, show download dialog)
+    pdf_attachment = False
+
+    response_class = CustomWeasyTemplateResponse
+
+    def get_pdf_filename(self):
+        obj = CreatePDF.get_object(self)
+        return f'Rozliczenie delegacji nr: {obj.id}.pdf'
+
+
+class DownloadPDFView(WeasyTemplateResponseMixin, CreatePDF):
+    # suggested filename (is required for attachment/download!)
+    pdf_stylesheets = [
+        settings.STATICFILES_DIRS[0] + '/css/bootstrap.css',
+    ]
+    # show pdf in-line (default: True, show download dialog)
+    pdf_attachment = True
+    # custom response class to configure url-fetcher
+    response_class = CustomWeasyTemplateResponse
+
+    def get_pdf_filename(self):
+        obj = CreatePDF.get_object(self)
+        return f'Rozliczenie delegacji nr: {obj.id}.pdf'

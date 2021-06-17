@@ -25,7 +25,10 @@ from e_delegacje.views import (
     bt_settlement_approved,
     bt_settlement_rejected,
     BtApplicationApprovalMailDetailView,
-    CreatePDF
+    CreatePDF,
+    render_pdf_view,
+    PrintInLinePDFView,
+    DownloadPDFView
 
 )
 
@@ -41,6 +44,10 @@ urlpatterns = [
     path('application-delete/<pk>', BtApplicationDeleteView.as_view(), name='application-delete'),
     path('application-update/<pk>', BtApplicationUpdateView.as_view(), name='application-update'),
     path('application-create-pdf/<pk>', CreatePDF.as_view(), name='application-create-pdf'),
+    path('application-render-pdf/<pk>', render_pdf_view, name='application-render-pdf'),
+    path('application-pdf/<pk>', PrintInLinePDFView.as_view(), name='application-pdf'),
+    path('application-inline-pdf/<pk>', PrintInLinePDFView.as_view(), name='pdf-in-line'),
+    path('application-download-pdf/<pk>', DownloadPDFView.as_view(), name='pdf-download'),
 
     # BtApplicatons - wnioski o rozliczenie delegacji
     path('settlement-create/<pk>', BtApplicationSettlementCreateView.as_view(), name='settlement-create'),

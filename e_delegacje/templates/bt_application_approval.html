@@ -140,7 +140,7 @@
             <div class="col-3">
 
                     <div class="row">
-                        <h5>Koszty: {{ cost_sum }} zł.</h5>
+                        <h5>Koszty: {{ cost_sum|floatformat:2 }} zł.</h5>
                     <hr>
                     </div>
 
@@ -158,7 +158,7 @@
                         {% for cost in application.bt_applications_settlements.bt_application_settlement_costs.all %}
                                 <tr>
             <td>{{ cost.bt_cost_description }}</td>
-            <td>{{ cost.bt_cost_amount }}</td>
+            <td>{{ cost.bt_cost_amount|floatformat:2 }}</td>
             <td>{{ cost.bt_cost_currency }}</td>
                                 </tr>
 
@@ -172,7 +172,7 @@
 
             <div class="col-3 align-content-end">
                     <div class="row">
-                        <h5>Kilometrówka: {{ mileage_cost }} zł.</h5>
+                        <h5>Kilometrówka: {{ mileage_cost|floatformat:2 }} zł.</h5>
                     <hr>
                     </div>
                     <table class="table table-light table-striped" style="font-size: 12px">
@@ -190,7 +190,7 @@
 
                                 <td>{{ trip.trip_date }}</td>
                                 <td class="text-center">{{ trip.trip_purpose }}</td>
-                                <td class="text-center">{{ trip.mileage }}</td>
+                                <td class="text-center">{{ trip.mileage|floatformat:2 }}</td>
                             </tr>
                        {% endfor %}
                        </tbody>
@@ -200,7 +200,7 @@
 
             <div class="col-3 align-content-end">
                     <div class="row">
-                        <h5 class="vIntegerField">Dieta: {{ diet }} zł. </h5>
+                        <h5 class="vIntegerField">Dieta: {{ diet|floatformat:2 }} zł. </h5>
                     <hr>
                     </div>
                     <table class="table table-light  table-striped" style="font-size: 12px">
@@ -237,7 +237,8 @@
 <hr>
         <div class="row align-content-between">
             <div class="col-3 ">
-                <h5>Zaliczka: {{ application.advance_payment }} {{ application.advance_payment_currency }}</h5>
+                <h5>Zaliczka: {{ application.advance_payment|floatformat:2 }}
+                    {{ application.advance_payment_currency.text }}</h5>
             </div>
             <div class="col-6 text-center">
                 {% if settlement_amount > 0 %}
@@ -248,7 +249,7 @@
             </div>
         {% if application.bt_applications_settlements %}
             <div class="col-3 text-end">
-                <h5>Suma kosztów: {{ total_costs }} zł.</h5>
+                <h5>Suma kosztów: {{ total_costs|floatformat:2 }} zł.</h5>
             </div>
         {% endif %}
         </div>
@@ -347,11 +348,11 @@
 {% if application.bt_applications_settlements %}
 
               <a class="btn btn-outline-success"
-               type="button"
+                 type="button"
                  href="{% url 'e_delegacje:settlement-approved' pk=application.bt_applications_settlements.id %}"
-
-               style="font-size: 13px"
-            >Zaakceptuj
+                 style="font-size: 13px"
+              >
+                  Zaakceptuj
               </a>
 
 {% else %}
