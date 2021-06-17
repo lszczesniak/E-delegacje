@@ -1,4 +1,6 @@
 from django.urls import path, include
+from django.conf import settings
+from django.conf.urls.static import static
 
 from setup.views import (
     BtUserListView,
@@ -33,8 +35,8 @@ from setup.views import (
     user_logout,
     MyPasswordResetDoneView,
     MyPasswordChangeView,
-
-
+    BtLocationFormView,
+    upload,
 
 #    main_login,
 #    signup_view,
@@ -60,6 +62,8 @@ urlpatterns = [
     path('location-list-view/', BtLocationListView.as_view(), name="location-list-view"),
     path('location-details-view/<pk>', BtLocationDetailView.as_view(), name="location-details-view"),
     path('location-create-view/', BtLocationCreateView.as_view(), name="location-create"),
+    path('location-create-view2/', BtLocationFormView.as_view(), name="location-create2"),
+
 
 
     path('costcenter-list-view/', BtCostCenterListView.as_view(), name="costcenter-list-view"),
@@ -69,7 +73,7 @@ urlpatterns = [
 
     path('mileagetate-list-view/', BtMileageRatesListView.as_view(), name="mileagetate-list-view"),
     path('mileagetate-details-view/<pk>', BtMileageRatesDetailView.as_view(), name="mileagetate-details-view"),
-    path('mileagetate-create-view/', BtMileageRatesCreateView.as_view(), name="mileagerate-create"),
+    path('mileagetate-create-view/', BtMileageRatesCreateView.as_view(), name="mileagetate-create"),
 
 
     path('delegationrate-list-view/', BtDelegationRateListView.as_view(), name="delegationrate-list-view"),
@@ -86,5 +90,9 @@ urlpatterns = [
     path('login/', user_login, name='login'),
     path('logout/', user_logout, name='logout'),
     path('password_change/', MyPasswordChangeView.as_view(), name='password-change'),
-    path('password_change/done/',MyPasswordResetDoneView.as_view(),  name='password-change-done'),
+    path('password_change/done/', MyPasswordResetDoneView.as_view(),  name='password-change-done'),
+
+    path('upload/', upload, name='upload'),
 ]
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -1,7 +1,7 @@
 from django import forms
 from django.contrib.auth.forms import AuthenticationForm
 from django.core.exceptions import ValidationError
-from setup.models import BtUser
+from setup.models import BtUser, BtLocation
 
 
 class LoginForm(AuthenticationForm):
@@ -39,4 +39,19 @@ class BtUserCreationForm(forms.ModelForm):
             user.save()
         return user
 
+
+class LocationForm(forms.ModelForm):
+    name = forms.CharField(max_length=100)
+    profit_center = forms.CharField(label="Profit Center", max_length=10,)
+
+    class Meta:
+        model = BtLocation
+        fields = "__all__"
+
+
+    def clean_profit_center(self):
+        profit_center = self.cleaned_data['profit_center']
+        obj = BtLocation.objects.filter(profit_center=profit_center)
+        if obj:
+            raise forms.ValidationError('Ten Profit center juz istnieje Proszę popraw pole Profit Center')
 

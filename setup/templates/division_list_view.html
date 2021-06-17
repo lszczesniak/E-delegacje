@@ -1,12 +1,20 @@
 {% extends "base.html" %}
 {% block content %}
 
- <h2>Lista działów</h2>
-
+ <h2>Lista division</h2>
+        <div class="col-3 align-self-start">
+            <a type="button"
+               class="btn btn-outline-warning"
+               href="{% url 'setup:division-create' %}"
+               style="font-size: 13px"
+            >
+                Nowa division
+            </a>
+        </div>
 <table class="table table-sm table-hover">
     <thead>
         <tr>
-            <td>Nazwisko użytkownika</td>
+            <td>Nazwa działu</td>
             <td>Menager</td>
         </tr>
     </thead>
@@ -16,8 +24,8 @@
     {% for d in object_list %}
     <tr class="table table-sm table-hover">
     <tr>
-          <td><a href="{% url 'setup:division-details-view' pk=d.pk %}">Imię i Nazwisko użytkownika - {{ d.name }}</a></td>
-          <td><a>     {{ a.manager }}</a></td>
+          <td><a href="{% url 'setup:division-details-view' pk=d.pk %}">{{ d.name }}</a></td>
+          <td><a>     {{ d.manager }}</a></td>
 
   {% endfor %}
     </body>
