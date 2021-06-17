@@ -44,10 +44,11 @@ class BtApplication(models.Model):
                                  related_name='bt_approver',
                                  null=True,
                                  blank=True)
-    approval_date = models.DateField(null=True, blank=True)
+    # approval_date = models.DateTimeField(blank=True, null=True)
+    approval_date = models.CharField(max_length=15, blank=True, null=True)
 
     def __str__(self):
-        return f'{self.trip_purpose_text}'
+        return f'Wniosek {self.id}: {self.trip_purpose_text}'
 
 
 class BtApplicationSettlement(models.Model):

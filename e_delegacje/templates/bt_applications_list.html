@@ -55,7 +55,7 @@
     <tbody>
     <tr><td colspan="7"></td></tr>
 
-        {% for item in object_list %}
+        {% for item in object_list  %}
 
             {% if item.target_user == request.user or item.application_author == request.user %}
                 {% if item.application_status not in 'settled, cancelled' %}
@@ -197,41 +197,97 @@
                      <td>
                 <a class="btn btn-outline-danger"
                     style="font-size: 12px"
-                   href="{% url 'e_delegacje:application-create-pdf' pk=item.id %}"
+                   href="{% url 'e_delegacje:pdf-in-line' pk=item.id %}"
+                   target="_blank"
 {#                    data-bs-toggle="modal"#}
 {#                    data-bs-target="#PDFModalPopup"#}
                 >
-                  PDF
+                    pdf
                 </a>
+{##}
+{#     <div class="modal fade" id="PDFModalPopup" tabindex="-1" aria-labelledby="PDFModalPopup" aria-hidden="true">#}
+{#            <div class="modal-dialog">#}
+{#                <div class="modal-content">#}
+{#                    <div class="modal-header">#}
+{#                    <h5 class="modal-title" id="PDFModalLabel">Pobierz PDF</h5>#}
+{#                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>#}
+{#                    </div>#}
+{#                    <div class="modal-body">#}
+{#                        {% load static %}#}
+{#                        <img src="{% static 'img/pdf.png' %}"#}
+{#                        alt=""#}
+{#                        style="display: block; margin-left: auto; margin-right: auto; width: 50%;"#}
+{#                        width="300" height="330" >#}
+{#                        <div class="row">#}
+{#                            <div class="col-5 offset-1">#}
+{##}
+{#                                <a type="submit" class="btn btn-outline-secondary d-block"#}
+{#                                   href="{% url 'e_delegacje:application-pdf' pk=item.id %}"#}
+{#                                   target="_blank"#}
+{#                                   data-dismiss="modal"#}
+{##}
+{#                            >#}
+{#                                Pokaż#}
+{#                            </a>#}
+{#                            </div>#}
+{#                            <div class="col-5">#}
+{#                              <a class="btn btn-outline-secondary d-block"#}
+{#                                 href="{% url 'e_delegacje:pdf-download' pk=item.id %}"#}
+                            {#                         data-bs-dismiss="modal"#}
+{#                              >#}
+{#                                  Pobierz#}
+{#                              </a>#}
+{#                            </div>#}
+{#                        </div>#}
+{#                    </div>#}
+{##}
+{#                </div>#}
+{#            </div>#}
+{#</div>#}
+
                     </td>
 
                     </tr>
+
                 {% endif %}
             {% endif %}
+
+
+
+
         {% endfor %}
     </tbody>
     </table>
 </div>
 
-<div class="modal fade" id="PDFModalPopup" tabindex="-1" aria-labelledby="PDFModalPopup" aria-hidden="true">
+<div class="modal fade"
+     id="PDFSuccessViewModalPopup"
+     tabindex="-1"
+     aria-labelledby="PDFSuccessViewModalPopup"
+     aria-hidden="true">
       <div class="modal-dialog">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title" id="PDFModalLabel">Pobierz PDF</h5>
+            <h5 class="modal-title" id="PDFModalLabel">Dokument otworzony w nowym oknie</h5>
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
           <div class="modal-body">
               <div class="row">
+                  Dokument został otworzony w nowym oknie
                 <div class="col-5">
-                    <a class="btn btn-outline-secondary d-block">
-                        Pokaż
-                    </a>
+                    <button class="btn btn-outline-secondary d-block"
+                            data-bs-dismiss="modal"
+                    >
+                        OK
+                    </button>
                 </div>
-                <div class="col-5">
-                      <a class="btn btn-outline-secondary d-block">
-                          Pobierz
-                      </a>
-                </div>
+{#                <div class="col-5">#}
+{#                      <a class="btn btn-outline-secondary d-block"#}
+{#                      href="{% url 'e_delegacje:pdf-download' pk=item.id %}"#}
+{#                      >#}
+{#                          Pobierz#}
+{#                      </a>#}
+{#                </div>#}
             </div>
           </div>
 

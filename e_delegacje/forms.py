@@ -190,7 +190,7 @@ class BtApplicationSettlementCostForm(forms.Form):
     bt_cost_currency = forms.ModelChoiceField(queryset=BtCurrency.objects.all(), label="Waluta", initial='')
     bt_cost_document_date = forms.DateField(label="Data dokumentu", widget=DateInputWidget)
     bt_cost_VAT_rate = forms.TypedChoiceField(choices=BtVatRates.choices, label="Stawka vat")
-    # attachment = forms.FileField()
+    attachment = forms.FileField()
 
 
 class BtApplicationSettlementMileageForm(forms.Form):
@@ -264,3 +264,4 @@ class BtApprovedForm(forms.Form):
                                       initial='approved',
 
                                       )
+    current_datetime = forms.CharField(widget=forms.HiddenInput())

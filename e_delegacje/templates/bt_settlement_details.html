@@ -143,7 +143,7 @@
 
 
                     <div class="row">
-                        <h5>Koszty: {{ cost_sum }} zł.</h5>
+                        <h5>Koszty: {{ cost_sum|floatformat:2 }} zł.</h5>
                     <hr>
                     </div>
                 {% if object.bt_application_settlement_costs.exists %}
@@ -164,7 +164,7 @@
                             {% for cost in object.bt_application_settlement_costs.all %}
                                 <tr>
                                     <td>{{ cost.bt_cost_description }}</td>
-                                    <td>{{ cost.bt_cost_amount }}</td>
+                                    <td>{{ cost.bt_cost_amount|floatformat:2 }}</td>
                                     <td>{{ cost.bt_cost_currency }}</td>
                                 </tr>
 
@@ -199,7 +199,7 @@
 
 
                     <div class="row">
-                        <h5>Kilometrówka: {{ mileage_cost }} zł.</h5>
+                        <h5>Kilometrówka: {{ mileage_cost|floatformat:2 }} zł.</h5>
                     <hr>
                     </div>
                 {% if object.bt_application_settlement_mileages.exists %}
@@ -218,7 +218,7 @@
 
                                 <td>{{ trip.trip_date }}</td>
                                 <td class="text-center">{{ trip.trip_purpose }}</td>
-                                <td class="text-center">{{ trip.mileage }}</td>
+                                <td class="text-center">{{ trip.mileage|floatformat:2 }}</td>
                             </tr>
                        {% endfor %}
                        </tbody>
@@ -248,7 +248,7 @@
             <div class="col-3 align-content-end">
                     <div class="row">
                         <h5 class="vIntegerField">
-                            Dieta: {{ diet }} zł.
+                            Dieta: {{ diet|floatformat:2 }} zł.
                         </h5>
                     <hr>
                     </div>
@@ -297,7 +297,8 @@
 <hr>
         <div class="row align-content-between">
             <div class="col-3 ">
-                <h5>Zaliczka: {{ advance }} {{ object.bt_application_id.advance_payment_currency }}</h5>
+                <h5>Zaliczka: {{ advance|floatformat:2 }}
+                    {{ object.bt_application_id.advance_payment_currency.text }}</h5>
             </div>
             <div class="col-6 text-center">
                 {% if settlement_amount > 0 %}
@@ -307,7 +308,8 @@
                 {% endif %}
             </div>
             <div class="col-3 text-end">
-                <h5>Suma kosztów: {{ total_costs }} zł.</h5>
+                <h5>Suma kosztów: {{ total_costs|floatformat:2 }}
+                    {{ object.bt_application_id.advance_payment_currency.text }}</h5>
             </div>
 
         </div>
