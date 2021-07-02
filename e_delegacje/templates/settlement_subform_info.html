@@ -4,15 +4,16 @@
   <h2>Rozliczenie wniosku o delegację - informacje ogólne</h2>
 
 
-<div class="col-8 align-items-start">
-    <form class="form-control" method="post" enctype="multipart/form-data">
+<div class="col-6 align-items-start pt-4">
+    <form class="form-control" method="post">
         {% csrf_token %}
+        <div class="row">
             <table class="table table-responsive-sm table-light bg-light">
-                 {{ form.as_table }}
-                </table>
+                {{ form.as_table }}
+            </table>
+        </div>
 
-
-                <div class="row">
+        <div class="row">
             <div class="col-1 align-self-end">
                 <input class="btn btn-outline-success" type="submit" value="Zapisz">
             </div>
@@ -42,7 +43,67 @@
   let date = today.getFullYear()+'.'+(today.getMonth()+1)+'.'+today.getDate();
   let hour = today.getHours()+":"+today.getMinutes()+":"+today.getSeconds();
   let current_datetime = date+" "+hour;
-  document.getElementById("id_current_datetime").value = current_datetime;
+  let current_datetime_element = document.getElementById("id_current_datetime")
+
+  if (current_datetime_element) {
+      current_datetime_element.value = current_datetime;
+  }
+  else {
+      document.getElementById("id_bt_application_info-0-current_datetime").value = current_datetime;
+  }
+
+let bt_completed = document.getElementById("id_bt_completed")
+
+
+  function ChangeAtributesRequied() {
+
+      let bt_start_date = document.getElementById("id_bt_start_date")
+      let bt_start_time = document.getElementById("id_bt_start_time")
+      let bt_end_date = document.getElementById("id_bt_end_date")
+      let bt_end_time = document.getElementById("id_bt_end_time")
+      let settlement_exchange_rate = document.getElementById("id_settlement_exchange_rate")
+
+      if (bt_completed) {
+          var bt_completed_state = bt_completed.value;
+      } else
+          {
+              let bt_completed = document.getElementById("id_bt_application_info-0-bt_completed");
+              var bt_completed_state = bt_completed.value;
+      }
+
+
+
+
+          if (bt_completed_state === 'nie') {
+
+              bt_start_date.disabled = true
+              bt_start_time.disabled = true
+              bt_end_date.disabled = true
+              bt_end_time.disabled = true
+              settlement_exchange_rate.disabled = true
+
+              bt_start_date.value = null
+              bt_start_time.value = null
+              bt_end_date.value = null
+              bt_end_time.value = null
+              settlement_exchange_rate.value = null
+
+          } else {
+              bt_start_date.disabled = false
+              bt_start_time.disabled = false
+              bt_end_date.disabled = false
+              bt_end_time.disabled = false
+              settlement_exchange_rate.disabled = false
+
+              bt_start_date.required = true
+              bt_start_time.required = true
+              bt_end_date.required = true
+              bt_end_time.required = true
+              settlement_exchange_rate.required = true
+          }
+
+  }
+
 </script>
 
 

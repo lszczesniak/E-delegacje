@@ -42,6 +42,7 @@ from django.template.loader import get_template
 from xhtml2pdf import pisa
 from django_weasyprint import WeasyTemplateResponseMixin
 from django_weasyprint.views import CONTENT_TYPE_PNG, WeasyTemplateResponse
+from django.core.files.storage import FileSystemStorage
 
 
 @login_required
@@ -62,6 +63,9 @@ def index(request):
 class BtApplicationCreateView(View):
     def get(self, request):
         form = BtApplicationForm()
+        form.fields['target_user'].queryset = \
+            BtUser.objects.filter(department=request.user.department)
+
         current_datetime = ""
         return render(request,
                       template_name="form_template.html",
@@ -108,7 +112,7 @@ class BtApplicationCreateView(View):
             return HttpResponseRedirect(reverse("e_delegacje:applications-list"))
         else:
             print(form.errors)
-            return HttpResponseRedirect(reverse("e_delegacje:index"))
+            return HttpResponseRedirect(reverse("e_delegacje:applications-create"))
 
 
 class BtApplicationListView(ListView):
@@ -452,32 +456,42 @@ class BtApplicationSettlementInfoCreateFormView(View):
 
     def post(self, request, pk, *args, **kwargs):
         form = BtApplicationSettlementInfoForm(request.POST)
+
         if form.is_valid():
             bt_application_settlement = BtApplicationSettlement.objects.get(id=pk)
-            bt_completed = form.cleaned_data["bt_completed"]
-            bt_start_date = form.cleaned_data["bt_start_date"]
-            bt_start_time = form.cleaned_data["bt_start_time"]
-            bt_end_date = form.cleaned_data["bt_end_date"]
-            bt_end_time = form.cleaned_data["bt_end_time"]
-            settlement_exchange_rate = form.cleaned_data['settlement_exchange_rate']
-            current_datetime = form.cleaned_data["current_datetime"]
-            settlement_log = f'Nowe rozliczenie wniosku nr: {bt_application_settlement.bt_application_id.id} - ' \
-                             f'{current_datetime}\n'
-            advance_payment = BtApplication.objects.get(
-                id=BtApplicationSettlement.objects.get(id=pk).bt_application_id.id
-            )
-            BtApplicationSettlementInfo.objects.create(
-                bt_application_settlement=bt_application_settlement,
-                bt_completed=bt_completed,
-                bt_start_date=bt_start_date,
-                bt_start_time=bt_start_time,
-                bt_end_date=bt_end_date,
-                bt_end_time=bt_end_time,
-                settlement_exchange_rate=settlement_exchange_rate,
-                advance_payment=advance_payment,
-                settlement_log=settlement_log
-            )
-            return HttpResponseRedirect(reverse("e_delegacje:settlement-details", args=[pk]))
+            if form.cleaned_data["bt_completed"] == 'nie':
+
+                bt_application_settlement.bt_application_id.application_status = BtApplicationStatus.canceled
+                bt_application_settlement.bt_application_id.save()
+                bt_application_settlement.delete()
+                # return HttpResponseRedirect(reverse("e_delegacje:settlement-details", args=[pk]))
+                return HttpResponseRedirect(reverse("e_delegacje:applications-list"))
+            else:
+                bt_completed = form.cleaned_data["bt_completed"]
+                bt_start_date = form.cleaned_data["bt_start_date"]
+                bt_start_time = form.cleaned_data["bt_start_time"]
+                bt_end_date = form.cleaned_data["bt_end_date"]
+                bt_end_time = form.cleaned_data["bt_end_time"]
+                settlement_exchange_rate = form.cleaned_data['settlement_exchange_rate']
+                current_datetime = form.cleaned_data["current_datetime"]
+                settlement_log = f'Nowe rozliczenie wniosku nr: {bt_application_settlement.bt_application_id.id} - ' \
+                                 f'{current_datetime}\n'
+                advance_payment = BtApplication.objects.get(
+                    id=BtApplicationSettlement.objects.get(id=pk).bt_application_id.id
+                )
+
+                BtApplicationSettlementInfo.objects.create(
+                    bt_application_settlement=bt_application_settlement,
+                    bt_completed=bt_completed,
+                    bt_start_date=bt_start_date,
+                    bt_start_time=bt_start_time,
+                    bt_end_date=bt_end_date,
+                    bt_end_time=bt_end_time,
+                    settlement_exchange_rate=settlement_exchange_rate,
+                    advance_payment=advance_payment,
+                    settlement_log=settlement_log
+                )
+                return HttpResponseRedirect(reverse("e_delegacje:settlement-details", args=[pk]))
         else:
             return HttpResponseRedirect(reverse("e_delegacje:settlement-info-create", args=[pk]))
 
@@ -496,9 +510,11 @@ class BtApplicationSettlementCostCreateView(View):
 
     def post(self, request, pk, *args, **kwargs):
         settlement = BtApplicationSettlement.objects.get(id=pk)
-        form = BtApplicationSettlementCostForm(request.POST)
+        form = BtApplicationSettlementCostForm(request.POST, request.FILES)
         cost_list = BtApplicationSettlementCost.objects.filter(
             bt_application_settlement=BtApplicationSettlement.objects.get(id=pk))
+        uploaded_file = request.FILES['attachment']
+
         if form.is_valid():
             bt_application_settlement = BtApplicationSettlement.objects.get(id=pk)
             bt_cost_category = form.cleaned_data["bt_cost_category"]
@@ -514,8 +530,10 @@ class BtApplicationSettlementCostCreateView(View):
                 bt_cost_amount=bt_cost_amount,
                 bt_cost_currency=bt_cost_currency,
                 bt_cost_document_date=bt_cost_document_date,
-                bt_cost_VAT_rate=bt_cost_VAT_rate
+                bt_cost_VAT_rate=bt_cost_VAT_rate,
+                attachment=uploaded_file
             )
+
             return HttpResponseRedirect(reverse("e_delegacje:settlement-cost-create", args=[pk]))
         return render(request, "settlement_subform_cost.html", {"form": form,
                                                                 'cost_list': cost_list,
@@ -619,7 +637,7 @@ def trip_duration(settlement):
     except:
         bt_start = datetime.datetime.now()
         bt_end = datetime.datetime.now()
-    print(f'{settlement.bt_application_id.trip_purpose_text} trip duration: {bt_end - bt_start}')
+    # print(f'{settlement.bt_application_id.trip_purpose_text} trip duration: {bt_end - bt_start}')
     return bt_end - bt_start
 
 
@@ -752,7 +770,18 @@ class BtApplicationSettlementInfoUpdateView(SingleObjectMixin, FormView):
 
     def post(self, request, *args, **kwargs):
         self.object = self.get_object(queryset=BtApplicationSettlement.objects.all())
-        return super().post(request, *args, **kwargs)
+
+        result = self.get_form().cleaned_data
+        bt_completed = result[0]['bt_completed']
+        print('bt completed jest: ', bt_completed)
+        if bt_completed == 'nie':
+            self.object.bt_application_id.application_status = BtApplicationStatus.canceled
+            self.object.bt_application_id.save()
+            self.object.delete()
+            return HttpResponseRedirect(reverse("e_delegacje:applications-list"))
+
+        else:
+            return super().post(request, *args, **kwargs)
 
     def get_form(self, form_class=None):
         return BtApplicationSettlementInfoFormset(**self.get_form_kwargs(), instance=self.object)

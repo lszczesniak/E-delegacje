@@ -119,16 +119,10 @@ USE_L10N = True
 USE_TZ = True
 
 STATIC_URL = '/static/'
-MEDIA_URL = '/media/'
 STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
-
 MEDIA_URL = '/media/'
-
-# STATIC_ROOT = os.path.join(BASE_DIR, 'static')
-# MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
-
 
 # Email sending settings
 EMAIL_HOST = mail_config.mail_host
@@ -139,8 +133,4 @@ EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 
-#AUTH_USER_MODEL="e_delegacje.BtUser"
 AUTH_USER_MODEL = "setup.BtUser"
-
-# LOGIN_REDIRECT_URL = "/setup/"
-# LOGOUT_REDIRECT_URL = "/setup/"
