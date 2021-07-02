@@ -70,19 +70,19 @@ class BtApplicationSettlementInfo(models.Model):
     bt_application_settlement = models.OneToOneField(
         BtApplicationSettlement,
         on_delete=models.CASCADE,
-        related_name='bt_application_info'
+        related_name='bt_application_info',
     )
     bt_completed = models.CharField(max_length=25, choices=[('tak', 'tak'), ('nie', 'nie')])
-    bt_start_date = models.DateField()
-    bt_start_time = models.TimeField()
-    bt_end_date = models.DateField()
-    bt_end_time = models.TimeField()
+    bt_start_date = models.DateField(null=True, blank=True)
+    bt_start_time = models.TimeField(null=True, blank=True)
+    bt_end_date = models.DateField(null=True, blank=True)
+    bt_end_time = models.TimeField(null=True, blank=True)
     advance_payment = models.OneToOneField(
         BtApplication,
         on_delete=models.CASCADE,
         related_name='bt_application_settlement_info'
     )
-    settlement_exchange_rate = models.DecimalField(decimal_places=5, max_digits=8)
+    settlement_exchange_rate = models.DecimalField(decimal_places=5, max_digits=8,null=True, blank=True)
     settlement_log = models.CharField(max_length=2400)
 
     def __str__(self):

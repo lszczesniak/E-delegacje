@@ -106,6 +106,12 @@
         <div class="row align-content-between">
 
             <div class="col-3">
+
+                    <div class="row">
+                        <h5>Informacje: </h5>
+                    <hr>
+                    </div>
+
                   <table class="table table-light table-striped" style="font-size: 12px">
                           <tr>
                               <td class="fw-bold">Delegacja zrealizowana?</td>
@@ -152,6 +158,8 @@
                                     <th>Opis kosztu</th>
                                     <th>Kwota</th>
                                     <th>Waluta</th>
+                                    <th>Załącznik</th>
+
                                 </tr>
                             </thead>
 
@@ -160,6 +168,15 @@
             <td>{{ cost.bt_cost_description }}</td>
             <td>{{ cost.bt_cost_amount|floatformat:2 }}</td>
             <td>{{ cost.bt_cost_currency }}</td>
+            <td class="pt-2 ps-2">
+                {% if cost.attachment %}
+                <a class="btn btn-sm btn-outline-secondary"
+                   href="{{ cost.attachment.url }}"
+                   target="_blank"
+                   style="font-size: 8px"
+                >Otwórz</a>
+                {% endif %}
+            </td>
                                 </tr>
 
                             {% endfor %}

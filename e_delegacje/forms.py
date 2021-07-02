@@ -2,6 +2,7 @@ import datetime
 from django.core.exceptions import ValidationError
 
 from django.forms.models import inlineformset_factory
+from django.forms import MultiWidget
 from e_delegacje.models import (
     BtApplicationSettlement,
     BtApplicationSettlementFeeding,
@@ -31,20 +32,30 @@ class TimeInputWidget(forms.TimeInput):
     input_type = 'time'
 
 
+# class CurrentDatetimeHiddenWidget:
+#     forms.CharField.widget = forms.HiddenInput()
+
+
+class BtCompletedAttributesWidget(forms.TypedChoiceField.widget):
+    forms.TypedChoiceField.widget(attrs={'onchange': "ChangeAtributesRequied()", 'id': 'id_bt_completed'})
+
+
 class BtApplicationForm(forms.ModelForm):
     bt_country = forms.ModelChoiceField(
         queryset=BtCountry.objects.all(),
         label="Wybierz kraj",
         initial=BtCountry.objects.get(id=1)
     )
-    target_user = forms.ModelChoiceField(queryset=BtUser.objects.all(), label="Delegowany")
+    target_user = forms.ModelChoiceField(
+        queryset=BtUser.objects.all(),
+        label="Delegowany")
     trip_purpose_text = forms.CharField(
         max_length=250,
-        widget=forms.Textarea(attrs={'rows':3}),
+        widget=forms.Textarea(attrs={'rows': 3}),
         label="Cel podrózy")
     CostCenter = forms.ModelChoiceField(queryset=BtCostCenter.objects.all(), label="Cost Center")
     transport_type = forms.TypedChoiceField(choices=BtTransportType.choices, label="Rodzaj transportu",)
-    travel_route = forms.CharField(max_length=120, label="Trasa podróży")
+    travel_route = forms.CharField(max_length=120, widget=forms.Textarea(attrs={'rows': 1}), label="Trasa podróży")
     planned_start_date = forms.DateField(
         label="Data wyjazdu",
         widget=DateInputWidget
@@ -144,19 +155,39 @@ class BtApplicationSettlementForm(forms.Form):
 class BtApplicationSettlementInfoForm(forms.ModelForm):
     bt_completed = forms.TypedChoiceField(
         label="Czy delegacja się odbyła?",
-        choices=[("", ""), ('tak', 'tak'), ('nie', 'nie')],
+        choices=[('', ''), ('tak', 'tak'), ('nie', 'nie')],
+        widget=forms.TypedChoiceField.widget(attrs={'onchange': "ChangeAtributesRequied()", 'id': 'id_bt_completed'})
+
         )
-    bt_start_date = forms.DateField(label="Data wyjazdu",widget=DateInputWidget)
-    bt_start_time = forms.TimeField(label="Godzina wyjazdu", widget=TimeInputWidget)
-    bt_end_date = forms.DateField(label="Data powrotu", widget=DateInputWidget)
-    bt_end_time = forms.TimeField(label="Godzina powrotu", widget=TimeInputWidget)
+    bt_start_date = forms.DateField(
+        label="Data wyjazdu",
+        widget=DateInputWidget(attrs={'id': 'id_bt_start_date'}),
+        required=False)
+    bt_start_time = forms.TimeField(
+        label="Godzina wyjazdu",
+        widget=TimeInputWidget(attrs={'id': 'id_bt_start_time'}),
+        required=False)
+    bt_end_date = forms.DateField(
+        label="Data powrotu",
+        widget=DateInputWidget(attrs={'id': 'id_bt_end_date'}),
+        required=False)
+    bt_end_time = forms.TimeField(
+        label="Godzina powrotu",
+        widget=TimeInputWidget(attrs={'id': 'id_bt_end_time'}),
+        required=False)
     settlement_exchange_rate = forms.DecimalField(decimal_places=5,
                                                   max_digits=8,
                                                   label="Kurs rozliczenia",
                                                   min_value=0,
                                                   initial=1,
-                                                  help_text='W przypadku zaliczki w walucie PLN wpisz "1".')
-    current_datetime = forms.CharField(widget=forms.HiddenInput())
+                                                  help_text='W przypadku zaliczki w PLN wpisz "1".',
+                                                  required=False,
+                                                  widget=forms.DecimalField.widget(
+                                                      attrs={'id': 'id_settlement_exchange_rate'})
+                                                  )
+    current_datetime = forms.CharField(
+        max_length=40,
+        widget=forms.CharField.widget(attrs={'id': 'id_current_datetime', 'type': 'hidden'}))
 
     class Meta:
         model = BtApplicationSettlementInfo
@@ -164,22 +195,25 @@ class BtApplicationSettlementInfoForm(forms.ModelForm):
 
     def clean(self):
         result = super().clean()
-        comb_start_time = datetime.datetime(
-            result['bt_start_date'].year,
-            result['bt_start_date'].month,
-            result['bt_start_date'].day,
-            result['bt_start_time'].hour,
-            result['bt_start_time'].minute)
-        print(comb_start_time)
-        comb_end_time = datetime.datetime(
-            result['bt_end_date'].year,
-            result['bt_end_date'].month,
-            result['bt_end_date'].day,
-            result['bt_end_time'].hour,
-            result['bt_end_time'].minute)
-        print(comb_end_time)
-        if comb_start_time > comb_end_time:
-            raise ValidationError("Data i godzina wyjazdu musi być przed datą i godziną powrotu!")
+
+        if result['bt_completed'] == 'tak':
+            comb_start_time = datetime.datetime(
+                result['bt_start_date'].year,
+                result['bt_start_date'].month,
+                result['bt_start_date'].day,
+                result['bt_start_time'].hour,
+                result['bt_start_time'].minute)
+
+            comb_end_time = datetime.datetime(
+                result['bt_end_date'].year,
+                result['bt_end_date'].month,
+                result['bt_end_date'].day,
+                result['bt_end_time'].hour,
+                result['bt_end_time'].minute)
+
+            if comb_start_time > comb_end_time:
+                raise ValidationError("Data i godzina wyjazdu musi być przed datą i godziną powrotu!")
+
         return result
 
 
@@ -190,7 +224,7 @@ class BtApplicationSettlementCostForm(forms.Form):
     bt_cost_currency = forms.ModelChoiceField(queryset=BtCurrency.objects.all(), label="Waluta", initial='')
     bt_cost_document_date = forms.DateField(label="Data dokumentu", widget=DateInputWidget)
     bt_cost_VAT_rate = forms.TypedChoiceField(choices=BtVatRates.choices, label="Stawka vat")
-    attachment = forms.FileField()
+    # attachment = forms.FileField()
 
 
 class BtApplicationSettlementMileageForm(forms.Form):
@@ -217,7 +251,13 @@ class BtApplicationSettlementFeedingForm(forms.ModelForm):
 BtApplicationSettlementInfoFormset = inlineformset_factory(
     BtApplicationSettlement,
     BtApplicationSettlementInfo,
-    fields=('bt_completed', 'bt_start_date', 'bt_start_time', 'bt_end_date', 'bt_end_time', 'settlement_exchange_rate'),
+    fields=('bt_completed',
+            'bt_start_date',
+            'bt_start_time',
+            'bt_end_date',
+            'bt_end_time',
+            'settlement_exchange_rate',
+            'current_datetime'),
     form=BtApplicationSettlementInfoForm,
     labels={'bt_start_date': "Data wyjazdu",
             'bt_start_time': "Godzina wyjazdu",
@@ -226,10 +266,15 @@ BtApplicationSettlementInfoFormset = inlineformset_factory(
             'bt_completed': "Czy delegacja się odbyła?",
             'settlement_exchange_rate': "Kurs rozliczenia",
             },
-    widgets={'bt_start_date': DateInputWidget,
-             'bt_end_date': DateInputWidget,
-             'bt_start_time': TimeInputWidget,
-             'bt_end_time': TimeInputWidget,
+    widgets={'bt_start_date': DateInputWidget(attrs={'id': 'id_bt_start_date'}),
+             'bt_end_date': DateInputWidget(attrs={'id': 'id_bt_end_date'}),
+             'bt_start_time': DateInputWidget(attrs={'id': 'id_bt_start_time'}),
+             'bt_end_time': TimeInputWidget(attrs={'id': 'id_bt_end_time'}),
+             'bt_completed': forms.TypedChoiceField.widget(
+                 attrs={'onchange': "ChangeAtributesRequied()", 'id': 'id_bt_completed'}),
+             # 'current_datetime': CurrentDatetimeHiddenWidget(attrs={'id': 'id_current_datetime'}),
+             'settlement_exchange_rate': forms.DecimalField.widget(attrs={'id': 'id_settlement_exchange_rate'})
+
              },
 
     can_delete=False
