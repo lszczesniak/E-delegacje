@@ -105,7 +105,7 @@ class BtApplicationSettlementCost(models.Model):
     )
     bt_cost_document_date = models.DateField()
     bt_cost_VAT_rate = models.CharField(max_length=20, choices=BtVatRates.choices)
-    attachment = models.FileField(null=True, blank=True)
+    attachment = models.FileField(null=True, )
 
     def __str__(self):
         return f'{self.bt_cost_description}'
@@ -128,6 +128,7 @@ class BtApplicationSettlementMileage(models.Model):
     trip_description = models.CharField(max_length=120)
     trip_purpose = models.CharField(max_length=240)
     mileage = models.DecimalField(decimal_places=2, max_digits=8)
+    is_agreement_signed = models.BooleanField(default=False)
 
     def __str__(self):
         return f'Kilometrówka do rozliczenia wniosku{self.bt_application_settlement}'
