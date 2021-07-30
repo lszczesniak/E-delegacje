@@ -513,7 +513,7 @@ class BtApplicationSettlementCostCreateView(View):
         form = BtApplicationSettlementCostForm(request.POST, request.FILES)
         cost_list = BtApplicationSettlementCost.objects.filter(
             bt_application_settlement=BtApplicationSettlement.objects.get(id=pk))
-        uploaded_file = request.FILES['attachment']
+        uploaded_file = request.FILES.get('attachment')
 
         if form.is_valid():
             bt_application_settlement = BtApplicationSettlement.objects.get(id=pk)
