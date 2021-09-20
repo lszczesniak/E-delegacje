@@ -1,0 +1,36 @@
+{% load static %}
+{#<!DOCTYPE html>#}
+<html {% if LANGUAGE_CODE %}lang="{{ LANGUAGE_CODE }}"{% endif %}>
+
+
+<head>
+  <meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	<title>E-Delegacje</title>
+
+	<meta name="description" content="Aplikacja do zarządzania podróżami służbowymi w firmie">
+	<meta name="keywords" content="podróże służbowe, delegacje, wyniki">
+	<meta name="author" content="Łukasz Szcześniak, Gerard Borowski">
+
+	<meta http-equiv="X-Ua-Compatible" content="IE=edge">
+	<link href="https://fonts.googleapis.com/css?family=Open+Sans:400,700&amp;subset=latin-ext" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/bootstrap.min.css' %}"/>
+	<link rel="stylesheet" type="text/css" href="{% static 'css/navbar.css' %}"/>
+	<link rel="stylesheet" type="text/css" href="{% static 'bootstrap-icons/bootstrap-icons.css' %}"/>
+
+  </head>
+
+<body style="background-color: rgba(206, 165, 32, 0.555)">
+    <main>
+<h2>
+  E-delgacje - masz nowy wniosek do zaakceptowania
+</h2>
+<p>
+  Użytkownik <strong>{{ application_author.first_name }} {{ application_author.last_name }} </strong> wysłał wniosek numer <strong>{{ application_number }}</strong> do zaakceptowania.
+</p>
+<p>Opis: {{ trip_purpose_text }}</p>
+<p>Data: {{ planned_start_date.isoformat }} - {{ planned_end_date.isoformat }}</p>
+<a href="http://127.0.0.1:8000/e-delegacje/approve/ {{ application_number }} " target="_blank">kliknij link by zaakceptować</a>
+    </main>
+</body>
+</html>

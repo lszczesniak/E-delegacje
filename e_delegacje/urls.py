@@ -58,12 +58,13 @@ urlpatterns = [
     # Approvals
     path('approve/<pk>', BtApplicationApprovalDetailView.as_view(), name='approval'),
     path('approval-list', BtApprovalListView.as_view(), name='approval-list'),
-
-    # do sprawdzenia czy poniższe nadal są używane?
     path('application-approved/<pk>', bt_application_approved, name='application-approved'),
     path('application-rejected/<pk>', bt_application_rejected, name='application-rejected'),
     path('settlement-approved/<pk>', bt_settlement_approved, name='settlement-approved'),
     path('settlement-rejected/<pk>', bt_settlement_rejected, name='settlement-rejected'),
+
+    # do sprawdzenia czy poniższe nadal są używane?
+
     path('approve/mail/<pk>', BtApplicationApprovalMailDetailView.as_view(), name='approval-mail'),
 
     # podformularze do rozliczenia wniosku
