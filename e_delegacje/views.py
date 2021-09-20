@@ -14,7 +14,7 @@ from django.views.generic.edit import FormView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.exceptions import ObjectDoesNotExist
 from django_weasyprint.utils import django_url_fetcher
-
+from e_delegacje.my_functions import new_application_notification, approved_or_rejected_notification
 from e_delegacje.enums import BtApplicationStatus
 from e_delegacje.forms import (
     BtApplicationForm,
@@ -107,7 +107,7 @@ class BtApplicationCreateView(View):
                 employee_level=employee_level,
                 application_log=application_log
             )
-            # form.send_mail(user_mail=target_user.manager.email, sent_app=BtApplication.objects.last())
+            new_application_notification(user_mail=target_user.manager.email, sent_app=BtApplication.objects.last())
 
             return HttpResponseRedirect(reverse("e_delegacje:applications-list"))
         else:
@@ -125,8 +125,7 @@ class BtApplicationDetailView(DetailView):
     model = BtApplication
     template_name = "bt_application_details.html"
 
-
-class BtApplicationApprovalDetailView(View):
+class BtApplicationApprovalDetailView(LoginRequiredMixin, View):
 
     def get(self, request, pk):
 
@@ -196,6 +195,8 @@ class BtApplicationApprovalDetailView(View):
                 return HttpResponseRedirect(reverse("e_delegacje:approval-list"))
         else:
             return HttpResponseRedirect(reverse("e_delegacje:approval", args=[pk]))
+            
+        approved_or_rejected_notification()
 
 
 class BtApplicationApprovalMailDetailView(View):
